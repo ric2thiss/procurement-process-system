@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REQUISITION AND ISSUE SLIP (RIS)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 11pt;
+            padding: 15mm 10mm;
+            background: #fff;
+        }
+
+        .ris-container {
+            width: 100%;
+            max-width: 210mm;
+            margin: 0 auto;
+            background: white;
+        }
+        
+        @media print {
+            body {
+                padding: 0;
+                margin: 0;
+            }
+            .ris-container {
+                max-width: 100%;
+            }
+        }
+
+        .header-section {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .seal-left, .seal-right {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .seal-left {
+            margin-right: 10px;
+        }
+        
+        .seal-right {
+            margin-left: 10px;
+        }
+        
+        .seal-left img, .seal-right img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .header-center {
+            text-align: center;
+            flex: 1;
+            padding: 0 15px;
+        }
+
+        .header-center p {
+            margin: 2px 0;
+            font-size: 10pt;
+        }
+
+        .header-center .institution {
+            font-weight: bold;
+            font-size: 11pt;
+        }
+
+        .main-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 14pt;
+            margin: 10px 0 5px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 10pt;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .info-fields {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 10pt;
+        }
+
+        .info-left, .info-right {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .info-field {
+            display: flex;
+            align-items: center;
+        }
+
+        .info-field label {
+            margin-right: 5px;
+            white-space: nowrap;
+        }
+
+        .info-field span {
+            border-bottom: 1px solid #000;
+            flex: 1;
+            min-width: 150px;
+            display: inline-block;
+            height: 18px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 10pt;
+            table-layout: fixed;
+        }
+
+        table, th, td {
+            border: 1px solid #000;
+        }
+
+        th, td {
+            padding: 5px 4px;
+            text-align: left;
+            vertical-align: middle;
+            word-wrap: break-word;
+        }
+
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            text-align: center;
+            font-size: 9pt;
+        }
+        
+        td {
+            font-size: 10pt;
+        }
+
+        .stock-no-col {
+            width: 10%;
+            text-align: center;
+        }
+
+        .unit-col {
+            width: 8%;
+            text-align: center;
+        }
+
+        .description-col {
+            width: 35%;
+        }
+
+        .qty-col {
+            width: 8%;
+            text-align: center;
+        }
+
+        .stock-available-col {
+            width: 10%;
+            text-align: center;
+        }
+
+        .stock-yes-col {
+            width: 5%;
+            text-align: center;
+        }
+
+        .stock-no-col-yn {
+            width: 5%;
+            text-align: center;
+        }
+
+        .unit-price-col {
+            width: 12%;
+            text-align: right;
+        }
+
+        .total-amount-col {
+            width: 7%;
+            text-align: right;
+        }
+
+        .data-row td {
+            min-height: 32px;
+            height: 32px;
+        }
+        
+        .data-row {
+            page-break-inside: avoid;
+        }
+        
+        tbody tr {
+            height: 32px;
+        }
+
+        .signature-line {
+            border-bottom: 1px solid #000;
+            min-height: 25px;
+            margin-top: 3px;
+            width: 100%;
+        }
+
+        .signature-name {
+            margin: 5px 0;
+            min-height: 20px;
+        }
+
+        .signature-designation {
+            font-size: 9pt;
+            margin: 5px 0;
+            min-height: 20px;
+        }
+
+        .total-row td {
+            font-weight: bold;
+            text-align: right;
+            padding-right: 10px;
+        }
+
+        .section-header {
+            background-color: #e0e0e0;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="ris-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="header-top">
+                <div class="seal-left">
+                    <img src="../../assets/img/deped_logo.png" alt="DepEd Logo">
+                </div>
+                <div class="header-center">
+                    <p>Republic of the Philippines</p>
+                    <p>Department of Education</p>
+                    <p class="institution">DIVISION OF AGUSAN DEL NORTE</p>
+                    <p class="institution">MAGALLANES NATIONAL HIGH SCHOOL</p>
+                </div>
+                <div class="seal-right">
+                    <img src="../../assets/img/logo.png" alt="School Logo">
+                </div>
+            </div>
+            <div class="main-title">
+                REQUISITION AND ISSUE SLIP (RIS)
+            </div>
+            <div class="subtitle">
+                (for consumables and non-consumables)
+            </div>
+            <div class="info-fields">
+                <div class="info-left">
+                    <div class="info-field">
+                        <label>Fund Cluster:</label>
+                        <span>&nbsp;</span>
+                    </div>
+                    <div class="info-field">
+                        <label>Office:</label>
+                        <span>&nbsp;</span>
+                    </div>
+                </div>
+                <div class="info-right" style="text-align: right;">
+                    <div class="info-field" style="justify-content: flex-end;">
+                        <label>RIS No.:</label>
+                        <span style="min-width: 120px;">&nbsp;</span>
+                    </div>
+                    <div class="info-field" style="justify-content: flex-end;">
+                        <label>RC Code:</label>
+                        <span style="min-width: 120px;">&nbsp;</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="6" class="section-header">REQUISITION</th>
+                    <th colspan="2" class="section-header">ISSUANCE</th>
+                </tr>
+                <tr>
+                    <th rowspan="2" class="stock-no-col">Stock No.</th>
+                    <th rowspan="2" class="unit-col">Unit</th>
+                    <th rowspan="2" class="description-col">Items/Description</th>
+                    <th rowspan="2" class="qty-col">Qty</th>
+                    <th colspan="2" class="stock-available-col">Stock Available?</th>
+                    <th rowspan="2" class="unit-price-col">Unit Price</th>
+                    <th rowspan="2" class="total-amount-col">Total Amount</th>
+                </tr>
+                <tr>
+                    <th class="stock-yes-col">Yes</th>
+                    <th class="stock-no-col-yn">No</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Empty data rows for data entry -->
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <!-- Total Row -->
+                <tr class="total-row">
+                    <td colspan="6" style="text-align: right; padding-right: 10px; font-weight: bold;">TOTAL</td>
+                    <td style="text-align: right; padding-right: 10px;"></td>
+                    <td style="text-align: right; padding-right: 10px;"></td>
+                </tr>
+                <!-- Purpose Row -->
+                <tr>
+                    <td colspan="8" style="padding: 8px;">
+                        <strong>Purpose:</strong>
+                        <span style="border-bottom: 1px solid #000; display: inline-block; width: 85%; margin-left: 10px; min-height: 18px;">&nbsp;</span>
+                    </td>
+                </tr>
+                <!-- Signature Header Row -->
+                <tr>
+                    <td colspan="2" style="text-align: center; background-color: #f0f0f0; width: 20%;"></td>
+                    <td colspan="2" style="text-align: center; background-color: #f0f0f0; width: 20%;">Requested by:</td>
+                    <td colspan="1" style="text-align: center; background-color: #f0f0f0; width: 20%;">Approved by:</td>
+                    <td colspan="2" style="text-align: center; background-color: #f0f0f0; width: 20%;">Issued by:</td>
+                    <td colspan="1" style="text-align: center; background-color: #f0f0f0; width: 20%;">Received by:</td>
+                </tr>
+                <!-- Signature Row -->
+                <tr>
+                    <td colspan="2" style="text-align: left; padding-left: 5px; width: 20%;">Signature</td>
+                    <td colspan="2" style="width: 20%;">
+                        <div class="signature-line">&nbsp;</div>
+                    </td>
+                    <td colspan="1" style="width: 20%;">
+                        <div class="signature-line">&nbsp;</div>
+                    </td>
+                    <td colspan="2" style="width: 20%;">
+                        <div class="signature-line">&nbsp;</div>
+                    </td>
+                    <td colspan="1" style="width: 20%;">
+                        <div class="signature-line">&nbsp;</div>
+                    </td>
+                </tr>
+                <!-- Printed Name Row -->
+                <tr>
+                    <td colspan="2" style="text-align: left; padding-left: 5px; width: 20%;">Printed Name</td>
+                    <td colspan="2" style="width: 20%;">
+                        <div class="signature-name">&nbsp;</div>
+                    </td>
+                    <td colspan="1" style="width: 20%;">
+                        <div class="signature-name">&nbsp;</div>
+                    </td>
+                    <td colspan="2" style="width: 20%;">
+                        <div class="signature-name">&nbsp;</div>
+                    </td>
+                    <td colspan="1" style="width: 20%;">
+                        <div class="signature-name">&nbsp;</div>
+                    </td>
+                </tr>
+                <!-- Designation Row -->
+                <tr>
+                    <td colspan="2" style="text-align: left; padding-left: 5px; width: 20%;">Designation</td>
+                    <td colspan="2" style="width: 20%;">
+                        <div class="signature-designation">&nbsp;</div>
+                    </td>
+                    <td colspan="1" style="width: 20%;">
+                        <div class="signature-designation">&nbsp;</div>
+                    </td>
+                    <td colspan="2" style="width: 20%;">
+                        <div class="signature-designation">&nbsp;</div>
+                    </td>
+                    <td colspan="1" style="width: 20%;">
+                        <div class="signature-designation">&nbsp;</div>
+                    </td>
+                </tr>
+                <!-- Date Row -->
+                <tr>
+                    <td colspan="2" style="text-align: left; padding-left: 5px; width: 20%;">Date</td>
+                    <td colspan="2" style="width: 20%;">
+                        <div class="signature-line">&nbsp;</div>
+                    </td>
+                    <td colspan="1" style="width: 20%;">
+                        <div class="signature-line">&nbsp;</div>
+                    </td>
+                    <td colspan="2" style="width: 20%;">
+                        <div class="signature-line">&nbsp;</div>
+                    </td>
+                    <td colspan="1" style="width: 20%;">
+                        <div class="signature-line">&nbsp;</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+

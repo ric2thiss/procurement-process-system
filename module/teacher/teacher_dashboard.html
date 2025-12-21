@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - Document Tracking System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/global/main.css">
+    <link rel="stylesheet" href="../../assets/css/pages/teacher-dashboard.css">
+</head>
+<body class="bg-gray-50">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-[#103D1C] text-white transform transition-transform duration-300 z-50">
+        <div class="flex flex-col h-full">
+            <!-- Logo Section -->
+            <div class="p-6 border-b border-green-800">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 flex items-center justify-center bg-white rounded-lg">
+                        <img src="../../assets/img/logo.png" alt="Logo" class="logo-img">
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-white">DTS</h1>
+                        <p class="text-xs text-green-200">Teacher Portal</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="flex-1 overflow-y-auto py-4">
+                <ul class="space-y-1 px-3">
+                    <li>
+                        <a href="#dashboard" data-section="dashboard" class="nav-item active flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-tachometer-alt w-5"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#new-request" data-section="new-request" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-plus-circle w-5"></i>
+                            <span>New Supply Request</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#my-requests" data-section="my-requests" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-file-alt w-5"></i>
+                            <span>My Requests</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tracking" data-section="tracking" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-route w-5"></i>
+                            <span>Track Document</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#issued-items" data-section="issued-items" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-box-check w-5"></i>
+                            <span>Issued Items</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#history" data-section="history" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-history w-5"></i>
+                            <span>Request History</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- User Profile Section -->
+            <div class="p-4 border-t border-green-800">
+                <div class="flex items-center space-x-3 mb-3">
+                    <div class="w-10 h-10 bg-green-700 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-semibold">John Doe</p>
+                        <p class="text-xs text-green-200">Teacher</p>
+                    </div>
+                </div>
+                <button class="w-full bg-green-700 hover:bg-green-600 px-4 py-2 rounded-lg text-sm transition-colors">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="ml-64">
+        <!-- Top Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
+            <div class="flex items-center justify-between px-6 py-4">
+                <div class="flex items-center space-x-4">
+                    <button id="sidebarToggle" class="lg:hidden text-gray-600 hover:text-gray-900">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900" id="pageTitle">Dashboard Overview</h2>
+                        <p class="text-sm text-gray-600" id="pageSubtitle">Your supply request statistics</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <button class="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
+                            <i class="fas fa-bell text-lg"></i>
+                            <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                        </button>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-semibold text-gray-900" id="currentDate"></p>
+                        <p class="text-xs text-gray-600" id="currentTime"></p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="p-6">
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="content-section">
+                <!-- Statistics Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Total Requests</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2">24</p>
+                                <p class="text-xs text-blue-600 mt-1">All time</p>
+                            </div>
+                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-file-alt text-blue-600 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Pending</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2">5</p>
+                                <p class="text-xs text-yellow-600 mt-1">Awaiting action</p>
+                            </div>
+                            <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-clock text-yellow-600 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Approved</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2">12</p>
+                                <p class="text-xs text-green-600 mt-1">In progress</p>
+                            </div>
+                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-check-circle text-green-600 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Completed</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2">7</p>
+                                <p class="text-xs text-purple-600 mt-1">Items received</p>
+                            </div>
+                            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-box-check text-purple-600 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Requests -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-bold text-gray-900">Recent Requests</h3>
+                        <a href="#my-requests" class="text-blue-600 hover:text-blue-800 text-sm font-medium">View All</a>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Tracking ID</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Item Description</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Status</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date Submitted</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-gray-900">2025-SR-024</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Whiteboard Markers (Set of 10)</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">Pending</span></td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-15</td>
+                                    <td class="px-4 py-3">
+                                        <button class="text-blue-600 hover:text-blue-800" onclick="viewRequest('2025-SR-024')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-gray-900">2025-SR-023</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Projector Lamp</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Approved</span></td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-12</td>
+                                    <td class="px-4 py-3">
+                                        <button class="text-blue-600 hover:text-blue-800" onclick="viewRequest('2025-SR-023')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-gray-900">2025-SR-022</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">A4 Bond Paper (Ream)</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">Completed</span></td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-10</td>
+                                    <td class="px-4 py-3">
+                                        <button class="text-blue-600 hover:text-blue-800" onclick="viewRequest('2025-SR-022')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Quick Actions</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <a href="#new-request" class="quick-action-btn p-6 border-2 border-gray-200 rounded-lg hover:border-green-600 hover:bg-green-50 transition-colors text-center">
+                            <i class="fas fa-plus-circle text-3xl text-green-600 mb-3"></i>
+                            <p class="text-sm font-semibold text-gray-900">Create New Request</p>
+                            <p class="text-xs text-gray-600 mt-1">Submit a supply request</p>
+                        </a>
+                        <a href="#tracking" class="quick-action-btn p-6 border-2 border-gray-200 rounded-lg hover:border-blue-600 hover:bg-blue-50 transition-colors text-center">
+                            <i class="fas fa-route text-3xl text-blue-600 mb-3"></i>
+                            <p class="text-sm font-semibold text-gray-900">Track Document</p>
+                            <p class="text-xs text-gray-600 mt-1">Check request status</p>
+                        </a>
+                        <a href="#issued-items" class="quick-action-btn p-6 border-2 border-gray-200 rounded-lg hover:border-purple-600 hover:bg-purple-50 transition-colors text-center">
+                            <i class="fas fa-box-check text-3xl text-purple-600 mb-3"></i>
+                            <p class="text-sm font-semibold text-gray-900">Issued Items</p>
+                            <p class="text-xs text-gray-600 mt-1">View received items</p>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- New Supply Request Section -->
+            <section id="new-request-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Create New Supply Request</h3>
+                        <p class="text-gray-600">Fill out the form below to submit a request for equipment or supplies</p>
+                    </div>
+
+                    <form id="supplyRequestForm" class="space-y-6">
+                        <!-- Item Details -->
+                        <div class="border-b border-gray-200 pb-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">
+                                <i class="fas fa-box text-green-600 mr-2"></i>Item Details
+                            </h4>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Item Description -->
+                                <div class="md:col-span-2">
+                                    <label for="itemDescription" class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Item Description <span class="text-red-500">*</span>
+                                    </label>
+                                    <textarea 
+                                        id="itemDescription" 
+                                        name="itemDescription" 
+                                        rows="3"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                        placeholder="Describe the item or equipment you need (e.g., Whiteboard Markers, Projector Lamp, A4 Bond Paper)"
+                                        required
+                                    ></textarea>
+                                    <p class="text-xs text-gray-500 mt-1">Provide a clear and detailed description of the item</p>
+                                </div>
+
+                                <!-- Quantity -->
+                                <div>
+                                    <label for="quantity" class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Quantity <span class="text-red-500">*</span>
+                                    </label>
+                                    <input 
+                                        type="number" 
+                                        id="quantity" 
+                                        name="quantity" 
+                                        min="1"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                        placeholder="Enter quantity"
+                                        required
+                                    >
+                                </div>
+
+                                <!-- Unit of Measure -->
+                                <div>
+                                    <label for="unitOfMeasure" class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Unit of Measure <span class="text-red-500">*</span>
+                                    </label>
+                                    <select 
+                                        id="unitOfMeasure" 
+                                        name="unitOfMeasure"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                        required
+                                    >
+                                        <option value="">Select unit</option>
+                                        <option value="piece">Piece</option>
+                                        <option value="set">Set</option>
+                                        <option value="box">Box</option>
+                                        <option value="ream">Ream</option>
+                                        <option value="pack">Pack</option>
+                                        <option value="bottle">Bottle</option>
+                                        <option value="roll">Roll</option>
+                                        <option value="dozen">Dozen</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+
+                                <!-- Item Specifications (Optional) -->
+                                <div class="md:col-span-2">
+                                    <label for="specifications" class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Specifications (Optional)
+                                    </label>
+                                    <textarea 
+                                        id="specifications" 
+                                        name="specifications" 
+                                        rows="2"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                        placeholder="Provide additional specifications if needed (e.g., brand, model, size, color)"
+                                    ></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Purpose and Justification -->
+                        <div class="border-b border-gray-200 pb-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">
+                                <i class="fas fa-info-circle text-blue-600 mr-2"></i>Purpose & Justification
+                            </h4>
+                            
+                            <div>
+                                <label for="justification" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Justification / Purpose <span class="text-red-500">*</span>
+                                </label>
+                                <textarea 
+                                    id="justification" 
+                                    name="justification" 
+                                    rows="4"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                    placeholder="Explain why this item is needed and how it will be used (e.g., For classroom instruction, For laboratory activities, For office use)"
+                                    required
+                                ></textarea>
+                                <p class="text-xs text-gray-500 mt-1">Please provide a clear justification for this request</p>
+                            </div>
+                        </div>
+
+                        <!-- Additional Information -->
+                        <div class="border-b border-gray-200 pb-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">
+                                <i class="fas fa-calendar-alt text-purple-600 mr-2"></i>Additional Information
+                            </h4>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Priority Level -->
+                                <div>
+                                    <label for="priority" class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Priority Level
+                                    </label>
+                                    <select 
+                                        id="priority" 
+                                        name="priority"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                    >
+                                        <option value="normal">Normal</option>
+                                        <option value="high">High</option>
+                                        <option value="urgent">Urgent</option>
+                                    </select>
+                                </div>
+
+                                <!-- Expected Delivery Date -->
+                                <div>
+                                    <label for="expectedDate" class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Expected Delivery Date (Optional)
+                                    </label>
+                                    <input 
+                                        type="date" 
+                                        id="expectedDate" 
+                                        name="expectedDate"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                    >
+                                    <p class="text-xs text-gray-500 mt-1">When do you need this item?</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="flex items-center justify-end space-x-4 pt-6">
+                            <button 
+                                type="button" 
+                                onclick="resetForm()"
+                                class="px-6 py-2 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                            >
+                                <i class="fas fa-times mr-2"></i>Cancel
+                            </button>
+                            <button 
+                                type="submit" 
+                                class="px-6 py-2 bg-[#103D1C] hover:bg-[#14532d] text-white rounded-lg transition-colors"
+                            >
+                                <i class="fas fa-paper-plane mr-2"></i>Submit Request
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- My Requests Section -->
+            <section id="my-requests-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">My Requests</h3>
+                            <p class="text-gray-600">View and manage all your supply requests</p>
+                        </div>
+                        <a href="#new-request" class="bg-[#103D1C] hover:bg-[#14532d] text-white px-4 py-2 rounded-lg transition-colors">
+                            <i class="fas fa-plus mr-2"></i>New Request
+                        </a>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input 
+                            type="text" 
+                            placeholder="Search by tracking ID or description..." 
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        >
+                        <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                            <option value="">All Status</option>
+                            <option value="submitted">Submitted</option>
+                            <option value="available">Available (Issued)</option>
+                            <option value="not-available">Not Available</option>
+                            <option value="pending-ppmp">Pending PPMP</option>
+                            <option value="for-approval">For Approval</option>
+                            <option value="approved">Approved</option>
+                            <option value="under-procurement">Under Procurement</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                        <input 
+                            type="date" 
+                            placeholder="From Date"
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        >
+                        <input 
+                            type="date" 
+                            placeholder="To Date"
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        >
+                    </div>
+
+                    <!-- Requests Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Tracking ID</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Item Description</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Quantity</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Status</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date Submitted</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Last Updated</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">2025-SR-024</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Whiteboard Markers (Set of 10)</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2 sets</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium">Submitted</span></td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-15 10:30</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-15 10:30</td>
+                                    <td class="px-4 py-3">
+                                        <button class="text-blue-600 hover:text-blue-800 mr-3" onclick="viewRequestDetails('2025-SR-024')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="text-green-600 hover:text-green-800" onclick="trackRequest('2025-SR-024')">
+                                            <i class="fas fa-route"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">2025-SR-023</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Projector Lamp</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">1 piece</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-medium">Approved</span></td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-12 14:20</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-14 09:15</td>
+                                    <td class="px-4 py-3">
+                                        <button class="text-blue-600 hover:text-blue-800 mr-3" onclick="viewRequestDetails('2025-SR-023')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="text-green-600 hover:text-green-800" onclick="trackRequest('2025-SR-023')">
+                                            <i class="fas fa-route"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">2025-SR-022</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">A4 Bond Paper (Ream)</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">10 reams</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full font-medium">Completed</span></td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-10 08:00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-13 16:45</td>
+                                    <td class="px-4 py-3">
+                                        <button class="text-blue-600 hover:text-blue-800 mr-3" onclick="viewRequestDetails('2025-SR-022')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="text-green-600 hover:text-green-800" onclick="trackRequest('2025-SR-022')">
+                                            <i class="fas fa-route"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">2025-SR-021</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Printer Ink Cartridge (Black)</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2 pieces</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-medium">Under Procurement</span></td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-08 11:15</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-13 10:30</td>
+                                    <td class="px-4 py-3">
+                                        <button class="text-blue-600 hover:text-blue-800 mr-3" onclick="viewRequestDetails('2025-SR-021')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="text-green-600 hover:text-green-800" onclick="trackRequest('2025-SR-021')">
+                                            <i class="fas fa-route"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="mt-6 flex items-center justify-between">
+                        <p class="text-sm text-gray-600">Showing 1-4 of 24 requests</p>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Previous</button>
+                            <button class="px-3 py-2 bg-[#103D1C] text-white rounded-lg">1</button>
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">2</button>
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tracking Section -->
+            <section id="tracking-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Track Document</h3>
+                        <p class="text-gray-600">Enter a tracking ID to view the status and progress of your request</p>
+                    </div>
+
+                    <!-- Search Form -->
+                    <div class="mb-8">
+                        <form class="flex gap-4" onsubmit="trackDocument(event)">
+                            <input 
+                                type="text" 
+                                id="trackingIdInput"
+                                placeholder="Enter Tracking ID (e.g., 2025-SR-024)"
+                                class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            >
+                            <button 
+                                type="submit"
+                                class="px-6 py-3 bg-[#103D1C] hover:bg-[#14532d] text-white rounded-lg transition-colors"
+                            >
+                                <i class="fas fa-search mr-2"></i>Track
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Tracking Results (Sample) -->
+                    <div id="trackingResults" class="hidden">
+                        <!-- Request Info Card -->
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg mb-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-sm text-gray-600">Tracking ID</p>
+                                    <p class="text-lg font-bold text-gray-900">2025-SR-024</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">Current Status</p>
+                                    <p class="text-lg font-bold text-yellow-600">Submitted</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">Item Description</p>
+                                    <p class="text-base text-gray-900">Whiteboard Markers (Set of 10)</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">Date Submitted</p>
+                                    <p class="text-base text-gray-900">January 15, 2025 10:30 AM</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Progress Timeline -->
+                        <div class="mb-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">Document Progress</h4>
+                            <div class="relative">
+                                <!-- Timeline Line -->
+                                <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+                                
+                                <!-- Timeline Steps -->
+                                <div class="space-y-6">
+                                    <!-- Step 1: Submitted -->
+                                    <div class="flex items-start space-x-4">
+                                        <div class="flex-shrink-0 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center z-10">
+                                            <i class="fas fa-check text-white text-sm"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="font-semibold text-gray-900">Request Submitted</p>
+                                            <p class="text-sm text-gray-600">Your request has been submitted successfully</p>
+                                            <p class="text-xs text-gray-500 mt-1">January 15, 2025 10:30 AM</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Step 2: Supply Office -->
+                                    <div class="flex items-start space-x-4">
+                                        <div class="flex-shrink-0 w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center z-10">
+                                            <i class="fas fa-clock text-white text-sm"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="font-semibold text-gray-900">Supply Office Review</p>
+                                            <p class="text-sm text-gray-600">Awaiting inventory check</p>
+                                            <p class="text-xs text-gray-500 mt-1">In progress</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Step 3: Pending -->
+                                    <div class="flex items-start space-x-4 opacity-50">
+                                        <div class="flex-shrink-0 w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center z-10">
+                                            <i class="fas fa-circle text-white text-xs"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="font-semibold text-gray-900">Processing</p>
+                                            <p class="text-sm text-gray-600">Pending next stage</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Status History -->
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">Status History</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                    <div>
+                                        <p class="font-medium text-gray-900">Submitted</p>
+                                        <p class="text-sm text-gray-600">Request created and submitted</p>
+                                    </div>
+                                    <p class="text-sm text-gray-500">Jan 15, 2025 10:30 AM</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="trackingEmpty" class="text-center py-12">
+                        <i class="fas fa-search text-gray-300 text-6xl mb-4"></i>
+                        <p class="text-gray-600">Enter a tracking ID above to view document status</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Issued Items Section -->
+            <section id="issued-items-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Issued Items</h3>
+                        <p class="text-gray-600">View items that have been issued to you from inventory</p>
+                    </div>
+
+                    <!-- Issued Items Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">RIS Number</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Item Description</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Quantity</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date Issued</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Status</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">RIS-2025-015</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">A4 Bond Paper (Ream)</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">10 reams</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">January 13, 2025</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-medium">Received</span></td>
+                                    <td class="px-4 py-3">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">RIS-2025-012</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Ballpoint Pens (Box of 12)</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">5 boxes</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">January 5, 2025</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-medium">Received</span></td>
+                                    <td class="px-4 py-3">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Request History Section -->
+            <section id="history-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Request History</h3>
+                        <p class="text-gray-600">View all your past supply requests including completed and archived transactions</p>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <input 
+                            type="text" 
+                            placeholder="Search..." 
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        >
+                        <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                            <option value="">All Status</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                        <input 
+                            type="date" 
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        >
+                    </div>
+
+                    <!-- History Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Tracking ID</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Item Description</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Quantity</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Status</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date Completed</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">2025-SR-022</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">A4 Bond Paper (Ream)</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">10 reams</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full font-medium">Completed</span></td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">January 13, 2025</td>
+                                    <td class="px-4 py-3">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">2025-SR-018</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Stapler</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2 pieces</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full font-medium">Completed</span></td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">January 8, 2025</td>
+                                    <td class="px-4 py-3">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
+
+    <script src="../../assets/js/teacher-dashboard.js"></script>
+</body>
+</html>
+

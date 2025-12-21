@@ -1,0 +1,288 @@
+/**
+ * Admin Dashboard CSS
+ * Custom styles for Super Admin Dashboard
+ */
+
+/* ========================================
+   Sidebar Styles
+   ======================================== */
+#sidebar {
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.nav-item {
+    transition: all 0.3s ease;
+}
+
+.nav-item.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left: 3px solid #fff;
+}
+
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ========================================
+   Content Sections
+   ======================================== */
+.content-section {
+    animation: fadeIn 0.3s ease-in;
+}
+
+.content-section.hidden {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========================================
+   Statistics Cards
+   ======================================== */
+.stat-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* ========================================
+   Quick Action Buttons
+   ======================================== */
+.quick-action-btn {
+    transition: all 0.3s ease;
+}
+
+.quick-action-btn:hover {
+    transform: translateY(-3px);
+}
+
+/* ========================================
+   Tables
+   ======================================== */
+table {
+    font-size: 0.875rem;
+}
+
+table thead th {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+table tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+/* ========================================
+   Status Badges
+   ======================================== */
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* ========================================
+   Form Elements
+   ======================================== */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+input[type="number"],
+select,
+textarea {
+    transition: all 0.2s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #103D1C;
+    box-shadow: 0 0 0 3px rgba(16, 61, 28, 0.1);
+}
+
+/* ========================================
+   Buttons
+   ======================================== */
+button {
+    transition: all 0.2s ease;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* ========================================
+   Scrollbar Styling
+   ======================================== */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* ========================================
+   Responsive Design
+   ======================================== */
+@media (max-width: 1024px) {
+    #sidebar {
+        transform: translateX(-100%);
+    }
+
+    #sidebar.open {
+        transform: translateX(0);
+    }
+
+    .ml-64 {
+        margin-left: 0;
+    }
+}
+
+/* ========================================
+   Loading States
+   ======================================== */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #103D1C;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ========================================
+   Card Animations
+   ======================================== */
+.card-enter {
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ========================================
+   Notification Badge
+   ======================================== */
+.notification-badge {
+    position: relative;
+}
+
+.notification-badge::after {
+    content: "";
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background-color: #dc2626;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+/* ========================================
+   Progress Bars
+   ======================================== */
+.progress-bar {
+    transition: width 0.5s ease;
+}
+
+/* ========================================
+   Tooltip Styles
+   ======================================== */
+.tooltip {
+    position: relative;
+}
+
+.tooltip:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.5rem 1rem;
+    background-color: #1f2937;
+    color: white;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    z-index: 50;
+    margin-bottom: 0.5rem;
+}
+
+/* ========================================
+   Print Styles
+   ======================================== */
+@media print {
+    #sidebar,
+    header,
+    button,
+    .no-print {
+        display: none !important;
+    }
+
+    .ml-64 {
+        margin-left: 0 !important;
+    }
+
+    body {
+        background: white;
+    }
+}
+

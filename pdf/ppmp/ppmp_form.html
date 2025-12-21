@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROJECT PROCUREMENT MANAGEMENT PLAN (PPMP) 2025</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 11pt;
+            padding: 15mm 10mm;
+            background: #fff;
+        }
+
+        .ppmp-container {
+            width: 100%;
+            max-width: 210mm;
+            margin: 0 auto;
+            background: white;
+        }
+        
+        @media print {
+            body {
+                padding: 0;
+                margin: 0;
+            }
+            .ppmp-container {
+                max-width: 100%;
+            }
+        }
+
+        .header-section {
+            margin-bottom: 15px;
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .header-left {
+            width: 45%;
+        }
+
+        .header-right {
+            width: 45%;
+            text-align: right;
+        }
+
+        .header-left label,
+        .header-left span {
+            display: block;
+            margin-bottom: 3px;
+            font-weight: normal;
+        }
+
+        .title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 14pt;
+            margin: 15px 0;
+            text-transform: uppercase;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 10pt;
+        }
+
+        table, th, td {
+            border: 1px solid #000;
+        }
+
+        th, td {
+            padding: 6px 4px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            text-align: center;
+            font-size: 9pt;
+            white-space: nowrap;
+        }
+        
+        td {
+            font-size: 10pt;
+        }
+
+        .code-col {
+            width: 4%;
+            min-width: 30px;
+        }
+
+        .description-col {
+            width: 18%;
+            min-width: 120px;
+        }
+
+        .quantity-col {
+            width: 7%;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .unit-col {
+            width: 5%;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .unit-price-col {
+            width: 8%;
+            min-width: 70px;
+            text-align: right;
+        }
+        
+        .budget-col {
+            text-align: right;
+        }
+
+
+        .budget-col {
+            width: 9%;
+            min-width: 80px;
+        }
+
+        .mode-col {
+            width: 10%;
+            min-width: 90px;
+        }
+
+        .schedule-col {
+            width: 39%;
+        }
+
+        .schedule-header {
+            background-color: #e0e0e0;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .month-col {
+            width: 3.25%;
+            min-width: 25px;
+            text-align: center;
+            font-size: 8pt;
+            padding: 3px;
+        }
+
+        .data-row td {
+            min-height: 35px;
+            height: 35px;
+        }
+        
+        .data-row {
+            page-break-inside: avoid;
+        }
+
+        .footer-section {
+            margin-top: 20px;
+            font-size: 9pt;
+        }
+
+        .footer-note {
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .footer-signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+
+        .signature-left {
+            width: 45%;
+        }
+
+        .signature-right {
+            width: 45%;
+            text-align: right;
+        }
+
+        .signature-line {
+            border-top: 1px solid #000;
+            margin-top: 40px;
+            padding-top: 5px;
+        }
+
+        .signature-name {
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        .signature-title {
+            font-size: 8pt;
+            margin-top: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="ppmp-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="header-row">
+                <div class="header-left">
+                    <label>END USER/UNIT: <span style="border-bottom: 1px solid #000; display: inline-block; min-width: 200px;">&nbsp;</span></label>
+                    <span style="margin-top: 5px; display: block;">Charged to MOOE 2025</span>
+                    <label style="margin-top: 10px;">Proj,. Programs & Activities (PAPs): <span style="border-bottom: 1px solid #000; display: inline-block; min-width: 200px;">&nbsp;</span></label>
+                </div>
+            </div>
+            <div class="title">
+                PROJECT PROCUREMENT MANAGEMENT PLAN (PPMP) 2025
+            </div>
+        </div>
+
+        <!-- Main Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th rowspan="2" class="code-col">Code</th>
+                    <th rowspan="2" class="description-col">General Description</th>
+                    <th rowspan="2" class="quantity-col">Quantity / Size</th>
+                    <th rowspan="2" class="unit-col">Unit</th>
+                    <th rowspan="2" class="unit-price-col">Unit Price</th>
+                    <th rowspan="2" class="budget-col">Estimated Budget</th>
+                    <th rowspan="2" class="mode-col">Mode of Procurement</th>
+                    <th colspan="12" class="schedule-col schedule-header">Schedule / Milestone of Activities</th>
+                </tr>
+                <tr>
+                    <th class="month-col">Jan</th>
+                    <th class="month-col">Feb</th>
+                    <th class="month-col">Mar</th>
+                    <th class="month-col">Apr</th>
+                    <th class="month-col">May</th>
+                    <th class="month-col">Jun</th>
+                    <th class="month-col">Jul</th>
+                    <th class="month-col">Aug</th>
+                    <th class="month-col">Sept</th>
+                    <th class="month-col">Oct</th>
+                    <th class="month-col">Nov</th>
+                    <th class="month-col">Dec</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Empty data rows for data entry -->
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr class="data-row">
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <!-- Total Row -->
+                <tr>
+                    <td colspan="7" style="font-weight: bold; text-align: right; padding-right: 10px;">TOTAL</td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Footer Section -->
+        <div class="footer-section">
+            <div class="footer-note">
+                <strong>Note:</strong> Technical Specification for each item/ Project being proposed shall be submitted as part of the PPMP.
+            </div>
+
+            <div class="footer-signatures">
+                <div class="signature-left">
+                    <div class="signature-line">
+                        <div style="margin-top: 5px;">Prepared and Submitted by</div>
+                    </div>
+                    <div class="signature-name" style="margin-top: 5px;">&nbsp;</div>
+                </div>
+                <div class="signature-right">
+                    <div class="signature-line">
+                        <div style="margin-top: 5px;">Approved by:</div>
+                    </div>
+                    <div class="signature-name" style="margin-top: 5px;">&nbsp;</div>
+                    <div class="signature-title">&nbsp;</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

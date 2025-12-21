@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Magallanes National High School Document Tracking System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="assets/css/global/main.css">
+    <!-- Page Specific CSS -->
+    <link rel="stylesheet" href="assets/css/pages/home.css">
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-md border-b border-gray-200 sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-14 h-14 flex items-center justify-center">
+                        <img src="assets/img/logo.png" alt="Magallanes National High School Logo" class="logo-img">
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-red-600">Magallanes National High School</h1>
+                        <p class="text-sm text-gray-700 font-medium">Document Tracking System</p>
+                    </div>
+                </div>
+                <nav class="flex items-center space-x-4">
+                    <a href="index.php" class="text-gray-700 hover:text-red-600 font-medium transition-colors">Home</a>
+                    <a href="auth/login.php" class="btn-primary text-white px-6 py-2 rounded-md font-semibold shadow-sm">
+                        Login
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-school-image relative min-h-[600px] flex items-center">
+        <div class="absolute inset-0 overlay-gradient"></div>
+        <div class="container mx-auto px-4 py-20 relative z-10">
+            <div class="max-w-4xl mx-auto text-center text-white fade-in">
+                <div class="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-2xl mb-8 mx-auto p-4">
+                    <img src="assets/img/logo.png" alt="Magallanes National High School Logo" class="logo-img">
+                </div>
+                <h1 class="text-5xl md:text-6xl font-bold mb-4 text-red-500">Magallanes National High School</h1>
+                <h2 class="text-3xl md:text-4xl font-semibold mb-6">Document Tracking System</h2>
+                <div class="w-32 h-1 bg-red-500 mx-auto rounded-full mb-8"></div>
+                <p class="text-xl md:text-2xl mb-8 opacity-90 max-w-3xl mx-auto">
+                    Streamline your procurement process with our comprehensive document tracking system
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="auth/login.php" class="btn-primary text-white px-8 py-4 rounded-lg font-semibold text-lg shadow-lg inline-flex items-center justify-center">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Access System
+                    </a>
+                    <a href="#features" class="bg-white text-gray-800 px-8 py-4 rounded-lg font-semibold text-lg shadow-lg hover:bg-gray-100 transition-colors inline-flex items-center justify-center">
+                        <i class="fas fa-info-circle mr-2"></i>Learn More
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">System Features</h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Comprehensive tools designed to enhance efficiency in procurement document management
+                </p>
+                <div class="w-24 h-1 bg-red-500 mx-auto rounded-full mt-4"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="feature-card bg-gray-50 p-8 rounded-lg border border-gray-200 fade-in">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-file-contract text-green-700 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Document Management</h3>
+                    <p class="text-gray-600">
+                        Efficiently manage and organize procurement documents with our centralized tracking system. Keep all your documents in one secure location.
+                    </p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="feature-card bg-gray-50 p-8 rounded-lg border border-gray-200 fade-in">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-search text-green-700 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Real-time Tracking</h3>
+                    <p class="text-gray-600">
+                        Monitor the status of procurement documents in real-time. Track progress from initiation to completion with detailed status updates.
+                    </p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="feature-card bg-gray-50 p-8 rounded-lg border border-gray-200 fade-in">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-check-circle text-green-700 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Workflow Approval</h3>
+                    <p class="text-gray-600">
+                        Streamlined approval workflows ensure documents move through the procurement process efficiently with proper authorization.
+                    </p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="feature-card bg-gray-50 p-8 rounded-lg border border-gray-200 fade-in">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-bell text-green-700 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Notifications</h3>
+                    <p class="text-gray-600">
+                        Stay informed with automatic notifications for document status changes, pending approvals, and important updates.
+                    </p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="feature-card bg-gray-50 p-8 rounded-lg border border-gray-200 fade-in">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-chart-bar text-green-700 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Reports & Analytics</h3>
+                    <p class="text-gray-600">
+                        Generate comprehensive reports and analytics to gain insights into procurement processes and document flow patterns.
+                    </p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="feature-card bg-gray-50 p-8 rounded-lg border border-gray-200 fade-in">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-shield-alt text-green-700 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Secure Access</h3>
+                    <p class="text-gray-600">
+                        Robust security measures protect sensitive procurement documents with role-based access control and data encryption.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Key Benefits</h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Transform your procurement document management with these advantages
+                </p>
+                <div class="w-24 h-1 bg-red-500 mx-auto rounded-full mt-4"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
+                <div class="fade-in">
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-green-700 rounded-full flex items-center justify-center">
+                            <i class="fas fa-clock text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Time Efficiency</h3>
+                            <p class="text-gray-600">
+                                Reduce time spent searching for documents. Quickly locate and access procurement documents with advanced search capabilities.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fade-in">
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-green-700 rounded-full flex items-center justify-center">
+                            <i class="fas fa-users text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Improved Collaboration</h3>
+                            <p class="text-gray-600">
+                                Enhance teamwork with seamless document sharing and collaborative features that keep everyone informed.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fade-in">
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-green-700 rounded-full flex items-center justify-center">
+                            <i class="fas fa-folder-open text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Better Organization</h3>
+                            <p class="text-gray-600">
+                                Maintain organized document repositories with systematic categorization and filing structures.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fade-in">
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-green-700 rounded-full flex items-center justify-center">
+                            <i class="fas fa-check-double text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Compliance & Accountability</h3>
+                            <p class="text-gray-600">
+                                Ensure compliance with procurement regulations through complete audit trails and accountability tracking.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center bg-gradient-to-r from-green-700 to-green-800 rounded-2xl p-12 text-white fade-in">
+                <h2 class="text-4xl font-bold mb-4">Ready to Get Started?</h2>
+                <p class="text-xl mb-8 opacity-90">
+                    Access the Document Tracking System to begin managing your procurement documents efficiently.
+                </p>
+                <a href="auth/login.php" class="bg-white text-green-700 px-8 py-4 rounded-lg font-semibold text-lg shadow-lg hover:bg-gray-100 transition-colors inline-flex items-center">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Login to System
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-12 h-12 flex items-center justify-center">
+                            <img src="assets/img/logo.png" alt="Magallanes National High School Logo" class="logo-img">
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-red-600">Magallanes NHS</h3>
+                            <p class="text-sm text-gray-600">Document Tracking</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm">
+                        Streamlining procurement processes through efficient document management and tracking.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-gray-900 mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.php" class="text-gray-600 hover:text-red-600 transition-colors">Home</a></li>
+                        <li><a href="auth/login.php" class="text-gray-600 hover:text-red-600 transition-colors">Login</a></li>
+                        <li><a href="#features" class="text-gray-600 hover:text-red-600 transition-colors">Features</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-gray-900 mb-4">Contact</h4>
+                    <ul class="space-y-2 text-gray-600 text-sm">
+                        <li><i class="fas fa-map-marker-alt mr-2 text-green-700"></i>Purok 5 Brgy. Sto. Nino, Magallanes, Agusan del Norte</li>
+                        <li><i class="fas fa-id-badge mr-2 text-green-700"></i>School ID: 304691</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-200 pt-8 text-center">
+                <p class="text-sm text-gray-600">Copyright &copy; 2025 by Magallanes National High School. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Smooth Scroll Script -->
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
