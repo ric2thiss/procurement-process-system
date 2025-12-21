@@ -65,13 +65,14 @@ The system is composed of the following core modules, each aligned with a specif
 
 1. **Teacher / End-User Module** - Request initiation and status monitoring
 2. **Supply Office Module** - Inventory management and availability checking
-3. **Purchase Request & PPMP Module** - PR creation and PPMP validation
-4. **Principal / School Head Approval Module** - Executive approval authority
-5. **Budgeting / Accounting Module** - Budget verification and ORS processing
-6. **Procurement Office Module** - Procurement execution and PO management
-7. **Bookkeeper Module** - Disbursement voucher preparation
-8. **Payment & Disbursement Module** - Payment processing and cheque issuance
-9. **Document Tracking & Audit Module** - System-wide tracking and audit trail
+3. **PPMP Management Module** - PPMP creation, management, and validation
+4. **Purchase Request & PPMP Module** - PR creation and PPMP validation
+5. **Principal / School Head Approval Module** - Executive approval authority
+6. **Budgeting / Accounting Module** - Budget verification and ORS processing
+7. **Procurement Office Module** - Procurement execution and PO management
+8. **Bookkeeper Module** - Disbursement voucher preparation
+9. **Payment & Disbursement Module** - Payment processing and cheque issuance
+10. **Document Tracking & Audit Module** - System-wide tracking and audit trail
 
 ### 3.2 Module Interdependencies
 
@@ -256,7 +257,113 @@ To validate item availability in inventory and determine whether procurement is 
 
 ---
 
-### 4.3 PURCHASE REQUEST & PPMP MODULE
+### 4.3 PPMP MANAGEMENT MODULE
+
+#### Purpose
+
+To create, manage, and maintain the Project Procurement Management Plan (PPMP), which serves as the annual procurement blueprint for the institution. This module enables comprehensive PPMP administration including creation, item management, amendments, and reporting.
+
+#### User Capabilities
+
+- Create and manage PPMP documents for different fiscal years
+- Add, edit, and manage PPMP items (descriptions, quantities, budgets, schedules)
+- View PPMP list and detailed PPMP information
+- Handle PPMP amendments and revisions
+- Generate PPMP reports and analytics
+- View dashboard overview with PPMP statistics
+- Manage PPMP item master data
+- Track PPMP utilization and budget allocation
+
+#### Process Flow
+
+1. **PPMP Creation**
+   - User navigates to "Create New PPMP" section
+   - User selects fiscal year for the PPMP
+   - User enters PPMP header information:
+     - End User/Unit
+     - Project, Programs & Activities (PAPs)
+     - Fund source (e.g., MOOE)
+   - System generates new PPMP document
+   - PPMP is saved with unique identifier
+
+2. **PPMP Item Management**
+   - User adds items to PPMP through "Items Management" section
+   - For each item, user enters:
+     - Item code
+     - General description
+     - Quantity/Size
+     - Unit of measure
+     - Unit price
+     - Estimated budget
+     - Mode of procurement
+     - Monthly schedule (Jan-Dec)
+   - Items are validated and saved
+   - Budget totals are automatically calculated
+
+3. **PPMP Viewing and Editing**
+   - User can view all PPMPs in "PPMP List" section
+   - User can open existing PPMP for viewing or editing
+   - Changes are tracked and logged
+   - PPMP can be printed or exported
+
+4. **PPMP Amendments**
+   - User navigates to "PPMP Amendments" section
+   - User selects PPMP to amend
+   - Amendments can include:
+     - Adding new items
+     - Modifying existing items
+     - Adjusting budgets
+     - Updating schedules
+   - Amendment reason is recorded
+   - Amendment history is maintained
+   - Original PPMP is preserved for audit
+
+5. **PPMP Reporting**
+   - User accesses "Reports & Analytics" section
+   - Available reports include:
+     - PPMP summary reports
+     - Budget utilization reports
+     - Item procurement status
+     - Schedule compliance reports
+   - Reports can be filtered by year, unit, or item
+   - Reports can be exported in various formats
+
+6. **PPMP Validation for PRs**
+   - When Purchase Requests are created, system validates against PPMP
+   - System checks if requested items exist in PPMP
+   - System verifies budget availability
+   - System confirms schedule alignment
+   - Validation results are recorded
+
+#### PPMP Dashboard Features
+
+- Overview statistics (total PPMPs, active items, budget utilization)
+- Quick access to key functions
+- Recent PPMP activity
+- Pending amendments
+- Budget status indicators
+
+#### Data Requirements
+
+- PPMP master data (fiscal year, unit, PAPs)
+- PPMP items (codes, descriptions, quantities, prices)
+- Budget allocations per item
+- Monthly procurement schedules
+- PPMP approval records
+- Amendment history
+- Historical PPMP data
+
+#### Notifications
+
+- PPMP creation confirmations
+- Amendment approval requests
+- Budget threshold alerts
+- Schedule milestone reminders
+- PPMP expiration warnings
+
+---
+
+### 4.4 PURCHASE REQUEST & PPMP MODULE
 
 #### Purpose
 
@@ -265,10 +372,9 @@ To formalize procurement needs, ensure alignment with approved procurement plans
 #### User Capabilities
 
 - Create and manage Purchase Requests (PR)
-- Validate PPMP inclusion
+- Validate PPMP inclusion (references PPMP Management Module)
 - Link PRs to PPMP items
-- Manage PPMP master data
-- View PPMP reports
+- View PPMP validation results
 - Track PR status
 
 #### Process Flow
@@ -333,14 +439,13 @@ To formalize procurement needs, ensure alignment with approved procurement plans
       - PR remains in "Pending PPMP" status
       - Can be reactivated when PPMP is updated
 
-#### PPMP Management
+#### PPMP Integration
 
-- Annual PPMP creation and approval
-- PPMP item master data management
-- Budget allocation per PPMP item
-- Procurement schedule tracking
-- PPMP amendment process
-- PPMP reporting and analytics
+- References PPMP data from PPMP Management Module
+- Validates PR items against existing PPMP entries
+- Checks budget availability from PPMP
+- Verifies procurement schedule alignment
+- Links PRs to specific PPMP items
 
 #### Data Requirements
 
@@ -359,7 +464,7 @@ To formalize procurement needs, ensure alignment with approved procurement plans
 
 ---
 
-### 4.4 PRINCIPAL / SCHOOL HEAD APPROVAL MODULE
+### 4.5 PRINCIPAL / SCHOOL HEAD APPROVAL MODULE
 
 #### Purpose
 
@@ -469,7 +574,7 @@ To provide executive approval authority for procurement requests, ensuring that 
 
 ---
 
-### 4.5 BUDGETING / ACCOUNTING MODULE
+### 4.6 BUDGETING / ACCOUNTING MODULE
 
 #### Purpose
 
@@ -610,7 +715,7 @@ To verify budget availability, process obligations, and ensure financial complia
 
 ---
 
-### 4.6 PROCUREMENT OFFICE MODULE
+### 4.7 PROCUREMENT OFFICE MODULE
 
 #### Purpose
 
@@ -712,7 +817,7 @@ To manage procurement execution based on approved and budget-cleared requests, e
 
 ---
 
-### 4.7 BOOKKEEPER MODULE
+### 4.8 BOOKKEEPER MODULE
 
 #### Purpose
 
@@ -805,7 +910,7 @@ To prepare disbursement documentation for payment, ensuring all requirements are
 
 ---
 
-### 4.8 PAYMENT & DISBURSEMENT MODULE
+### 4.9 PAYMENT & DISBURSEMENT MODULE
 
 #### Purpose
 
@@ -897,7 +1002,7 @@ To complete payment to the supplier, ensuring proper authorization and documenta
 
 ---
 
-### 4.9 DOCUMENT TRACKING & AUDIT MODULE
+### 4.10 DOCUMENT TRACKING & AUDIT MODULE
 
 #### Purpose
 
@@ -1228,14 +1333,22 @@ The system implements role-based access control (RBAC) to ensure users can only 
    - Manage inventory
    - View inventory reports
 
-3. **Purchase Request & PPMP Manager**
-   - Create and manage PRs
-   - Validate PPMP inclusion
+3. **PPMP Manager**
+   - Create and manage PPMP documents
+   - Add and manage PPMP items
+   - Handle PPMP amendments
+   - Generate PPMP reports and analytics
+   - View PPMP dashboard and statistics
    - Manage PPMP master data
-   - View PPMP reports
-   - Link PRs to PPMP
 
-4. **Principal / School Head**
+4. **Purchase Request & PPMP Manager**
+   - Create and manage PRs
+   - Validate PPMP inclusion (references PPMP Management Module)
+   - View PPMP validation results
+   - Link PRs to PPMP items
+   - Track PR status
+
+5. **Principal / School Head**
    - Review PRs
    - Approve/reject PRs
    - Add approval remarks
@@ -1243,7 +1356,7 @@ The system implements role-based access control (RBAC) to ensure users can only 
    - Sign DVs
    - Delegate approval authority (if applicable)
 
-5. **Budget / Accounting Staff**
+6. **Budget / Accounting Staff**
    - Receive approved PRs
    - Check budget availability
    - Create and manage ORS
@@ -1251,7 +1364,7 @@ The system implements role-based access control (RBAC) to ensure users can only 
    - Manage budget allocations
    - Generate budget reports
 
-6. **Procurement Office Staff**
+7. **Procurement Office Staff**
    - Receive PRs and ORS
    - Manage procurement checklists
    - Create and manage POs
@@ -1259,7 +1372,7 @@ The system implements role-based access control (RBAC) to ensure users can only 
    - Manage suppliers
    - Track procurement progress
 
-7. **Bookkeeper**
+8. **Bookkeeper**
    - Receive procurement documents
    - Create and manage DVs
    - Link documents
@@ -1267,7 +1380,7 @@ The system implements role-based access control (RBAC) to ensure users can only 
    - Forward DVs for approval
    - Generate payment reports
 
-8. **Payment / Disbursement Staff**
+9. **Payment / Disbursement Staff**
    - Receive DVs
    - Process budget release
    - Generate cheques
@@ -1275,7 +1388,7 @@ The system implements role-based access control (RBAC) to ensure users can only 
    - Track payment status
    - Record payment completion
 
-9. **System Administrator**
+10. **System Administrator**
    - Full system access
    - User management
    - Role management
@@ -1283,7 +1396,7 @@ The system implements role-based access control (RBAC) to ensure users can only 
    - Audit log access
    - System maintenance
 
-10. **Auditor / Read-Only User**
+11. **Auditor / Read-Only User**
     - View all documents (read-only)
     - Access audit logs
     - Generate reports
@@ -1292,21 +1405,26 @@ The system implements role-based access control (RBAC) to ensure users can only 
 
 ### 7.2 Permission Matrix
 
-| Action | Teacher | Supply | PR/PPMP | Principal | Budget | Procurement | Bookkeeper | Payment | Admin |
-|--------|---------|--------|---------|-----------|--------|--------------|------------|---------|-------|
-| Create Supply Request | ✓ | - | - | - | - | - | - | - | ✓ |
-| View Own Requests | ✓ | - | - | - | - | - | - | - | ✓ |
-| Check Inventory | - | ✓ | - | - | - | - | - | - | ✓ |
-| Create RIS | - | ✓ | - | - | - | - | - | - | ✓ |
-| Create PR | - | ✓ | ✓ | - | - | - | - | - | ✓ |
-| Approve PR | - | - | - | ✓ | - | - | - | - | ✓ |
-| Check Budget | - | - | - | - | ✓ | - | - | - | ✓ |
-| Create ORS | - | - | - | - | ✓ | - | - | - | ✓ |
-| Execute Procurement | - | - | - | - | - | ✓ | - | - | ✓ |
-| Create DV | - | - | - | - | - | - | ✓ | - | ✓ |
-| Process Payment | - | - | - | - | - | - | - | ✓ | ✓ |
-| View All Documents | - | - | - | - | - | - | - | - | ✓ |
-| System Configuration | - | - | - | - | - | - | - | - | ✓ |
+| Action | Teacher | Supply | PPMP Mgr | PR/PPMP | Principal | Budget | Procurement | Bookkeeper | Payment | Admin |
+|--------|---------|--------|----------|---------|-----------|--------|--------------|------------|---------|-------|
+| Create Supply Request | ✓ | - | - | - | - | - | - | - | - | ✓ |
+| View Own Requests | ✓ | - | - | - | - | - | - | - | - | ✓ |
+| Check Inventory | - | ✓ | - | - | - | - | - | - | - | ✓ |
+| Create RIS | - | ✓ | - | - | - | - | - | - | - | ✓ |
+| Create PPMP | - | - | ✓ | - | - | - | - | - | - | ✓ |
+| Manage PPMP Items | - | - | ✓ | - | - | - | - | - | - | ✓ |
+| Handle PPMP Amendments | - | - | ✓ | - | - | - | - | - | - | ✓ |
+| View PPMP Reports | - | - | ✓ | ✓ | - | - | - | - | - | ✓ |
+| Create PR | - | ✓ | - | ✓ | - | - | - | - | - | ✓ |
+| Validate PPMP Inclusion | - | - | - | ✓ | - | - | - | - | - | ✓ |
+| Approve PR | - | - | - | - | ✓ | - | - | - | - | ✓ |
+| Check Budget | - | - | - | - | - | ✓ | - | - | - | ✓ |
+| Create ORS | - | - | - | - | - | ✓ | - | - | - | ✓ |
+| Execute Procurement | - | - | - | - | - | - | ✓ | - | - | ✓ |
+| Create DV | - | - | - | - | - | - | - | ✓ | - | ✓ |
+| Process Payment | - | - | - | - | - | - | - | - | ✓ | ✓ |
+| View All Documents | - | - | - | - | - | - | - | - | - | ✓ |
+| System Configuration | - | - | - | - | - | - | - | - | - | ✓ |
 
 ### 7.3 Access Control
 

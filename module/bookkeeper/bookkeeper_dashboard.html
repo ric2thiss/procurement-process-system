@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookkeeper Dashboard - Document Tracking System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/global/main.css">
+    <link rel="stylesheet" href="../../assets/css/pages/bookkeeper-dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-[#103D1C] text-white transform transition-transform duration-300 z-50">
+        <div class="flex flex-col h-full">
+            <!-- Logo Section -->
+            <div class="p-6 border-b border-green-800">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 flex items-center justify-center bg-white rounded-lg">
+                        <img src="../../assets/img/logo.png" alt="Logo" class="logo-img">
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-white">DTS</h1>
+                        <p class="text-xs text-green-200">Bookkeeper</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="flex-1 overflow-y-auto py-4">
+                <ul class="space-y-1 px-3">
+                    <li>
+                        <a href="#dashboard" data-section="dashboard" class="nav-item active flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-tachometer-alt w-5"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#dv-creation" data-section="dv-creation" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-file-invoice-dollar w-5"></i>
+                            <span>DV Creation</span>
+                            <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full" id="pendingCount">6</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#dv-management" data-section="dv-management" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-folder-open w-5"></i>
+                            <span>DV Management</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#document-verification" data-section="document-verification" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-clipboard-check w-5"></i>
+                            <span>Document Verification</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#document-linking" data-section="document-linking" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-link w-5"></i>
+                            <span>Document Linking</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#dv-finalization" data-section="dv-finalization" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-check-double w-5"></i>
+                            <span>DV Finalization</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#reports" data-section="reports" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-chart-bar w-5"></i>
+                            <span>Payment Reports</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- User Profile Section -->
+            <div class="p-4 border-t border-green-800">
+                <div class="flex items-center space-x-3 mb-3">
+                    <div class="w-10 h-10 bg-green-700 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-semibold">Bookkeeper Name</p>
+                        <p class="text-xs text-green-200">Bookkeeper</p>
+                    </div>
+                </div>
+                <button class="w-full bg-green-700 hover:bg-green-600 px-4 py-2 rounded-lg text-sm transition-colors">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="ml-64">
+        <!-- Top Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
+            <div class="flex items-center justify-between px-6 py-4">
+                <div class="flex items-center space-x-4">
+                    <button id="sidebarToggle" class="lg:hidden text-gray-600 hover:text-gray-900">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900" id="pageTitle">Dashboard Overview</h2>
+                        <p class="text-sm text-gray-600" id="pageSubtitle">Bookkeeper statistics and monitoring</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <button class="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
+                            <i class="fas fa-bell text-lg"></i>
+                            <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                        </button>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-semibold text-gray-900" id="currentDate"></p>
+                        <p class="text-xs text-gray-600" id="currentTime"></p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="p-6">
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="content-section">
+                <!-- Statistics Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Pending DV Creation</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2">6</p>
+                                <p class="text-xs text-blue-600 mt-1">Requires action</p>
+                            </div>
+                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-file-invoice-dollar text-blue-600 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">DVs Created</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2">42</p>
+                                <p class="text-xs text-green-600 mt-1">This month</p>
+                            </div>
+                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-check-circle text-green-600 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Pending Approval</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2">8</p>
+                                <p class="text-xs text-yellow-600 mt-1">Awaiting signature</p>
+                            </div>
+                            <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-clock text-yellow-600 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Total Amount</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2">₱1.2M</p>
+                                <p class="text-xs text-purple-600 mt-1">This month</p>
+                            </div>
+                            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-dollar-sign text-purple-600 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <!-- DV Status Chart -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">DV Status Distribution</h3>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="dvStatusChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Monthly DV Trend -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Monthly DV Trend</h3>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="monthlyDVChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Recent Activity</h3>
+                    <div class="space-y-4 max-h-96 overflow-y-auto">
+                        <div class="flex items-start space-x-3 pb-4 border-b border-gray-200">
+                            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-semibold text-gray-900">DV Created</p>
+                                <p class="text-xs text-gray-600">DV-2025-045 created for PR-2025-089</p>
+                                <p class="text-xs text-gray-500 mt-1">2 minutes ago</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3 pb-4 border-b border-gray-200">
+                            <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-paper-plane text-yellow-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-semibold text-gray-900">DV Forwarded</p>
+                                <p class="text-xs text-gray-600">DV-2025-044 forwarded for approval</p>
+                                <p class="text-xs text-gray-500 mt-1">15 minutes ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DV Creation Section -->
+            <section id="dv-creation-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Disbursement Voucher Creation</h3>
+                            <p class="text-gray-600">Create DVs from completed procurement documents</p>
+                        </div>
+                    </div>
+
+                    <!-- Pending Documents Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">PR Number</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">PO Number</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Supplier</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Amount</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Delivery Date</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">PR-2025-089</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">PO-2025-045</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">ABC Supplies Inc.</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">₱2,500.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-14</td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="createDV('PR-2025-089')" class="text-green-600 hover:text-green-800" title="Create DV">
+                                            <i class="fas fa-file-invoice-dollar"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DV Management Section -->
+            <section id="dv-management-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Disbursement Voucher Management</h3>
+                            <p class="text-gray-600">Manage and track all DVs</p>
+                        </div>
+                    </div>
+
+                    <!-- DV Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">DV Number</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">PR Number</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Payee</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Amount</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date Created</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Status</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">DV-2025-045</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">PR-2025-089</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">ABC Supplies Inc.</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">₱2,500.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-14</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium">Pending Approval</span></td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="viewDV('DV-2025-045')" class="text-blue-600 hover:text-blue-800 mr-2" title="View DV">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button onclick="editDV('DV-2025-045')" class="text-green-600 hover:text-green-800" title="Edit DV">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Document Verification Section -->
+            <section id="document-verification-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Document Verification</h3>
+                            <p class="text-gray-600">Verify payment requirements and document completeness</p>
+                        </div>
+                    </div>
+
+                    <!-- Verification Checklist -->
+                    <div class="max-w-4xl">
+                        <div class="mb-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">Payment Requirements Checklist</h4>
+                            <div class="space-y-3">
+                                <label class="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-green-500 cursor-pointer">
+                                    <input type="checkbox" class="w-5 h-5 text-green-600 rounded focus:ring-green-500" checked>
+                                    <div class="ml-3 flex-1">
+                                        <p class="font-semibold text-gray-900">Complete Documentation</p>
+                                        <p class="text-sm text-gray-600">All required documents are present and complete</p>
+                                    </div>
+                                    <i class="fas fa-check-circle text-green-600"></i>
+                                </label>
+                                <label class="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-green-500 cursor-pointer">
+                                    <input type="checkbox" class="w-5 h-5 text-green-600 rounded focus:ring-green-500" checked>
+                                    <div class="ml-3 flex-1">
+                                        <p class="font-semibold text-gray-900">Proper Approvals</p>
+                                        <p class="text-sm text-gray-600">All required approvals are obtained and verified</p>
+                                    </div>
+                                    <i class="fas fa-check-circle text-green-600"></i>
+                                </label>
+                                <label class="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-green-500 cursor-pointer">
+                                    <input type="checkbox" class="w-5 h-5 text-green-600 rounded focus:ring-green-500">
+                                    <div class="ml-3 flex-1">
+                                        <p class="font-semibold text-gray-900">Budget Clearance</p>
+                                        <p class="text-sm text-gray-600">Budget clearance is confirmed and verified</p>
+                                    </div>
+                                </label>
+                                <label class="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-green-500 cursor-pointer">
+                                    <input type="checkbox" class="w-5 h-5 text-green-600 rounded focus:ring-green-500">
+                                    <div class="ml-3 flex-1">
+                                        <p class="font-semibold text-gray-900">Delivery Confirmation</p>
+                                        <p class="text-sm text-gray-600">Delivery and receipt are confirmed</p>
+                                    </div>
+                                </label>
+                                <label class="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-green-500 cursor-pointer">
+                                    <input type="checkbox" class="w-5 h-5 text-green-600 rounded focus:ring-green-500">
+                                    <div class="ml-3 flex-1">
+                                        <p class="font-semibold text-gray-900">Invoice Accuracy</p>
+                                        <p class="text-sm text-gray-600">Supplier invoice is accurate and matches PO</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-end space-x-4">
+                            <button onclick="saveVerification()" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
+                                <i class="fas fa-save mr-2"></i>Save Verification
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Document Linking Section -->
+            <section id="document-linking-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Document Linking</h3>
+                            <p class="text-gray-600">Link DV to related documents (PR, ORS, PO, receipts, invoices)</p>
+                        </div>
+                    </div>
+
+                    <!-- Document Linking Form -->
+                    <div class="max-w-4xl">
+                        <div class="mb-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">DV Information</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-sm text-gray-600">DV Number</p>
+                                    <p class="font-semibold text-gray-900" id="linkingDVNumber">DV-2025-045</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">Payee</p>
+                                    <p class="font-semibold text-gray-900" id="linkingPayee">ABC Supplies Inc.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">Link Documents</h4>
+                            <div class="space-y-4">
+                                <div class="p-4 border-2 border-gray-200 rounded-lg">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fas fa-file-invoice text-blue-600"></i>
+                                            <div>
+                                                <p class="font-semibold text-gray-900">Purchase Request (PR)</p>
+                                                <p class="text-sm text-gray-600">Link to Purchase Request</p>
+                                            </div>
+                                        </div>
+                                        <button onclick="linkDocument('PR')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm">
+                                            <i class="fas fa-link mr-2"></i>Link PR
+                                        </button>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-2" id="linkedPR">PR-2025-089</p>
+                                </div>
+
+                                <div class="p-4 border-2 border-gray-200 rounded-lg">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fas fa-file-alt text-green-600"></i>
+                                            <div>
+                                                <p class="font-semibold text-gray-900">Obligation Request Status (ORS)</p>
+                                                <p class="text-sm text-gray-600">Link to ORS</p>
+                                            </div>
+                                        </div>
+                                        <button onclick="linkDocument('ORS')" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm">
+                                            <i class="fas fa-link mr-2"></i>Link ORS
+                                        </button>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-2" id="linkedORS">ORS-2025-045</p>
+                                </div>
+
+                                <div class="p-4 border-2 border-gray-200 rounded-lg">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fas fa-shopping-cart text-purple-600"></i>
+                                            <div>
+                                                <p class="font-semibold text-gray-900">Purchase Order (PO)</p>
+                                                <p class="text-sm text-gray-600">Link to Purchase Order</p>
+                                            </div>
+                                        </div>
+                                        <button onclick="linkDocument('PO')" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm">
+                                            <i class="fas fa-link mr-2"></i>Link PO
+                                        </button>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-2" id="linkedPO">PO-2025-045</p>
+                                </div>
+
+                                <div class="p-4 border-2 border-gray-200 rounded-lg">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fas fa-receipt text-yellow-600"></i>
+                                            <div>
+                                                <p class="font-semibold text-gray-900">Delivery Receipts</p>
+                                                <p class="text-sm text-gray-600">Link delivery and acceptance receipts</p>
+                                            </div>
+                                        </div>
+                                        <button onclick="linkDocument('Receipt')" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg text-sm">
+                                            <i class="fas fa-link mr-2"></i>Link Receipts
+                                        </button>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-2" id="linkedReceipts">Delivery Receipt #001</p>
+                                </div>
+
+                                <div class="p-4 border-2 border-gray-200 rounded-lg">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fas fa-file-invoice-dollar text-red-600"></i>
+                                            <div>
+                                                <p class="font-semibold text-gray-900">Supplier Invoices</p>
+                                                <p class="text-sm text-gray-600">Link supplier invoices</p>
+                                            </div>
+                                        </div>
+                                        <button onclick="linkDocument('Invoice')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm">
+                                            <i class="fas fa-link mr-2"></i>Link Invoice
+                                        </button>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-2" id="linkedInvoice">Invoice #INV-2025-045</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-end space-x-4">
+                            <button onclick="verifyLinks()" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                                <i class="fas fa-check-circle mr-2"></i>Verify All Links
+                            </button>
+                            <button onclick="saveDocumentLinks()" class="px-6 py-2 bg-[#103D1C] hover:bg-[#14532d] text-white rounded-lg transition-colors">
+                                <i class="fas fa-save mr-2"></i>Save Links
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DV Finalization Section -->
+            <section id="dv-finalization-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">DV Finalization Review</h3>
+                            <p class="text-gray-600">Review DV for accuracy before forwarding for approval</p>
+                        </div>
+                    </div>
+
+                    <!-- Finalization Checklist -->
+                    <div class="max-w-4xl">
+                        <div class="mb-6 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">DV Finalization Checklist</h4>
+                            <div class="space-y-3">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="w-5 h-5 text-green-600 rounded focus:ring-green-500">
+                                    <span class="ml-3 text-gray-900">All amounts are verified and accurate</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="w-5 h-5 text-green-600 rounded focus:ring-green-500">
+                                    <span class="ml-3 text-gray-900">Required attachments are confirmed</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="w-5 h-5 text-green-600 rounded focus:ring-green-500">
+                                    <span class="ml-3 text-gray-900">All document links are verified</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="w-5 h-5 text-green-600 rounded focus:ring-green-500">
+                                    <span class="ml-3 text-gray-900">Payment requirements are met</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="w-5 h-5 text-green-600 rounded focus:ring-green-500">
+                                    <span class="ml-3 text-gray-900">Compliance with payment policies verified</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-end space-x-4">
+                            <button onclick="finalizeDV()" class="px-6 py-2 bg-[#103D1C] hover:bg-[#14532d] text-white rounded-lg transition-colors">
+                                <i class="fas fa-check-double mr-2"></i>Finalize & Forward DV
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reports Section -->
+            <section id="reports-section" class="content-section hidden">
+                <div class="space-y-6">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-6">Payment Reports</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-green-600 transition-colors cursor-pointer">
+                                <div class="flex items-center space-x-4 mb-4">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-file-invoice-dollar text-blue-600 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900">DV Report</h4>
+                                        <p class="text-xs text-gray-600">Disbursement voucher report</p>
+                                    </div>
+                                </div>
+                                <button class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                                    Generate Report
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
+
+    <script src="../../assets/js/bookkeeper-dashboard.js"></script>
+</body>
+</html>
+

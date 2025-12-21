@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Request & PPMP - Document Tracking System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/global/main.css">
+    <link rel="stylesheet" href="../../assets/css/pages/pr-ppmp-dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-[#103D1C] text-white transform transition-transform duration-300 z-50">
+        <div class="flex flex-col h-full">
+            <!-- Logo Section -->
+            <div class="p-6 border-b border-green-800">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 flex items-center justify-center bg-white rounded-lg">
+                        <img src="../../assets/img/logo.png" alt="Logo" class="logo-img">
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-white">DTS</h1>
+                        <p class="text-xs text-green-200">PR & PPMP</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="flex-1 overflow-y-auto py-4">
+                <ul class="space-y-1 px-3">
+                    <li>
+                        <a href="#dashboard" data-section="dashboard" class="nav-item active flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-tachometer-alt w-5"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#purchase-requests" data-section="purchase-requests" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-shopping-cart w-5"></i>
+                            <span>Purchase Requests</span>
+                            <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">8</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#create-pr" data-section="create-pr" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-plus-circle w-5"></i>
+                            <span>Create PR</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#ppmp-validation" data-section="ppmp-validation" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-check-circle w-5"></i>
+                            <span>PPMP Validation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#pending-ppmp" data-section="pending-ppmp" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-clock w-5"></i>
+                            <span>Pending PPMP</span>
+                            <span class="ml-auto bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">3</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#reports" data-section="reports" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-chart-bar w-5"></i>
+                            <span>Reports</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- User Profile Section -->
+            <div class="p-4 border-t border-green-800">
+                <div class="flex items-center space-x-3 mb-3">
+                    <div class="w-10 h-10 bg-green-700 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-semibold">Procurement Officer</p>
+                        <p class="text-xs text-green-200">PR & PPMP Manager</p>
+                    </div>
+                </div>
+                <button class="w-full bg-green-700 hover:bg-green-600 px-4 py-2 rounded-lg text-sm transition-colors">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="ml-64">
+        <!-- Top Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
+            <div class="flex items-center justify-between px-6 py-4">
+                <div class="flex items-center space-x-4">
+                    <button id="sidebarToggle" class="lg:hidden text-gray-600 hover:text-gray-900">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900" id="pageTitle">Dashboard Overview</h2>
+                        <p class="text-sm text-gray-600" id="pageSubtitle">Purchase Request and PPMP validation</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <button class="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
+                            <i class="fas fa-bell text-lg"></i>
+                            <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                        </button>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-semibold text-gray-900" id="currentDate"></p>
+                        <p class="text-xs text-gray-600" id="currentTime"></p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="p-6">
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="content-section">
+                <!-- Statistics Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Total PRs</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2">48</p>
+                                <p class="text-xs text-blue-600 mt-1">All time</p>
+                            </div>
+                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-shopping-cart text-blue-600 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Pending PPMP</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2">3</p>
+                                <p class="text-xs text-yellow-600 mt-1">Awaiting inclusion</p>
+                            </div>
+                            <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-clock text-yellow-600 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">PPMP Validated</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2">42</p>
+                                <p class="text-xs text-green-600 mt-1">This month</p>
+                            </div>
+                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-check-circle text-green-600 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Forwarded to Accounting</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2">38</p>
+                                <p class="text-xs text-purple-600 mt-1">This month</p>
+                            </div>
+                            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-paper-plane text-purple-600 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <!-- PR Status Chart -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">PR Status Distribution</h3>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="prStatusChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- PPMP Validation Chart -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">PPMP Validation (This Month)</h3>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="ppmpValidationChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity and Pending Actions -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Recent Activity -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Recent Activity</h3>
+                        <div class="space-y-4 max-h-96 overflow-y-auto">
+                            <div class="flex items-start space-x-3 pb-4 border-b border-gray-200">
+                                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-check text-green-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-semibold text-gray-900">PPMP Validated</p>
+                                    <p class="text-xs text-gray-600">PR-2025-045 linked to PPMP item</p>
+                                    <p class="text-xs text-gray-500 mt-1">5 minutes ago</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3 pb-4 border-b border-gray-200">
+                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-paper-plane text-blue-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-semibold text-gray-900">PR Forwarded</p>
+                                    <p class="text-xs text-gray-600">PR-2025-044 forwarded to Accounting Office</p>
+                                    <p class="text-xs text-gray-500 mt-1">15 minutes ago</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3 pb-4 border-b border-gray-200">
+                                <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-exclamation text-yellow-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-semibold text-gray-900">Pending PPMP</p>
+                                    <p class="text-xs text-gray-600">PR-2025-043 not found in PPMP</p>
+                                    <p class="text-xs text-gray-500 mt-1">1 hour ago</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pending Actions -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Pending Actions</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-yellow-50 border-l-4 border-yellow-500 rounded">
+                                <div>
+                                    <p class="font-semibold text-gray-900">PR-2025-043</p>
+                                    <p class="text-sm text-gray-600">Projector Lamp - Not in PPMP</p>
+                                </div>
+                                <button onclick="viewPR('PR-2025-043')" class="text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-yellow-50 border-l-4 border-yellow-500 rounded">
+                                <div>
+                                    <p class="font-semibold text-gray-900">PR-2025-042</p>
+                                    <p class="text-sm text-gray-600">Whiteboard - Not in PPMP</p>
+                                </div>
+                                <button onclick="viewPR('PR-2025-042')" class="text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-blue-50 border-l-4 border-blue-500 rounded">
+                                <div>
+                                    <p class="font-semibold text-gray-900">PR-2025-041</p>
+                                    <p class="text-sm text-gray-600">Awaiting PPMP validation</p>
+                                </div>
+                                <button onclick="validatePPMP('PR-2025-041')" class="text-green-600 hover:text-green-800">
+                                    <i class="fas fa-check-circle"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Purchase Requests Section -->
+            <section id="purchase-requests-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Purchase Requests</h3>
+                            <p class="text-gray-600">Manage and track all purchase requests</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-filter mr-2"></i>Filter
+                            </button>
+                            <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-download mr-2"></i>Export
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input 
+                            type="text" 
+                            placeholder="Search by PR number or item..." 
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        >
+                        <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                            <option value="">All Status</option>
+                            <option value="pending">Pending PPMP</option>
+                            <option value="validated">PPMP Validated</option>
+                            <option value="forwarded">Forwarded to Accounting</option>
+                            <option value="approved">Approved</option>
+                        </select>
+                        <input 
+                            type="date" 
+                            placeholder="From Date"
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        >
+                        <input 
+                            type="date" 
+                            placeholder="To Date"
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        >
+                    </div>
+
+                    <!-- PRs Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">PR Number</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Supply Request ID</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Item Description</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Quantity</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Estimated Amount</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">PPMP Status</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Status</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">PR-2025-045</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">2025-SR-025</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">A4 Bond Paper (Ream)</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">50 reams</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">₱ 12,500.00</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-medium">Validated</span></td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-medium">Forwarded</span></td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="viewPR('PR-2025-045')" class="text-blue-600 hover:text-blue-800 mr-2" title="View PR">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button onclick="viewPPMPLink('PR-2025-045')" class="text-green-600 hover:text-green-800" title="View PPMP Link">
+                                            <i class="fas fa-link"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">PR-2025-044</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">2025-SR-024</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Whiteboard Markers (Set)</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">20 sets</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">₱ 3,000.00</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-medium">Validated</span></td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-medium">Forwarded</span></td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="viewPR('PR-2025-044')" class="text-blue-600 hover:text-blue-800 mr-2" title="View PR">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button onclick="viewPPMPLink('PR-2025-044')" class="text-green-600 hover:text-green-800" title="View PPMP Link">
+                                            <i class="fas fa-link"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">PR-2025-043</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">2025-SR-023</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Projector Lamp</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">1 piece</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">₱ 8,500.00</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium">Pending</span></td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium">Pending PPMP</span></td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="validatePPMP('PR-2025-043')" class="text-green-600 hover:text-green-800 mr-2" title="Validate PPMP">
+                                            <i class="fas fa-check-circle"></i>
+                                        </button>
+                                        <button onclick="viewPR('PR-2025-043')" class="text-blue-600 hover:text-blue-800" title="View PR">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="mt-6 flex items-center justify-between">
+                        <p class="text-sm text-gray-600">Showing 1-3 of 48 PRs</p>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Previous</button>
+                            <button class="px-3 py-2 bg-[#103D1C] text-white rounded-lg">1</button>
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">2</button>
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Create PR Section -->
+            <section id="create-pr-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Create Purchase Request</h3>
+                        <p class="text-gray-600">Create a new Purchase Request from Supply Request</p>
+                    </div>
+
+                    <form id="prForm" class="space-y-6">
+                        <!-- Source Request Info -->
+                        <div class="bg-gray-50 p-4 rounded-lg mb-6">
+                            <h4 class="font-semibold text-gray-900 mb-3">Source Supply Request</h4>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Supply Request ID</label>
+                                    <select id="supplyRequestSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500" required>
+                                        <option value="">Select Supply Request...</option>
+                                        <option value="2025-SR-025">2025-SR-025 - A4 Bond Paper</option>
+                                        <option value="2025-SR-024">2025-SR-024 - Whiteboard Markers</option>
+                                        <option value="2025-SR-023">2025-SR-023 - Projector Lamp</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Requester</label>
+                                    <input type="text" id="requesterName" class="w-full px-4 py-2 border border-gray-300 rounded-lg" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item Details -->
+                        <div class="border-b border-gray-200 pb-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">
+                                <i class="fas fa-box text-green-600 mr-2"></i>Item Details
+                            </h4>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Item Description <span class="text-red-500">*</span>
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        id="itemDescription"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                                        required
+                                    >
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Quantity <span class="text-red-500">*</span>
+                                    </label>
+                                    <input 
+                                        type="number" 
+                                        id="quantity"
+                                        min="1"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                                        required
+                                    >
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Unit of Measure <span class="text-red-500">*</span>
+                                    </label>
+                                    <select id="unit" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500" required>
+                                        <option value="">Select Unit...</option>
+                                        <option value="piece">Piece</option>
+                                        <option value="set">Set</option>
+                                        <option value="box">Box</option>
+                                        <option value="ream">Ream</option>
+                                        <option value="pack">Pack</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Estimated Unit Price <span class="text-red-500">*</span>
+                                    </label>
+                                    <input 
+                                        type="number" 
+                                        id="unitPrice"
+                                        step="0.01"
+                                        min="0"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                                        required
+                                    >
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Total Estimated Amount
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        id="totalAmount"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
+                                        readonly
+                                    >
+                                </div>
+
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Specifications
+                                    </label>
+                                    <textarea 
+                                        id="specifications"
+                                        rows="3"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                                        placeholder="Provide detailed specifications"
+                                    ></textarea>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Required Delivery Date
+                                    </label>
+                                    <input 
+                                        type="date" 
+                                        id="deliveryDate"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                                    >
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Justification -->
+                        <div class="border-b border-gray-200 pb-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">
+                                <i class="fas fa-info-circle text-purple-600 mr-2"></i>Justification
+                            </h4>
+                            <textarea 
+                                id="justification"
+                                rows="4"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                                placeholder="Explain why this item is needed"
+                                required
+                            ></textarea>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="flex items-center justify-end space-x-4">
+                            <button 
+                                type="button" 
+                                onclick="resetPRForm()"
+                                class="px-6 py-2 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                type="submit" 
+                                class="px-6 py-2 bg-[#103D1C] hover:bg-[#14532d] text-white rounded-lg transition-colors"
+                            >
+                                <i class="fas fa-paper-plane mr-2"></i>Create Purchase Request
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- PPMP Validation Section -->
+            <section id="ppmp-validation-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">PPMP Validation</h3>
+                            <p class="text-gray-600">Validate Purchase Requests against PPMP</p>
+                        </div>
+                    </div>
+
+                    <!-- Validation Queue -->
+                    <div class="mb-6">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4">Pending Validation</h4>
+                        <div class="space-y-4">
+                            <div class="border border-gray-200 rounded-lg p-4 hover:border-green-500 transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex-1">
+                                        <div class="flex items-center space-x-3 mb-2">
+                                            <span class="font-semibold text-blue-600">PR-2025-041</span>
+                                            <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">Awaiting Validation</span>
+                                        </div>
+                                        <p class="text-sm text-gray-900 font-medium">A4 Bond Paper (Ream)</p>
+                                        <p class="text-xs text-gray-600 mt-1">Quantity: 50 reams | Estimated: ₱ 12,500.00</p>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button onclick="validatePPMP('PR-2025-041')" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors">
+                                            <i class="fas fa-check-circle mr-2"></i>Validate
+                                        </button>
+                                        <button onclick="viewPR('PR-2025-041')" class="px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50">
+                                            <i class="fas fa-eye mr-2"></i>View
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Validation Form -->
+                    <div class="border-t border-gray-200 pt-6">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4">Validate PR Against PPMP</h4>
+                        <form id="ppmpValidationForm" class="space-y-6">
+                            <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Select PR to Validate</label>
+                                <select id="prSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500" required>
+                                    <option value="">Select Purchase Request...</option>
+                                    <option value="PR-2025-041">PR-2025-041 - A4 Bond Paper</option>
+                                    <option value="PR-2025-040">PR-2025-040 - Whiteboard Markers</option>
+                                </select>
+                            </div>
+
+                            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
+                                <h5 class="font-semibold text-gray-900 mb-3">Validation Checks</h5>
+                                <div class="space-y-2">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-check-circle text-green-600"></i>
+                                        <span class="text-sm text-gray-700">Item code/description match</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-check-circle text-green-600"></i>
+                                        <span class="text-sm text-gray-700">Quantity within PPMP limits</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-check-circle text-green-600"></i>
+                                        <span class="text-sm text-gray-700">Budget availability in PPMP</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-check-circle text-green-600"></i>
+                                        <span class="text-sm text-gray-700">Procurement schedule alignment</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="ppmpMatchResult" class="hidden">
+                                <!-- Results will be shown here -->
+                            </div>
+
+                            <div class="flex items-center justify-end space-x-4">
+                                <button 
+                                    type="button" 
+                                    onclick="resetValidationForm()"
+                                    class="px-6 py-2 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    type="submit" 
+                                    class="px-6 py-2 bg-[#103D1C] hover:bg-[#14532d] text-white rounded-lg transition-colors"
+                                >
+                                    <i class="fas fa-check-circle mr-2"></i>Validate and Link to PPMP
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pending PPMP Section -->
+            <section id="pending-ppmp-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Pending PPMP</h3>
+                            <p class="text-gray-600">Purchase Requests not included in current PPMP</p>
+                        </div>
+                    </div>
+
+                    <!-- Pending PRs Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">PR Number</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Item Description</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Quantity</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Estimated Amount</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Reason</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Priority</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">PR-2025-043</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Projector Lamp</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">1 piece</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">₱ 8,500.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">Item not found in PPMP 2025</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full font-medium">High</span></td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="requestPPMPAmendment('PR-2025-043')" class="text-yellow-600 hover:text-yellow-800 mr-2" title="Request PPMP Amendment">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button onclick="viewPR('PR-2025-043')" class="text-blue-600 hover:text-blue-800" title="View PR">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">PR-2025-042</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Whiteboard</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2 pieces</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">₱ 15,000.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">Item not found in PPMP 2025</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium">Medium</span></td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="requestPPMPAmendment('PR-2025-042')" class="text-yellow-600 hover:text-yellow-800 mr-2" title="Request PPMP Amendment">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button onclick="viewPR('PR-2025-042')" class="text-blue-600 hover:text-blue-800" title="View PR">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">PR-2025-040</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Laptop Computer</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">1 unit</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">₱ 45,000.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">Budget exceeded in PPMP</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-medium">Low</span></td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="requestPPMPAmendment('PR-2025-040')" class="text-yellow-600 hover:text-yellow-800 mr-2" title="Request PPMP Amendment">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button onclick="viewPR('PR-2025-040')" class="text-blue-600 hover:text-blue-800" title="View PR">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reports Section -->
+            <section id="reports-section" class="content-section hidden">
+                <div class="space-y-6">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-6">PR & PPMP Reports</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-green-600 transition-colors cursor-pointer">
+                                <div class="flex items-center space-x-4 mb-4">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-shopping-cart text-blue-600 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900">PR Status Report</h4>
+                                        <p class="text-xs text-gray-600">All purchase requests status</p>
+                                    </div>
+                                </div>
+                                <button class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                                    Generate Report
+                                </button>
+                            </div>
+
+                            <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-green-600 transition-colors cursor-pointer">
+                                <div class="flex items-center space-x-4 mb-4">
+                                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900">PPMP Validation Report</h4>
+                                        <p class="text-xs text-gray-600">Validation results and statistics</p>
+                                    </div>
+                                </div>
+                                <button class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                                    Generate Report
+                                </button>
+                            </div>
+
+                            <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-green-600 transition-colors cursor-pointer">
+                                <div class="flex items-center space-x-4 mb-4">
+                                    <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900">Pending PPMP Report</h4>
+                                        <p class="text-xs text-gray-600">PRs awaiting PPMP inclusion</p>
+                                    </div>
+                                </div>
+                                <button class="w-full bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                                    Generate Report
+                                </button>
+                            </div>
+
+                            <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-green-600 transition-colors cursor-pointer">
+                                <div class="flex items-center space-x-4 mb-4">
+                                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-link text-purple-600 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900">PPMP Linkage Report</h4>
+                                        <p class="text-xs text-gray-600">PR to PPMP item linkages</p>
+                                    </div>
+                                </div>
+                                <button class="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                                    Generate Report
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
+
+    <script src="../../assets/js/pr-ppmp-dashboard.js"></script>
+</body>
+</html>
+
