@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DISBURSEMENT VOUCHER</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        table tr {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 11pt;
+            padding: 15mm 10mm;
+            background: #fff;
+        }
+
+        .dv-container {
+            width: 100%;
+            max-width: 210mm;
+            margin: 0 auto;
+            background: white;
+        }
+        
+        @media print {
+            body {
+                padding: 0;
+                margin: 0;
+            }
+            .dv-container {
+                max-width: 100%;
+            }
+        }
+
+        /* Header Section */
+        .header-section {
+            margin-bottom: 0;
+            padding: 10px 8px;
+            border: 1px solid #000;
+            border-bottom: 1px solid #000;
+            /* border-collapse: separate; */
+            border-spacing: 0;
+        }
+
+        .header-container {
+            display: table;
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+        .header-left {
+            display: table-cell;
+            width: 25%;
+            vertical-align: middle;
+            padding-right: 10px;
+        }
+
+        .header-center {
+            display: table-cell;
+            width: 50%;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .header-right {
+            display: table-cell;
+            width: 25%;
+            text-align: right;
+            vertical-align: bottom;
+            padding-left: 10px;
+            position: relative;
+        }
+
+        .header-right-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            min-height: 80px;
+        }
+
+        .header-right .appendix {
+            margin-bottom: auto;
+        }
+
+        .header-right .location-code {
+            margin-top: 0;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-container img {
+            height: 60px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .header-center .republic {
+            font-weight: bold;
+            font-size: 12pt;
+            margin-bottom: 3px;
+        }
+
+        .header-center .address {
+            font-size: 10pt;
+            margin-bottom: 3px;
+        }
+
+        .header-center .school-name {
+            font-weight: bold;
+            font-size: 13pt;
+            margin-bottom: 0;
+        }
+
+        .header-right .appendix {
+            font-size: 10pt;
+            margin-bottom: auto;
+        }
+
+        .header-right .location-code {
+            font-size: 10pt;
+            margin-top: 0;
+        }
+
+        /* Info Table */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin-bottom: 0;
+            margin-top: 0;
+            font-size: 10pt;
+            table-layout: fixed;
+        }
+
+        .info-table td {
+            border: 1px solid #000;
+            padding: 4px 6px;
+            vertical-align: middle;
+            margin: 0;
+        }
+
+        .info-table .dv-title-cell {
+            width: 65% !important;
+            font-weight: bold;
+            font-size: 14pt;
+            text-align: center;
+            vertical-align: middle;
+            background-color: transparent;
+            padding: 8px;
+        }
+
+        .info-table .info-right-section {
+            width: 35%;
+            padding: 0;
+        }
+
+        .info-table .label-cell {
+            font-weight: bold;
+            width: 17.5%;
+            background-color: transparent;
+            padding: 4px 6px;
+        }
+
+        .info-table .value-cell {
+            width: 17.5%;
+            padding: 4px 6px;
+        }
+
+        /* Payment Mode Section */
+        .payment-mode-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin-top: -1px;
+            margin-bottom: 0;
+            font-size: 10pt;
+            table-layout: fixed;
+        }
+
+        .payment-mode-table td {
+            border: 1px solid #000;
+            padding: 4px 6px;
+            vertical-align: middle;
+            margin: 0;
+        }
+
+        .payment-mode-table .label-cell {
+            font-weight: bold;
+            width: 14%;
+            background-color: transparent;
+            line-height: 1.2;
+            border-bottom: none;
+        }
+
+        .payment-mode-table .checkbox-cell {
+            width: 3%;
+            text-align: center;
+            padding: 4px 2px;
+            border: none;
+        }
+
+        .payment-mode-table .checkbox-cell:last-of-type {
+            border-right: 1px solid #000;
+        }
+
+        .payment-mode-table .checkbox-label {
+            width: 15%;
+            padding-left: 4px;
+            border: none;
+            white-space: nowrap;
+        }
+
+        .payment-mode-table .checkbox-label:last-of-type {
+            border-right: 1px solid #000;
+            width: 29%;
+        }
+
+        /* Payee and ORS Information Table */
+        .payee-ors-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin-top: -1px;
+            margin-bottom: 0;
+            font-size: 10pt;
+        }
+
+        .payee-ors-table td {
+            border: 1px solid #000;
+            padding: 4px 6px;
+            vertical-align: top;
+            margin: 0;
+        }
+
+        .payee-ors-table .payee-label-cell {
+            font-weight: bold;
+            width: 14%;
+            background-color: transparent;
+        }
+
+        .payee-ors-table .payee-value-cell {
+            width: 41%;
+        }
+
+        .payee-ors-table .tin-cell {
+            width: 15%;
+            vertical-align: top;
+        }
+
+        .payee-ors-table .tin-cell .label {
+            font-weight: bold;
+            font-size: 8pt;
+            margin-bottom: 2px;
+            display: block;
+            line-height: 1.2;
+        }
+
+        .payee-ors-table .tin-cell .value {
+            display: block;
+            font-size: 10pt;
+            line-height: 1.4;
+        }
+
+        .payee-ors-table .ors-cell {
+            width: 15%;
+            vertical-align: top;
+        }
+
+        .payee-ors-table .ors-cell .label {
+            font-weight: bold;
+            font-size: 8pt;
+            margin-bottom: 2px;
+            display: block;
+            line-height: 1.2;
+        }
+
+        .payee-ors-table .ors-cell .value {
+            display: block;
+            font-size: 10pt;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+
+        .payee-ors-table .allotment-cell {
+            width: 15%;
+            vertical-align: top;
+        }
+
+        .payee-ors-table .allotment-cell .label {
+            font-weight: bold;
+            font-size: 8pt;
+            margin-bottom: 2px;
+            display: block;
+            line-height: 1.2;
+        }
+
+        .payee-ors-table .allotment-cell .value {
+            display: block;
+            font-size: 10pt;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+
+        /* Office Address and Responsibility Center Table */
+        .address-responsibility-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin-top: -1px;
+            margin-bottom: 0;
+            font-size: 10pt;
+        }
+
+        .address-responsibility-table td {
+            border: 1px solid #000;
+            padding: 4px 6px;
+            vertical-align: top;
+            margin: 0;
+        }
+
+        .address-responsibility-table .address-label-cell {
+            font-weight: bold;
+            width: 14%;
+            background-color: transparent;
+            line-height: 1.2;
+        }
+
+        .address-responsibility-table .address-value-cell {
+            width: 41%;
+        }
+
+        .address-responsibility-table .responsibility-container-cell {
+            width: 45%;
+            padding: 0;
+            vertical-align: top;
+        }
+
+        .address-responsibility-table .responsibility-inner-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+            height: 100%;
+        }
+
+        .address-responsibility-table .responsibility-inner-table td {
+            border-left: none;
+            border-right: none;
+            border-bottom: none;
+            border-top: 1px solid #000;
+            padding: 4px 6px;
+            vertical-align: top;
+        }
+
+        .address-responsibility-table .responsibility-inner-table tr:first-child td {
+            border-top: none;
+        }
+
+        .address-responsibility-table .responsibility-header-cell {
+            font-weight: bold;
+            background-color: transparent;
+            text-align: center;
+            font-size: 8pt;
+        }
+
+        .address-responsibility-table .responsibility-data-cell {
+            width: 50%;
+            vertical-align: top;
+        }
+
+        .address-responsibility-table .responsibility-data-cell .label {
+            font-weight: bold;
+            font-size: 8pt;
+            margin-bottom: 2px;
+            display: block;
+            line-height: 1.2;
+        }
+
+        .address-responsibility-table .responsibility-data-cell .value {
+            display: block;
+            font-size: 10pt;
+            line-height: 1.4;
+        }
+
+        /* Particulars Table */
+        .particulars-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin-top: -1px;
+            margin-bottom: 0;
+            font-size: 10pt;
+        }
+
+        .particulars-table td {
+            border: 1px solid #000;
+            padding: 4px 6px;
+            vertical-align: top;
+            margin: 0;
+        }
+
+        .particulars-table .header-cell {
+            font-weight: bold;
+            background-color: transparent;
+            text-align: center;
+            text-transform: uppercase;
+            padding: 4px 6px;
+        }
+
+        .particulars-table .particulars-header {
+            width: 55%;
+            border-top: none;
+        }
+
+        .particulars-table .mfopap-header {
+            width: 22.5%;
+            border-top: none;
+        }
+
+        .particulars-table .amount-header {
+            width: 22.5%;
+            border-top: none;
+        }
+
+        .particulars-table .value-cell {
+            width: 55%;
+            padding: 16px 6px;
+            min-height: 100px;
+            vertical-align: top;
+        }
+
+        .particulars-table tr:nth-child(2) .value-cell,
+        .particulars-table tr:nth-child(3) .value-cell {
+            border-bottom: none;
+        }
+
+        .particulars-table .mfopap-value-cell {
+            width: 22.5%;
+            padding: 16px 6px;
+            min-height: 100px;
+            vertical-align: top;
+            border-bottom: none;
+        }
+
+        .particulars-table tr:nth-child(2) .mfopap-value-cell,
+        .particulars-table tr:nth-child(3) .mfopap-value-cell {
+            border-bottom: none;
+        }
+
+        .particulars-table .amount-value {
+            width: 22.5%;
+            text-align: right;
+            font-weight: bold;
+            padding: 16px 8px 16px 6px;
+            min-height: 100px;
+            vertical-align: top;
+        }
+
+        .particulars-table tr:nth-child(2) .amount-value {
+            border-bottom: none;
+        }
+
+        .particulars-table tr:nth-child(3) .mfopap-value-cell,
+        .particulars-table tr:nth-child(3) .amount-value {
+            padding: 16px 6px;
+            min-height: 100px;
+            border-top: none;
+        }
+
+        .particulars-table .summary-row td {
+            border-top: 1px solid #000;
+            border-left: 1px solid #000;
+            border-right: 1px solid #000;
+            border-bottom: 1px solid #000;
+            padding: 4px 6px;
+        }
+
+        .particulars-table .summary-row .empty-particulars {
+            width: 55%;
+            border-top: none;
+            border-right: 1px solid #000;
+            border-bottom: 1px solid #000;
+        }
+
+        .particulars-table .summary-row .empty-mfopap {
+            width: 22.5%;
+            border-top: none;
+            border-left: none;
+            border-right: 1px solid #000;
+            border-bottom: 1px solid #000;
+        }
+
+        .particulars-table .summary-row .summary-amount {
+            width: 22.5%;
+            text-align: right;
+            font-weight: bold;
+            padding-right: 8px;
+            border-left: none;
+            border-right: 1px solid #000;
+            border-bottom: 1px solid #000;
+        }
+
+        /* Summary Amount Table */
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin-top: -1px;
+            margin-bottom: 15px;
+            font-size: 10pt;
+        }
+
+        .summary-table td {
+            border: 1px solid #000;
+            padding: 4px 6px;
+            vertical-align: middle;
+            margin: 0;
+        }
+
+        .summary-table .empty-cell {
+            width: 59%;
+            border: none;
+            background: transparent;
+            padding: 0;
+        }
+
+        .summary-table .label-cell {
+            font-weight: bold;
+            width: 18%;
+            background-color: #f0f0f0;
+            text-align: right;
+            padding-right: 10px;
+        }
+
+        .summary-table .amount-cell {
+            width: 23%;
+            text-align: right;
+            font-weight: bold;
+            font-size: 11pt;
+            padding-right: 8px;
+        }
+
+        /* Certification Section */
+        .certification-section {
+            margin-top: 0;
+            font-size: 10pt;
+        }
+
+        .certification-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: -1px;
+            margin-bottom: 15px;
+            border-left: 1px solid #000;
+            border-right: 1px solid #000;
+            border-bottom: 1px solid #000;
+        }
+
+        .certification-table td {
+            border-left: 1px solid #000;
+            border-right: 1px solid #000;
+            padding: 10px;
+            vertical-align: top;
+        }
+
+        .certification-table tr:first-child td {
+            border-top: none;
+        }
+
+        .certification-table tr:last-child td {
+            border-bottom: 1px solid #000;
+        }
+
+        .certification-label {
+            margin-bottom: 15px;
+        }
+
+        .certification-label-text {
+            font-weight: bold;
+        }
+
+        .certification-text {
+            font-weight: normal;
+            margin-left: 5px;
+        }
+
+        .signature-section {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .signature-name {
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .signature-title {
+            font-size: 9pt;
+            margin-top: 2px;
+        }
+
+        /* Checkbox styling */
+        .checkbox {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 1.5px solid #000;
+            margin: 0;
+            vertical-align: middle;
+            position: relative;
+        }
+
+        .checkbox.checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12pt;
+            font-weight: bold;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="dv-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="header-container">
+                <div class="header-left">
+                    <div class="logo-container">
+                        <img src="../../assets/img/deped_logo.png" alt="DepEd Logo">
+                        <img src="../../assets/img/BAGONG-PILIPINAS-LOGO.png" alt="Bagong Pilipinas Logo">
+                    </div>
+                </div>
+                <div class="header-center">
+                    <div class="republic">Republic of the Philippines</div>
+                    <div class="address">Purok 6 Brgy. Sto Niño, Magallanes, Agusan del Norte</div>
+                    <div class="school-name">Magallanes National High School</div>
+                </div>
+                <div class="header-right">
+                    <div class="header-right-content">
+                        <div class="appendix">Appendix 32</div>
+                        <div class="location-code">Location Code: 160208000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DV Information Table -->
+        <table class="info-table">
+            <tr>
+                <td class="dv-title-cell" rowspan="3">DISBURSEMENT VOUCHER</td>
+                <td class="label-cell">Fund Cluster:</td>
+                <td class="value-cell">01</td>
+            </tr>
+            <tr>
+                <td class="label-cell">DV No:</td>
+                <td class="value-cell">2025-11-01299</td>
+            </tr>
+            <tr>
+                <td class="label-cell">Date:</td>
+                <td class="value-cell">November 25, 2025</td>
+            </tr>
+        </table>
+
+        <!-- Payment Mode Table -->
+        <table class="payment-mode-table">
+            <tr>
+                <td class="label-cell">Mode of<br>Payment:</td>
+                <td class="checkbox-cell">
+                    <span class="checkbox checked"></span>
+                </td>
+                <td class="checkbox-label">ADA</td>
+                <td class="checkbox-cell">
+                    <span class="checkbox"></span>
+                </td>
+                <td class="checkbox-label">MDS Check</td>
+                <td class="checkbox-cell">
+                    <span class="checkbox"></span>
+                </td>
+                <td class="checkbox-label">Commercial Check</td>
+                <td class="checkbox-cell">
+                    <span class="checkbox"></span>
+                </td>
+                <td class="checkbox-label">Others (Please specify)</td>
+            </tr>
+        </table>
+
+        <!-- Payee and ORS Information Table -->
+        <table class="payee-ors-table">
+            <tr>
+                <td class="payee-label-cell">Payee:</td>
+                <td class="payee-value-cell">BAUG CARP BENEFICIARIES MPC</td>
+                <td class="tin-cell">
+                    <span class="label">TIN/Employee No.:</span>
+                    <span class="value"></span>
+                </td>
+                <td class="ors-cell">
+                    <span class="label">ORS/BUR No.:</span>
+                    <span class="value">00370</span>
+                </td>
+                <td class="allotment-cell">
+                    <span class="label">Allotment Class:</span>
+                    <span class="value">MOOE</span>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Office Address and Responsibility Center Table -->
+        <table class="address-responsibility-table">
+            <tr>
+                <td class="address-label-cell" rowspan="2">Office<br>Address:</td>
+                <td class="address-value-cell" rowspan="2">MAGALLANES, AGUSAN DEL NORTE</td>
+                <td class="responsibility-container-cell" rowspan="2">
+                    <table class="responsibility-inner-table">
+                        <tr>
+                            <td class="responsibility-header-cell" colspan="2">Responsibility Center</td>
+                        </tr>
+                        <tr>
+                            <td class="responsibility-data-cell">
+                                <span class="label">Fund Source Code</span>
+                                <span class="value">01101101</span>
+                            </td>
+                            <td class="responsibility-data-cell">
+                                <span class="label">Organizational Code</span>
+                                <span class="value">Org. Code : 070010916028</span>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Particulars Table -->
+        <table class="particulars-table">
+            <tr>
+                <td class="header-cell particulars-header">PARTICULARS</td>
+                <td class="header-cell mfopap-header">MFO/PAP</td>
+                <td class="header-cell amount-header">AMOUNT</td>
+            </tr>
+            <tr>
+                <td class="value-cell" rowspan="2">To record payment for snacks 110 pax @35.00 during Buwan ng Wika. TIN: 004-377-200-000 NV 3% 103.13</td>
+                <td class="mfopap-value-cell">310100100001000</td>
+                <td class="amount-value">3,746.87</td>
+            </tr>
+            <tr>
+                <td class="mfopap-value-cell"></td>
+                <td class="amount-value"></td>
+            </tr>
+            <tr class="summary-row">
+                <td class="empty-particulars"></td>
+                <td class="empty-mfopap"></td>
+                <td class="summary-amount">3,746.87</td>
+            </tr>
+        </table>
+
+        <!-- Certification Section -->
+        <div class="certification-section">
+            <table class="certification-table">
+                <tr>
+                    <td>
+                        <div class="certification-label">
+                            <span class="certification-label-text">A. Certified:</span>
+                            <span class="certification-text">Expenses/Cash Advance necessary, lawful and incurred under my direct supervision.</span>
+                        </div>
+                        <div class="signature-section">
+                            <div style="margin-top: 30px;">
+                                <div style="border-top: 1px solid #000; width: 300px; margin: 40px auto 0; padding-top: 5px;">
+                                    <div class="signature-name">GLENN MARK V. DELA SALA</div>
+                                    <div class="signature-title">SCHOOL PRINCIPAL II</div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+
