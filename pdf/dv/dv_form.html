@@ -566,7 +566,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: -1px;
-            margin-bottom: 15px;
+            margin-bottom: 0;
             border-left: 1px solid #000;
             border-right: 1px solid #000;
             border-bottom: 1px solid #000;
@@ -608,6 +608,7 @@
         .signature-name {
             font-weight: bold;
             margin-top: 5px;
+            border-bottom: 1px solid #000;
         }
 
         .signature-title {
@@ -635,6 +636,269 @@
             font-size: 12pt;
             font-weight: bold;
             line-height: 1;
+        }
+
+        /* Accounting Entry Table */
+        .accounting-entry-section {
+            margin-top: 0;
+            font-size: 10pt;
+        }
+
+        .accounting-entry-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: -1px;
+            margin-bottom: 0;
+            border-left: 1px solid #000;
+            border-right: 1px solid #000;
+            border-bottom: none;
+            font-size: 10pt;
+            table-layout: fixed;
+        }
+
+        .accounting-entry-table td {
+            border: 1px solid #000;
+            padding: 4px 6px;
+            vertical-align: middle;
+            margin: 0;
+            font-size: 9pt;
+        }
+
+        .accounting-entry-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .accounting-entry-table tr:first-child td {
+            border-top: none;
+            border-bottom: none;
+            font-size: 10pt;
+        }
+
+        .accounting-entry-table tr:nth-child(2) td {
+            border-top: none !important;
+        }
+
+        .accounting-entry-table tr:nth-child(2) td.account-title-cell {
+            border-right: none !important;
+        }
+
+        .accounting-entry-table tr:nth-child(2) td.uacs-code-cell {
+            border-right: none !important;
+            border-left: none !important;
+        }
+
+        .accounting-entry-table tr:nth-child(2) td.debit-cell {
+            border-left: none !important;
+            border-right: none !important;
+        }
+
+        .accounting-entry-table tr:nth-child(2) td.credit-cell {
+            border-left: none !important;
+        }
+
+        .accounting-entry-table .account-title-cell {
+            width: 60% !important;
+            min-width: 60%;
+            text-align: left;
+            font-size: 9pt;
+            border-right: none !important;
+        }
+
+        .accounting-entry-table .uacs-code-cell {
+            width: 13.33%;
+            text-align: left;
+            font-size: 9pt;
+            border-right: none !important;
+            border-left: none !important;
+        }
+
+        .accounting-entry-table .debit-cell {
+            width: 13.33%;
+            text-align: right;
+            padding-right: 8px;
+            font-size: 9pt;
+            border-left: none !important;
+            border-right: none !important;
+        }
+
+        .accounting-entry-table .credit-cell {
+            width: 13.34%;
+            text-align: right;
+            padding-right: 8px;
+            font-size: 9pt;
+            border-left: none !important;
+        }
+
+        .accounting-entry-table .header-cell {
+            font-weight: bold;
+            background-color: transparent;
+            text-align: center;
+            text-transform: uppercase;
+            padding: 4px 6px;
+            font-size: 9pt;
+        }
+
+        .accounting-entry-table .header-cell.account-title-cell {
+            width: 60% !important;
+            border-right: none !important;
+        }
+
+        .accounting-entry-table .header-cell.uacs-code-cell {
+            text-align: left;
+        }
+
+        .accounting-entry-table .header-cell.debit-cell,
+        .accounting-entry-table .header-cell.credit-cell {
+            text-align: right;
+        }
+
+        .accounting-entry-table .total-row {
+            font-weight: bold;
+        }
+
+        .accounting-entry-table .total-row .account-title-cell {
+            text-align: left;
+        }
+
+        .accounting-entry-table .total-row .uacs-code-cell {
+            text-align: left;
+        }
+
+        .accounting-entry-table .total-label-cell {
+            width: 13.33%;
+            text-align: left;
+            font-size: 9pt;
+            border-right: none !important;
+            border-left: none !important;
+        }
+
+        .accounting-entry-table .total-row .debit-cell,
+        .accounting-entry-table .total-row .credit-cell {
+            text-align: right;
+        }
+
+        .accounting-entry-label {
+            font-weight: bold;
+            margin-bottom: 0;
+            font-size: 10pt;
+        }
+
+        .accounting-entry-label-text {
+            font-weight: bold;
+            font-size: 10pt;
+        }
+
+        .accounting-entry-tax-note {
+            font-size: 9pt;
+            display: block;
+            margin-top: 2px;
+        }
+
+        /* Certified and Approved Section */
+        .certified-approved-section {
+            margin-top: 0;
+            font-size: 10pt;
+        }
+
+        .certified-approved-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: -1px;
+            margin-bottom: 0;
+            border-left: 1px solid #000;
+            border-right: 1px solid #000;
+            border-bottom: 1px solid #000;
+            font-size: 10pt;
+            table-layout: fixed;
+        }
+
+        .certified-approved-table td {
+            border: 1px solid #000;
+            padding: 10px;
+            vertical-align: top;
+            margin: 0;
+        }
+
+        .certified-approved-table .certified-cell {
+            width: 50%;
+            vertical-align: top;
+        }
+
+        .certified-approved-table .approved-cell {
+            width: 50%;
+            vertical-align: top;
+            border-left: 1px solid #000;
+        }
+
+        .certified-approved-label {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 10pt;
+        }
+
+        .certified-approved-label-text {
+            font-weight: bold;
+            font-size: 10pt;
+        }
+
+        .certified-item {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+            font-size: 10pt;
+        }
+
+        .certified-item .checkbox {
+            margin-right: 8px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .certified-item-text {
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        .approved-amount-text {
+            font-size: 10pt;
+            margin-bottom: 40px;
+            line-height: 1.4;
+        }
+
+        .signature-field {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 10pt;
+        }
+
+        .signature-field-label {
+            min-width: 100px;
+            font-size: 10pt;
+            margin-right: 10px;
+        }
+
+        .signature-line {
+            border-bottom: 1px solid #000;
+            flex: 1;
+            min-height: 20px;
+            margin-top: 2px;
+        }
+
+        .signature-position{
+            border-bottom: 1px solid #000;
+        }
+
+        .signature-date{
+            border-bottom: 1px solid #000;
+        }
+
+        .signature-name,
+        .signature-position,
+        .signature-date {
+            flex: 1;
+            font-size: 10pt;
+            margin-top: 2px;
         }
     </style>
 </head>
@@ -787,6 +1051,129 @@
                                     <div class="signature-title">SCHOOL PRINCIPAL II</div>
                                 </div>
                             </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Accounting Entry Section -->
+        <div class="accounting-entry-section">
+            <table class="accounting-entry-table">
+                <colgroup>
+                    <col style="width: 60%;">
+                    <col style="width: 13.33%;">
+                    <col style="width: 13.33%;">
+                    <col style="width: 13.34%;">
+                </colgroup>
+                <tr>
+                    <td colspan="4" style="padding: 4px 6px;">
+                        <div class="accounting-entry-label">
+                            <span class="accounting-entry-label-text">B. Accounting Entry:</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="header-cell account-title-cell">Account Title</td>
+                    <td class="header-cell uacs-code-cell">UACS Code</td>
+                    <td class="header-cell debit-cell">Debit</td>
+                    <td class="header-cell credit-cell">Credit</td>
+                </tr>
+                <tr>
+                    <td class="account-title-cell">Training Expenses</td>
+                    <td class="uacs-code-cell">5020201000</td>
+                    <td class="debit-cell">3,850.00</td>
+                    <td class="credit-cell">0.00</td>
+                </tr>
+                <tr>
+                    <td class="account-title-cell">Cash - Modified Disbursement System (MDS), Regular</td>
+                    <td class="uacs-code-cell">1010404000</td>
+                    <td class="debit-cell">0.00</td>
+                    <td class="credit-cell">3,746.87</td>
+                </tr>
+                <tr>
+                    <td class="account-title-cell">
+                        Due to BIR
+                        <span class="accounting-entry-tax-note">3% TAX</span>
+                    </td>
+                    <td class="uacs-code-cell">2020101003</td>
+                    <td class="debit-cell">0.00</td>
+                    <td class="credit-cell">103.13</td>
+                </tr>
+                <tr class="total-row">
+                    <td class="account-title-cell"></td>
+                    <td class="total-label-cell">Total</td>
+                    <td class="debit-cell">3,850.00</td>
+                    <td class="credit-cell">3,850.00</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Certified and Approved Section -->
+        <div class="certified-approved-section">
+            <table class="certified-approved-table">
+                <tr>
+                    <td class="certified-cell">
+                        <div class="certified-approved-label">
+                            <span class="certified-approved-label-text">C. Certified:</span>
+                        </div>
+                        <div class="certified-item">
+                            <span class="checkbox checked"></span>
+                            <span class="certified-item-text">Cash Available</span>
+                        </div>
+                        <div class="certified-item">
+                            <span class="checkbox"></span>
+                            <span class="certified-item-text">Subject to Authority to Debit Account (when Applicable)</span>
+                        </div>
+                        <div class="certified-item">
+                            <span class="checkbox checked"></span>
+                            <span class="certified-item-text">Supporting documents complete and amount claimed proper.</span>
+                        </div>
+                    </td>
+                    <td class="approved-cell">
+                        <div class="certified-approved-label">
+                            <span class="certified-approved-label-text">D. Approved for Payment:</span>
+                        </div>
+                        <div class="approved-amount-text">
+                            THREE THOUSAND SEVEN HUNDRED FORTY-SIX PESOS AND 87/100
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="certified-cell">
+                        <div class="signature-field">
+                            <span class="signature-field-label">Signature:</span>
+                            <div class="signature-line"></div>
+                        </div>
+                        <div class="signature-field">
+                            <span class="signature-field-label">Printed Name:</span>
+                            <div class="signature-name">ELREEN JOY V. ENRIQUEZ</div>
+                        </div>
+                        <div class="signature-field">
+                            <span class="signature-field-label">Position:</span>
+                            <div class="signature-position">ADAS III BOOKKEEPER</div>
+                        </div>
+                        <div class="signature-field">
+                            <span class="signature-field-label">Date:</span>
+                            <div class="signature-date">11/25/2025</div>
+                        </div>
+                    </td>
+                    <td class="approved-cell">
+                        <div class="signature-field">
+                            <span class="signature-field-label">Signature:</span>
+                            <div class="signature-line"></div>
+                        </div>
+                        <div class="signature-field">
+                            <span class="signature-field-label">Printed Name:</span>
+                            <div class="signature-line"></div>
+                        </div>
+                        <div class="signature-field">
+                            <span class="signature-field-label">Position:</span>
+                            <div class="signature-line"></div>
+                        </div>
+                        <div class="signature-field">
+                            <span class="signature-field-label">Date:</span>
+                            <div class="signature-line"></div>
                         </div>
                     </td>
                 </tr>
