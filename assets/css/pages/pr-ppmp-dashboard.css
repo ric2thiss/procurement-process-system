@@ -76,10 +76,208 @@ tbody tr {
 
     #sidebar {
         transform: translateX(-100%);
+        width: 280px;
+        z-index: 50;
     }
 
     #sidebar.open {
         transform: translateX(0);
+    }
+    
+    /* Sidebar overlay for mobile */
+    #sidebarOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 40;
+        display: none;
+    }
+    
+    #sidebarOverlay.active {
+        display: block;
+    }
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+    header {
+        padding: 0.75rem 1rem !important;
+    }
+    
+    #pageTitle {
+        font-size: 1.125rem !important;
+    }
+    
+    #pageSubtitle {
+        font-size: 0.75rem !important;
+    }
+    
+    main {
+        padding: 1rem !important;
+    }
+    
+    .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-4,
+    .grid.grid-cols-2.md\:grid-cols-3.lg\:grid-cols-4,
+    .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-3 {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+    }
+    
+    .grid.grid-cols-1.lg\:grid-cols-2,
+    .grid.grid-cols-2.lg\:grid-cols-3 {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    
+    .overflow-x-auto {
+        -webkit-overflow-scrolling: touch;
+        overflow-x: auto;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+    }
+    
+    /* Table responsive adjustments */
+    table {
+        font-size: 0.75rem;
+        min-width: 600px;
+    }
+    
+    table th,
+    table td {
+        padding: 0.5rem 0.25rem !important;
+        white-space: nowrap;
+    }
+    
+    input, select, textarea {
+        width: 100% !important;
+        font-size: 16px !important; /* Prevents zoom on iOS */
+    }
+    
+    /* Form groups - stack on mobile */
+    .grid.grid-cols-1.md\:grid-cols-2 {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+    }
+    
+    /* Buttons - full width on mobile */
+    button,
+    .btn {
+        width: 100% !important;
+        margin-bottom: 0.5rem;
+        padding: 0.75rem 1rem !important;
+    }
+    
+    /* Button groups - stack on mobile */
+    .flex.gap-2,
+    .flex.gap-4 {
+        flex-direction: column !important;
+    }
+    
+    .flex.gap-2 > *,
+    .flex.gap-4 > * {
+        width: 100% !important;
+        margin-bottom: 0.5rem;
+    }
+    
+    .modal-content {
+        margin: 1rem !important;
+        max-width: calc(100% - 2rem) !important;
+        max-height: calc(100vh - 2rem) !important;
+        overflow-y: auto;
+    }
+    
+    /* Cards - full width on mobile */
+    .card,
+    .stat-card {
+        width: 100% !important;
+        margin-bottom: 1rem;
+    }
+    
+    /* Sidebar adjustments */
+    #sidebar {
+        width: 100% !important;
+        max-width: 280px;
+    }
+    
+    /* Navigation adjustments */
+    .nav-item {
+        padding: 0.875rem 1rem !important;
+    }
+    
+    .nav-item span {
+        font-size: 0.875rem;
+    }
+    
+    /* Status badges */
+    .status-badge {
+        font-size: 0.625rem;
+        padding: 0.125rem 0.5rem;
+    }
+    
+    /* Chart container adjustments */
+    .chart-container {
+        height: 250px !important;
+    }
+    
+    /* Priority badges */
+    .priority-high,
+    .priority-medium,
+    .priority-low {
+        font-size: 0.625rem;
+        padding: 0.125rem 0.5rem;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+    header {
+        padding: 0.5rem 0.75rem !important;
+    }
+    
+    #pageTitle {
+        font-size: 1rem !important;
+    }
+    
+    #pageSubtitle {
+        font-size: 0.7rem !important;
+    }
+    
+    main {
+        padding: 0.75rem !important;
+    }
+    
+    .nav-item span {
+        font-size: 0.8rem;
+    }
+    
+    table {
+        font-size: 0.7rem;
+    }
+    
+    .stat-card {
+        padding: 1rem !important;
+    }
+    
+    .modal-content {
+        margin: 0.5rem !important;
+        max-width: calc(100% - 1rem) !important;
+        padding: 1rem !important;
+    }
+    
+    .chart-container {
+        height: 200px !important;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-4 {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    
+    .grid.grid-cols-1.lg\:grid-cols-2 {
+        grid-template-columns: repeat(2, 1fr) !important;
     }
 }
 

@@ -1,6 +1,7 @@
 /**
  * Teacher Dashboard CSS
  * Styles specific to the Teacher/End-User module
+ * Using mostly Tailwind CSS - only custom styles that can't be done with Tailwind
  */
 
 /* Navigation Active State */
@@ -22,7 +23,7 @@
     display: none;
 }
 
-/* Stat Cards */
+/* Stat Cards Hover Effect */
 .stat-card {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -123,18 +124,21 @@ tbody tr {
     }
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-    .ml-64 {
-        margin-left: 0;
-    }
+/* Form inputs - prevent zoom on iOS */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
+}
 
-    #sidebar {
-        transform: translateX(-100%);
-    }
-
-    #sidebar.open {
-        transform: translateX(0);
+/* Table horizontal scroll on mobile */
+@media (max-width: 768px) {
+    .overflow-x-auto {
+        -webkit-overflow-scrolling: touch;
     }
 }
 

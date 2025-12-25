@@ -24,6 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeDashboard() {
     // Set default section
     showSection('dashboard');
+    // Update page title on initial load
+    updatePageTitle('dashboard');
 }
 
 /**
@@ -87,8 +89,18 @@ function updatePageTitle(sectionId) {
     };
     
     const pageInfo = titles[sectionId] || { title: 'Dashboard', subtitle: '' };
-    document.getElementById('pageTitle').textContent = pageInfo.title;
-    document.getElementById('pageSubtitle').textContent = pageInfo.subtitle;
+    
+    // Safely update title and subtitle
+    const titleElement = document.getElementById('pageTitle');
+    const subtitleElement = document.getElementById('pageSubtitle');
+    
+    if (titleElement) {
+        titleElement.textContent = pageInfo.title;
+    }
+    
+    if (subtitleElement) {
+        subtitleElement.textContent = pageInfo.subtitle;
+    }
 }
 
 /**
