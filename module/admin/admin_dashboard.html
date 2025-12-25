@@ -73,6 +73,12 @@
                         </a>
                     </li>
                     <li>
+                        <a href="#signatories" data-section="signatories" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-file-signature w-5"></i>
+                            <span>Document Signatories</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="#config" data-section="config" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
                             <i class="fas fa-cog w-5"></i>
                             <span>System Configuration</span>
@@ -908,6 +914,333 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Document Signatory Management Section -->
+            <section id="signatories-section" class="content-section hidden">
+                <div class="space-y-6">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <div class="mb-6">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Document Signatory Management</h3>
+                            <p class="text-gray-600">Configure signatories for each document type in the procurement process</p>
+                            <p class="text-xs text-gray-500 mt-2">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Note: This system is designed to track the document process. Signatory configuration ensures proper workflow tracking.
+                            </p>
+                        </div>
+
+                        <!-- Document Types -->
+                        <div class="space-y-6">
+                            <!-- PPMP Signatories -->
+                            <div class="border border-gray-200 rounded-lg p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-gray-900">Project Procurement Management Plan (PPMP)</h4>
+                                        <p class="text-sm text-gray-600">Configure signatories for PPMP documents</p>
+                                    </div>
+                                    <button onclick="editSignatories('PPMP')" class="text-green-600 hover:text-green-800">
+                                        <i class="fas fa-edit mr-2"></i>Edit
+                                    </button>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                        <div>
+                                            <p class="font-semibold text-gray-900">Principal / School Head</p>
+                                            <p class="text-xs text-gray-600">SCHOOL PRINCIPAL II</p>
+                                        </div>
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Active</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                        <div>
+                                            <p class="font-semibold text-gray-900">BAC Chairperson</p>
+                                            <p class="text-xs text-gray-600">Bids and Awards Committee</p>
+                                        </div>
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Active</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PR Signatories -->
+                            <div class="border border-gray-200 rounded-lg p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-gray-900">Purchase Request (PR)</h4>
+                                        <p class="text-sm text-gray-600">Configure signatories for PR documents</p>
+                                    </div>
+                                    <button onclick="editSignatories('PR')" class="text-green-600 hover:text-green-800">
+                                        <i class="fas fa-edit mr-2"></i>Edit
+                                    </button>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                        <div>
+                                            <p class="font-semibold text-gray-900">Principal / School Head</p>
+                                            <p class="text-xs text-gray-600">Approval Signatory</p>
+                                        </div>
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Active</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- RIS Signatories -->
+                            <div class="border border-gray-200 rounded-lg p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-gray-900">Requisition and Issue Slip (RIS)</h4>
+                                        <p class="text-sm text-gray-600">Configure signatories for RIS documents</p>
+                                    </div>
+                                    <button onclick="editSignatories('RIS')" class="text-green-600 hover:text-green-800">
+                                        <i class="fas fa-edit mr-2"></i>Edit
+                                    </button>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                        <div>
+                                            <p class="font-semibold text-gray-900">Principal / School Head</p>
+                                            <p class="text-xs text-gray-600">Approval Signatory</p>
+                                        </div>
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Active</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- RFQ Signatories -->
+                            <div class="border border-gray-200 rounded-lg p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-gray-900">Request for Quotation (RFQ)</h4>
+                                        <p class="text-sm text-gray-600">Configure signatories for RFQ documents</p>
+                                    </div>
+                                    <button onclick="editSignatories('RFQ')" class="text-green-600 hover:text-green-800">
+                                        <i class="fas fa-edit mr-2"></i>Edit
+                                    </button>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                        <div>
+                                            <p class="font-semibold text-gray-900">BAC Chairperson</p>
+                                            <p class="text-xs text-gray-600">Bids and Awards Committee</p>
+                                        </div>
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Active</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Abstract of Quotation Signatories -->
+                            <div class="border border-gray-200 rounded-lg p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-gray-900">Abstract of Quotation</h4>
+                                        <p class="text-sm text-gray-600">Configure signatories for Abstract of Quotation documents</p>
+                                    </div>
+                                    <button onclick="editSignatories('Abstract')" class="text-green-600 hover:text-green-800">
+                                        <i class="fas fa-edit mr-2"></i>Edit
+                                    </button>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                        <div>
+                                            <p class="font-semibold text-gray-900">BAC Chairperson</p>
+                                            <p class="text-xs text-gray-600">Bids and Awards Committee</p>
+                                        </div>
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Active</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                        <div>
+                                            <p class="font-semibold text-gray-900">Head of Procuring Entity (HoPE)</p>
+                                            <p class="text-xs text-gray-600">Principal / School Head</p>
+                                        </div>
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Active</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PO Signatories -->
+                            <div class="border border-gray-200 rounded-lg p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-gray-900">Purchase Order (PO)</h4>
+                                        <p class="text-sm text-gray-600">Configure signatories for PO documents</p>
+                                    </div>
+                                    <button onclick="editSignatories('PO')" class="text-green-600 hover:text-green-800">
+                                        <i class="fas fa-edit mr-2"></i>Edit
+                                    </button>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                        <div>
+                                            <p class="font-semibold text-gray-900">BAC Chairperson</p>
+                                            <p class="text-xs text-gray-600">Bids and Awards Committee</p>
+                                        </div>
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Active</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                        <div>
+                                            <p class="font-semibold text-gray-900">Head of Procuring Entity (HoPE)</p>
+                                            <p class="text-xs text-gray-600">Principal / School Head</p>
+                                        </div>
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Active</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- IAR Signatories -->
+                            <div class="border border-gray-200 rounded-lg p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-gray-900">Inspection and Acceptance Report (IAR)</h4>
+                                        <p class="text-sm text-gray-600">Configure signatories for IAR documents</p>
+                                    </div>
+                                    <button onclick="editSignatories('IAR')" class="text-green-600 hover:text-green-800">
+                                        <i class="fas fa-edit mr-2"></i>Edit
+                                    </button>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                        <div>
+                                            <p class="font-semibold text-gray-900">IAC Chairperson</p>
+                                            <p class="text-xs text-gray-600">Inspection and Acceptance Committee</p>
+                                        </div>
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Active</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                        <div>
+                                            <p class="font-semibold text-gray-900">Principal / School Head</p>
+                                            <p class="text-xs text-gray-600">Approval Signatory</p>
+                                        </div>
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Active</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- DV Signatories -->
+                            <div class="border border-gray-200 rounded-lg p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-gray-900">Disbursement Voucher (DV)</h4>
+                                        <p class="text-sm text-gray-600">Configure signatories for DV documents</p>
+                                    </div>
+                                    <button onclick="editSignatories('DV')" class="text-green-600 hover:text-green-800">
+                                        <i class="fas fa-edit mr-2"></i>Edit
+                                    </button>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                        <div>
+                                            <p class="font-semibold text-gray-900">Bookkeeper</p>
+                                            <p class="text-xs text-gray-600">Certified by</p>
+                                        </div>
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Active</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                        <div>
+                                            <p class="font-semibold text-gray-900">Principal / School Head</p>
+                                            <p class="text-xs text-gray-600">Approved for Payment</p>
+                                        </div>
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Active</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Cheque Signatories -->
+                            <div class="border border-gray-200 rounded-lg p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-gray-900">Cheque</h4>
+                                        <p class="text-sm text-gray-600">Configure signatories for cheque documents</p>
+                                    </div>
+                                    <button onclick="editSignatories('Cheque')" class="text-green-600 hover:text-green-800">
+                                        <i class="fas fa-edit mr-2"></i>Edit
+                                    </button>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                        <div>
+                                            <p class="font-semibold text-gray-900">Signatory 1</p>
+                                            <p class="text-xs text-gray-600">Primary Signatory</p>
+                                        </div>
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Active</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                        <div>
+                                            <p class="font-semibold text-gray-900">Signatory 2</p>
+                                            <p class="text-xs text-gray-600">Secondary Signatory</p>
+                                        </div>
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Active</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Edit Signatories Modal -->
+            <div id="editSignatoriesModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
+                <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                    <div class="p-6 border-b border-gray-200 sticky top-0 bg-white z-10">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-bold text-gray-900" id="modalDocumentType">Edit Signatories</h3>
+                            <button onclick="closeSignatoriesModal()" class="text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-sm text-gray-600 mb-6">Configure signatories for this document type. The system will track when signatures are required and completed.</p>
+                        
+                        <!-- Current Signatories List -->
+                        <div class="mb-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">Current Signatories</h4>
+                            <div id="signatoriesList" class="space-y-3">
+                                <!-- Signatories will be dynamically loaded here -->
+                            </div>
+                        </div>
+
+                        <!-- Add New Signatory -->
+                        <div class="border-t border-gray-200 pt-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">Add Signatory</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Select User/Role</label>
+                                    <select id="signatoryUser" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                                        <option value="">Select User or Role...</option>
+                                        <option value="principal">Principal / School Head</option>
+                                        <option value="bac-chair">BAC Chairperson</option>
+                                        <option value="iac-chair">IAC Chairperson</option>
+                                        <option value="bookkeeper">Bookkeeper</option>
+                                        <option value="budget-officer">Budget Officer</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Signatory Position/Title</label>
+                                    <input type="text" id="signatoryTitle" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500" placeholder="e.g., SCHOOL PRINCIPAL II">
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Signatory Label/Purpose</label>
+                                <input type="text" id="signatoryLabel" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500" placeholder="e.g., Approved by, Certified by, etc.">
+                            </div>
+                            <div class="mt-4">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Signatory Order (1 = First to sign)</label>
+                                <input type="number" id="signatoryOrder" min="1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500" placeholder="1">
+                            </div>
+                            <button onclick="addSignatory()" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors">
+                                <i class="fas fa-plus mr-2"></i>Add Signatory
+                            </button>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="border-t border-gray-200 pt-6 mt-6 flex items-center justify-end space-x-4">
+                            <button onclick="closeSignatoriesModal()" class="px-6 py-2 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                                Cancel
+                            </button>
+                            <button onclick="saveSignatories()" class="px-6 py-2 bg-[#103D1C] hover:bg-[#14532d] text-white rounded-lg transition-colors">
+                                <i class="fas fa-save mr-2"></i>Save Signatories
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- System Configuration Section -->
             <section id="config-section" class="content-section hidden">

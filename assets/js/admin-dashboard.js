@@ -80,6 +80,7 @@ function updatePageTitle(section) {
         'transactions': { title: 'Transaction Monitoring', subtitle: 'Monitor all system transactions' },
         'audit': { title: 'Audit Logs', subtitle: 'View system activity and audit trail' },
         'reports': { title: 'Reports & Analytics', subtitle: 'Generate and view system reports' },
+        'signatories': { title: 'Document Signatory Management', subtitle: 'Configure signatories for each document type' },
         'config': { title: 'System Configuration', subtitle: 'Configure system settings' },
         'maintenance': { title: 'System Maintenance', subtitle: 'System health and maintenance tasks' }
     };
@@ -806,4 +807,230 @@ const API = {
 
 // Export API object
 window.API = API;
+
+/**
+ * Document Signatory Management Functions
+ */
+
+// Current document type being edited
+let currentDocumentType = '';
+
+// Signatory data structure
+const signatoryData = {
+    'PPMP': [
+        { user: 'principal', title: 'SCHOOL PRINCIPAL II', label: 'Approved by', order: 1 },
+        { user: 'bac-chair', title: 'BAC Chairperson', label: 'BAC Chairperson', order: 2 }
+    ],
+    'PR': [
+        { user: 'principal', title: 'SCHOOL PRINCIPAL II', label: 'Approved by', order: 1 }
+    ],
+    'RIS': [
+        { user: 'principal', title: 'SCHOOL PRINCIPAL II', label: 'Approved by', order: 1 }
+    ],
+    'RFQ': [
+        { user: 'bac-chair', title: 'BAC Chairperson', label: 'BAC Chairperson', order: 1 }
+    ],
+    'Abstract': [
+        { user: 'bac-chair', title: 'BAC Chairperson', label: 'BAC Chairperson', order: 1 },
+        { user: 'principal', title: 'SCHOOL PRINCIPAL II', label: 'Head of Procuring Entity (HoPE)', order: 2 }
+    ],
+    'PO': [
+        { user: 'bac-chair', title: 'BAC Chairperson', label: 'BAC Chairperson', order: 1 },
+        { user: 'principal', title: 'SCHOOL PRINCIPAL II', label: 'Head of Procuring Entity (HoPE)', order: 2 }
+    ],
+    'IAR': [
+        { user: 'iac-chair', title: 'IAC Chairperson', label: 'IAC Chairperson', order: 1 },
+        { user: 'principal', title: 'SCHOOL PRINCIPAL II', label: 'Approved by', order: 2 }
+    ],
+    'DV': [
+        { user: 'bookkeeper', title: 'ADAS III BOOKKEEPER', label: 'Certified by', order: 1 },
+        { user: 'principal', title: 'SCHOOL PRINCIPAL II', label: 'Approved for Payment', order: 2 }
+    ],
+    'Cheque': [
+        { user: 'principal', title: 'SCHOOL PRINCIPAL II', label: 'Signatory 1', order: 1 },
+        { user: 'principal', title: 'SCHOOL PRINCIPAL II', label: 'Signatory 2', order: 2 }
+    ]
+};
+
+/**
+ * Edit Signatories
+ */
+function editSignatories(documentType) {
+    currentDocumentType = documentType;
+    const modal = document.getElementById('editSignatoriesModal');
+    const modalTitle = document.getElementById('modalDocumentType');
+    const signatoriesList = document.getElementById('signatoriesList');
+    
+    if (!modal || !modalTitle || !signatoriesList) return;
+    
+    // Set modal title
+    const documentNames = {
+        'PPMP': 'Project Procurement Management Plan (PPMP)',
+        'PR': 'Purchase Request (PR)',
+        'RIS': 'Requisition and Issue Slip (RIS)',
+        'RFQ': 'Request for Quotation (RFQ)',
+        'Abstract': 'Abstract of Quotation',
+        'PO': 'Purchase Order (PO)',
+        'IAR': 'Inspection and Acceptance Report (IAR)',
+        'DV': 'Disbursement Voucher (DV)',
+        'Cheque': 'Cheque'
+    };
+    
+    modalTitle.textContent = `Edit Signatories - ${documentNames[documentType] || documentType}`;
+    
+    // Load current signatories
+    loadSignatoriesList(documentType);
+    
+    // Show modal
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+/**
+ * Load Signatories List
+ */
+function loadSignatoriesList(documentType) {
+    const signatoriesList = document.getElementById('signatoriesList');
+    if (!signatoriesList) return;
+    
+    const signatories = signatoryData[documentType] || [];
+    
+    if (signatories.length === 0) {
+        signatoriesList.innerHTML = '<p class="text-gray-500 text-sm">No signatories configured. Add signatories below.</p>';
+        return;
+    }
+    
+    // Sort by order
+    const sortedSignatories = [...signatories].sort((a, b) => a.order - b.order);
+    
+    signatoriesList.innerHTML = sortedSignatories.map((signatory, index) => {
+        const userNames = {
+            'principal': 'Principal / School Head',
+            'bac-chair': 'BAC Chairperson',
+            'iac-chair': 'IAC Chairperson',
+            'bookkeeper': 'Bookkeeper',
+            'budget-officer': 'Budget Officer'
+        };
+        
+        return `
+            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200" data-index="${index}">
+                <div class="flex-1">
+                    <div class="flex items-center space-x-3">
+                        <span class="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-semibold">${signatory.order}</span>
+                        <div>
+                            <p class="font-semibold text-gray-900">${userNames[signatory.user] || signatory.user}</p>
+                            <p class="text-sm text-gray-600">${signatory.title}</p>
+                            <p class="text-xs text-gray-500 mt-1">${signatory.label}</p>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="removeSignatory(${index})" class="text-red-600 hover:text-red-800 ml-4" title="Remove">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `;
+    }).join('');
+}
+
+/**
+ * Add Signatory
+ */
+function addSignatory() {
+    const userSelect = document.getElementById('signatoryUser');
+    const titleInput = document.getElementById('signatoryTitle');
+    const labelInput = document.getElementById('signatoryLabel');
+    const orderInput = document.getElementById('signatoryOrder');
+    
+    if (!userSelect || !titleInput || !labelInput || !orderInput) return;
+    
+    const user = userSelect.value;
+    const title = titleInput.value.trim();
+    const label = labelInput.value.trim();
+    const order = parseInt(orderInput.value) || 1;
+    
+    if (!user || !title || !label) {
+        alert('Please fill in all fields');
+        return;
+    }
+    
+    if (!signatoryData[currentDocumentType]) {
+        signatoryData[currentDocumentType] = [];
+    }
+    
+    // Add signatory
+    signatoryData[currentDocumentType].push({
+        user: user,
+        title: title,
+        label: label,
+        order: order
+    });
+    
+    // Reload list
+    loadSignatoriesList(currentDocumentType);
+    
+    // Clear form
+    userSelect.value = '';
+    titleInput.value = '';
+    labelInput.value = '';
+    orderInput.value = '';
+}
+
+/**
+ * Remove Signatory
+ */
+function removeSignatory(index) {
+    if (!signatoryData[currentDocumentType]) return;
+    
+    if (confirm('Are you sure you want to remove this signatory?')) {
+        signatoryData[currentDocumentType].splice(index, 1);
+        loadSignatoriesList(currentDocumentType);
+    }
+}
+
+/**
+ * Save Signatories
+ */
+function saveSignatories() {
+    if (!currentDocumentType) return;
+    
+    // In a real application, this would make an API call to save signatories
+    // For now, we'll just show a success message
+    alert(`Signatories for ${currentDocumentType} have been saved successfully!\n\nThe system will now track these signatories in the document workflow.`);
+    
+    // Close modal
+    closeSignatoriesModal();
+    
+    // In a real application, you would reload the signatories display in the main section
+    // This ensures the UI reflects the saved changes
+    console.log('Signatories saved:', signatoryData[currentDocumentType]);
+}
+
+/**
+ * Close Signatories Modal
+ */
+function closeSignatoriesModal() {
+    const modal = document.getElementById('editSignatoriesModal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+    
+    // Reset form
+    const userSelect = document.getElementById('signatoryUser');
+    const titleInput = document.getElementById('signatoryTitle');
+    const labelInput = document.getElementById('signatoryLabel');
+    const orderInput = document.getElementById('signatoryOrder');
+    
+    if (userSelect) userSelect.value = '';
+    if (titleInput) titleInput.value = '';
+    if (labelInput) labelInput.value = '';
+    if (orderInput) orderInput.value = '';
+}
+
+// Make functions globally available
+window.editSignatories = editSignatories;
+window.addSignatory = addSignatory;
+window.removeSignatory = removeSignatory;
+window.saveSignatories = saveSignatories;
+window.closeSignatoriesModal = closeSignatoriesModal;
 

@@ -404,7 +404,7 @@
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <div class="mb-6">
                         <h3 class="text-2xl font-bold text-gray-900 mb-2">Create Purchase Request</h3>
-                        <p class="text-gray-600">Create a new Purchase Request from Supply Request</p>
+                        <p class="text-gray-600">Create a new Purchase Request referencing approved APP (STEP 6)</p>
                     </div>
 
                     <form id="prForm" class="space-y-6">
@@ -537,6 +537,37 @@
                                 placeholder="Explain why this item is needed"
                                 required
                             ></textarea>
+                        </div>
+
+                        <!-- APP and PPMP Reference -->
+                        <div class="border-b border-gray-200 pb-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">
+                                <i class="fas fa-file-contract text-blue-600 mr-2"></i>APP and PPMP Reference (STEP 6)
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Approved APP <span class="text-red-500">*</span>
+                                    </label>
+                                    <select id="appReference" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500" required>
+                                        <option value="">Select Approved APP...</option>
+                                        <option value="APP-2025">APP 2025 (Approved by HoPE on Dec 15, 2024)</option>
+                                        <option value="APP-2024">APP 2024 (Approved by HoPE on Dec 15, 2023)</option>
+                                    </select>
+                                    <p class="text-xs text-gray-500 mt-1">All PRs must reference an approved APP</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        PPMP Item Reference
+                                    </label>
+                                    <select id="ppmpReference" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                                        <option value="">Select PPMP Item (if applicable)...</option>
+                                        <option value="PPMP-2025-001-ITEM-001">PPMP-2025-001 - Item 001</option>
+                                        <option value="PPMP-2025-001-ITEM-002">PPMP-2025-001 - Item 002</option>
+                                    </select>
+                                    <p class="text-xs text-gray-500 mt-1">Link to specific PPMP item if available</p>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Form Actions -->

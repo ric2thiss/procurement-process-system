@@ -83,6 +83,8 @@ function updatePageTitle(sectionId) {
         'create-ppmp': { title: 'Create New PPMP', subtitle: 'Create a new annual PPMP' },
         'items-management': { title: 'PPMP Items Management', subtitle: 'Manage items in PPMP' },
         'amendments': { title: 'PPMP Amendments', subtitle: 'Manage amendments and revisions' },
+        'app-consolidation': { title: 'APP Consolidation', subtitle: 'BAC Secretariat - Consolidate PPMPs into APP (STEP 5)' },
+        'ppmp-approvals': { title: 'PPMP Pending Approvals', subtitle: 'Track PPMPs forwarded to Principal for approval' },
         'reports': { title: 'Reports & Analytics', subtitle: 'PPMP reports and analytics' }
     };
     
@@ -367,6 +369,75 @@ function showSuccessMessage(message) {
         setTimeout(() => {
             messageDiv.remove();
         }, 5000);
+    }
+}
+
+/**
+ * Create APP
+ */
+function createAPP() {
+    alert('Create APP\n\nThis would open a form to create a new Annual Procurement Plan (APP) by consolidating approved PPMPs.');
+}
+
+/**
+ * View APP
+ */
+function viewAPP(appYear) {
+    alert(`Viewing APP ${appYear}\n\nThis would display the complete APP document with all consolidated PPMPs and items.`);
+}
+
+/**
+ * Submit APP for Approval (to HoPE)
+ */
+function submitAPPForApproval(appYear) {
+    if (confirm(`Submit APP ${appYear} to HoPE for approval?`)) {
+        // Show loading state
+        const button = event.target;
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Submitting...';
+        button.disabled = true;
+
+        // Simulate API call
+        setTimeout(() => {
+            showSuccessMessage(`APP ${appYear} submitted to HoPE for approval. Status: Pending HoPE Approval.`);
+            button.innerHTML = originalText;
+            button.disabled = false;
+
+            // Refresh APP consolidation section
+            setTimeout(() => {
+                showSection('app-consolidation');
+                updatePageTitle('app-consolidation');
+            }, 1500);
+        }, 1500);
+    }
+}
+
+/**
+ * View PPMP Details
+ */
+function viewPPMPDetails(ppmpNumber) {
+    alert(`Viewing PPMP Details: ${ppmpNumber}\n\nThis would display complete PPMP details including items, budget, and status.`);
+}
+
+/**
+ * View PPMP Status (Pending Approval)
+ */
+function viewPPMPStatus(ppmpNumber) {
+    alert(`Viewing PPMP Status: ${ppmpNumber}\n\nThis would display the PPMP status and approval tracking information:\n- Current status (Pending Principal Approval)\n- Date forwarded\n- Approval progress\n- Expected completion date`);
+}
+
+/**
+ * Add PPMP to APP
+ */
+function addToAPP(ppmpNumber) {
+    if (confirm(`Add ${ppmpNumber} to APP 2025?`)) {
+        showSuccessMessage(`${ppmpNumber} added to APP 2025 successfully.`);
+        
+        // Refresh APP consolidation section
+        setTimeout(() => {
+            showSection('app-consolidation');
+            updatePageTitle('app-consolidation');
+        }, 1500);
     }
 }
 

@@ -52,9 +52,12 @@ function updatePageTitle(sectionId) {
         'dashboard': { title: 'Dashboard Overview', subtitle: 'Procurement statistics and monitoring' },
         'procurement-queue': { title: 'Procurement Queue', subtitle: 'Review and process approved PRs with ORS' },
         'procurement-checklist': { title: 'Procurement Checklist', subtitle: 'Complete procurement checklists for PRs' },
+        'bac-signatures': { title: 'BAC Signatures', subtitle: 'Review and sign documents for BAC Chairperson approval (RFQ, Abstract, PO)' },
         'po-checklist': { title: 'PO Checklist', subtitle: 'Complete PO checklist items before generating PO' },
         'purchase-orders': { title: 'Purchase Orders', subtitle: 'Manage Purchase Orders (PO)' },
         'delivery-receipt': { title: 'Delivery & Receipt', subtitle: 'Verify delivery and receipt of procured items' },
+        'inspection-acceptance': { title: 'Inspection & Acceptance (IAR)', subtitle: 'IAC - Check quantity, quality, condition (STEP 10)' },
+        'iac-signatures': { title: 'IAC Signatures', subtitle: 'Review and sign IAR documents for IAC Chairperson approval' },
         'suppliers': { title: 'Suppliers', subtitle: 'Manage supplier relationships' },
         'reports': { title: 'Procurement Reports', subtitle: 'Generate procurement reports and analytics' }
     };
@@ -230,5 +233,153 @@ function verifyDelivery(poNumber) {
 
 function verifyReceipt(poNumber) {
     alert(`Verifying receipt for ${poNumber}\n\nThis would open a form to verify receipt, check items, and complete acceptance documentation.`);
+}
+
+/**
+ * Create IAR
+ */
+function createIAR(poNumber) {
+    // In a real application, fetch PO and delivery details from API
+    document.getElementById('iarPONumber').textContent = poNumber;
+    document.getElementById('iarModal').classList.remove('hidden');
+    
+    // Initialize form submission
+    const iarForm = document.getElementById('iarForm');
+    if (iarForm) {
+        iarForm.onsubmit = function(e) {
+            e.preventDefault();
+            submitIAR(poNumber);
+        };
+    }
+}
+
+/**
+ * Close IAR Modal
+ */
+function closeIARModal() {
+    document.getElementById('iarModal').classList.add('hidden');
+    const form = document.getElementById('iarForm');
+    if (form) {
+        form.reset();
+    }
+}
+
+/**
+ * Submit IAR
+ */
+function submitIAR(poNumber) {
+    const decision = document.querySelector('input[name="iarDecision"]:checked').value;
+    const actualQty = document.getElementById('iarActualQty').value;
+    const quality = document.getElementById('iarQuality').value;
+    const condition = document.getElementById('iarCondition').value;
+    const compliance = document.getElementById('iarCompliance').value;
+    const remarks = document.getElementById('iarRemarks').value;
+
+    if (!actualQty || !quality || !condition || !compliance) {
+        alert('Please complete all required inspection fields.');
+        return;
+    }
+
+    if (!confirm(`Submit IAR for ${poNumber}?`)) {
+        return;
+    }
+
+    // Show loading state
+    const submitButton = event.target.querySelector('button[type="submit"]');
+    const originalText = submitButton.innerHTML;
+    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Submitting...';
+    submitButton.disabled = true;
+
+    // Simulate API call
+    setTimeout(() => {
+        if (decision === 'accepted') {
+            alert(`IAR created successfully!\n\nItems Accepted - IAR Prepared.\nIAR will be forwarded to Bookkeeper for DV preparation.`);
+        } else if (decision === 'rejected') {
+            alert(`IAR created - Items Rejected.\n\nSupplier will be notified for replacement/correction.`);
+        } else {
+            alert(`IAR created - Partial Acceptance.\n\nPartial acceptance noted.`);
+        }
+
+        closeIARModal();
+        submitButton.innerHTML = originalText;
+        submitButton.disabled = false;
+
+        // Refresh inspection section
+        setTimeout(() => {
+            showSection('inspection-acceptance');
+            updatePageTitle('inspection-acceptance');
+        }, 1500);
+    }, 1500);
+}
+
+/**
+ * View IAR
+ */
+function viewIAR(iarNumber) {
+    alert(`Viewing IAR: ${iarNumber}\n\nThis would display the complete Inspection and Acceptance Report with all inspection details.`);
+}
+
+/**
+ * Print IAR
+ */
+function printIAR(iarNumber) {
+    alert(`Printing IAR: ${iarNumber}\n\nThis would generate a printable PDF of the IAR document.`);
+}
+
+/**
+ * View Delivery Details
+ */
+function viewDeliveryDetails(poNumber) {
+    alert(`Viewing delivery details for ${poNumber}\n\nThis would show complete delivery information including items, quantities, and delivery date.`);
+}
+
+/**
+ * Switch BAC Document Type Tab
+ */
+function switchBACDocumentType(type) {
+    // Hide all tables
+    document.querySelectorAll('.bac-doc-table').forEach(table => table.classList.add('hidden'));
+    
+    // Show selected table
+    const selectedTable = document.getElementById(`bac-${type}-table`);
+    if (selectedTable) {
+        selectedTable.classList.remove('hidden');
+    }
+    
+    // Update tab active states
+    document.querySelectorAll('.bac-tab').forEach(tab => {
+        tab.classList.remove('active', 'text-green-600', 'border-green-600');
+        tab.classList.add('text-gray-500', 'border-transparent');
+    });
+    
+    const activeTab = event.target.closest('.bac-tab');
+    if (activeTab) {
+        activeTab.classList.add('active', 'text-green-600', 'border-green-600');
+        activeTab.classList.remove('text-gray-500', 'border-transparent');
+    }
+}
+
+/**
+ * Review BAC Document (RFQ, Abstract, PO)
+ */
+function reviewBACDocument(docType, docNumber) {
+    const docTypeNames = {
+        'RFQ': 'Request for Quotation',
+        'Abstract': 'Abstract of Quotation',
+        'PO': 'Purchase Order'
+    };
+    
+    if (confirm(`Review ${docTypeNames[docType]} ${docNumber} for BAC Chairperson signature?\n\nThis will open the document for review. You can approve and sign it once verified.`)) {
+        alert(`Opening ${docTypeNames[docType]} ${docNumber} for review.\n\nThis would display the complete document details.\n\nAfter review, you can approve and sign as BAC Chairperson.`);
+    }
+}
+
+/**
+ * Review IAR for IAC Signature
+ */
+function reviewIAR(iarNumber) {
+    if (confirm(`Review IAR ${iarNumber} for IAC Chairperson signature?\n\nThis will open the IAR document for review. You can approve and sign it once verified.`)) {
+        alert(`Opening IAR ${iarNumber} for review.\n\nThis would display the complete IAR document with inspection details.\n\nAfter review, you can approve and sign as IAC Chairperson.`);
+    }
 }
 

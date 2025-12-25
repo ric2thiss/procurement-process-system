@@ -51,6 +51,7 @@ function updatePageTitle(sectionId) {
     const titles = {
         'dashboard': { title: 'Dashboard Overview', subtitle: 'Bookkeeper statistics and monitoring' },
         'dv-creation': { title: 'DV Creation', subtitle: 'Create DVs from completed procurement documents' },
+        'dv-certifications': { title: 'DV Certifications', subtitle: 'Review and certify Disbursement Vouchers' },
         'dv-management': { title: 'DV Management', subtitle: 'Manage and track all DVs' },
         'document-verification': { title: 'Document Verification', subtitle: 'Verify payment requirements and document completeness' },
         'document-linking': { title: 'Document Linking', subtitle: 'Link DV to related documents' },
@@ -189,6 +190,15 @@ function saveDocumentLinks() {
 function finalizeDV() {
     if (confirm('Are you sure you want to finalize this DV? It will be forwarded to School Head for signature.')) {
         alert('DV finalized and forwarded to School Head for signature.');
+    }
+}
+
+/**
+ * Review DV Certification
+ */
+function reviewDVCertification(dvNumber) {
+    if (confirm(`Review DV ${dvNumber} for certification?\n\nAs Bookkeeper, you certify that cash is available and supporting documents are complete.\n\nThis will open the DV for review.`)) {
+        alert(`Opening DV ${dvNumber} for certification review.\n\nThis would display the complete DV with:\n- Payment details\n- Supporting documents\n- Budget availability\n- Document completeness\n\nAfter review, you can certify the DV.`);
     }
 }
 

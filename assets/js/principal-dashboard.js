@@ -80,6 +80,8 @@ function updatePageTitle(sectionId) {
     const titles = {
         'dashboard': { title: 'Dashboard Overview', subtitle: 'Principal approval statistics and monitoring' },
         'pending-approvals': { title: 'Pending Approvals', subtitle: 'Review and approve or reject purchase requests' },
+        'ppmp-signatures': { title: 'PPMP Signatures', subtitle: 'Review and sign Project Procurement Management Plans' },
+        'ris-signatures': { title: 'RIS Signatures', subtitle: 'Review and sign Requisition and Issue Slips' },
         'pr-history': { title: 'PR History', subtitle: 'View all approved and rejected purchase requests' },
         'dv-signing': { title: 'DV Signing', subtitle: 'Review and sign disbursement vouchers' },
         'approval-delegation': { title: 'Approval Delegation', subtitle: 'Delegate approval authority temporarily' },
@@ -590,5 +592,25 @@ function revokeDelegation(delegationId) {
  */
 function viewApprovalDetails(prNumber) {
     alert(`Viewing approval details for ${prNumber}\n\nThis would show complete approval history including:\n- Decision made\n- Processing time\n- Remarks\n- Digital signature details`);
+}
+
+/**
+ * Review PPMP for Signature
+ */
+function reviewPPMP(ppmpNumber) {
+    if (confirm(`Review PPMP ${ppmpNumber} for signature?\n\nThis will open the PPMP document for review. You can approve and sign it once verified.`)) {
+        alert(`Opening PPMP ${ppmpNumber} for review.\n\nThis would display the complete PPMP document with all items, budget allocations, and procurement schedules.\n\nAfter review, you can approve and sign the PPMP.`);
+        // In a real application, this would open a modal or navigate to PPMP review page
+    }
+}
+
+/**
+ * Review RIS for Signature
+ */
+function reviewRIS(risNumber) {
+    if (confirm(`Review RIS ${risNumber} for signature?\n\nThis will open the RIS document for review. You can approve and sign it once verified.`)) {
+        alert(`Opening RIS ${risNumber} for review.\n\nThis would display the complete RIS document with item details, quantities, and issue information.\n\nAfter review, you can approve and sign the RIS.`);
+        // In a real application, this would open a modal or navigate to RIS review page
+    }
 }
 

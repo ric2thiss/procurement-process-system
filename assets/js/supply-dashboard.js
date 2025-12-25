@@ -290,15 +290,40 @@ function showRISForm() {
 }
 
 /**
- * Show PR Form
+ * Forward to PPMP Management (STEP 3: Create/Update PPMP)
  */
-function showPRForm() {
+function forwardToPPMP() {
     // Close modal
     closeProcessModal();
     
-    // Navigate to PR creation section
-    showSection('pr-creation');
-    document.querySelector('[data-section="pr-creation"]').click();
+    // Get the current request details
+    const trackingId = document.getElementById('modalTrackingId')?.textContent || 'N/A';
+    const itemDescription = document.getElementById('modalItem')?.textContent || 'N/A';
+    const quantity = document.getElementById('modalQuantity')?.textContent || 'N/A';
+    
+    // Show confirmation message
+    if (confirm(`Forward request ${trackingId} to PPMP Management?\n\nItem: ${itemDescription}\nQuantity: ${quantity}\n\nThis will mark the request as "Item Not Available - Procurement Needed" and forward it to PPMP Management module for PPMP creation (STEP 3).`)) {
+        // Simulate forwarding
+        const forwardButton = event.target;
+        const originalText = forwardButton.innerHTML;
+        forwardButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Forwarding...';
+        forwardButton.disabled = true;
+        
+        setTimeout(() => {
+            alert(`Request ${trackingId} forwarded to PPMP Management successfully!\n\nStatus: Item Not Available - Procurement Needed\n\nNext Steps:\n1. Create/Update PPMP (STEP 3)\n2. Submit PPMP to Budget Office (STEP 4)\n3. BAC consolidates into APP (STEP 5)\n4. Create PR after APP approval (STEP 6)`);
+            
+            // Update status in UI (in real implementation, this would update the database)
+            forwardButton.innerHTML = originalText;
+            forwardButton.disabled = false;
+            closeProcessModal();
+            
+            // Refresh the supply requests list
+            setTimeout(() => {
+                showSection('supply-requests');
+                updatePageTitle('supply-requests');
+            }, 1500);
+        }, 1500);
+    }
 }
 
 /**

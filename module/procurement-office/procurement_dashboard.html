@@ -68,6 +68,27 @@
                         </a>
                     </li>
                     <li>
+                        <a href="#bac-signatures" data-section="bac-signatures" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-file-signature w-5"></i>
+                            <span>BAC Signatures</span>
+                            <span class="ml-auto bg-orange-500 text-white text-xs px-2 py-1 rounded-full" id="bacSignatureCount">5</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#inspection-acceptance" data-section="inspection-acceptance" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-clipboard-check w-5"></i>
+                            <span>Inspection & Acceptance (IAR)</span>
+                            <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full" id="iarCount">4</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#iac-signatures" data-section="iac-signatures" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-check-circle w-5"></i>
+                            <span>IAC Signatures</span>
+                            <span class="ml-auto bg-purple-500 text-white text-xs px-2 py-1 rounded-full" id="iacSignatureCount">3</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="#suppliers" data-section="suppliers" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
                             <i class="fas fa-building w-5"></i>
                             <span>Suppliers</span>
@@ -602,6 +623,488 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BAC Signatures Section (RFQ, Abstract, PO) -->
+            <section id="bac-signatures-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">BAC Signatures</h3>
+                            <p class="text-gray-600">Review and sign documents forwarded for BAC Chairperson approval (RFQ, Abstract of Quotation, PO)</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-filter mr-2"></i>Filter
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Document Type Tabs -->
+                    <div class="mb-6 border-b border-gray-200">
+                        <nav class="flex space-x-8">
+                            <button onclick="switchBACDocumentType('rfq')" class="bac-tab active px-1 py-4 text-sm font-medium text-green-600 border-b-2 border-green-600">
+                                Request for Quotation (RFQ)
+                                <span class="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">2</span>
+                            </button>
+                            <button onclick="switchBACDocumentType('abstract')" class="bac-tab px-1 py-4 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700">
+                                Abstract of Quotation
+                                <span class="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">1</span>
+                            </button>
+                            <button onclick="switchBACDocumentType('po')" class="bac-tab px-1 py-4 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700">
+                                Purchase Order (PO)
+                                <span class="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">2</span>
+                            </button>
+                        </nav>
+                    </div>
+
+                    <!-- RFQ Signatures Table -->
+                    <div id="bac-rfq-table" class="bac-doc-table">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">RFQ Number</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">PR Number</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Item Description</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date Forwarded</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Status</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-sm font-semibold text-blue-600">RFQ-2025-023</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">PR-2025-089</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">Whiteboard Markers</td>
+                                        <td class="px-4 py-3 text-sm text-gray-600">2025-01-16</td>
+                                        <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium">Pending Signature</span></td>
+                                        <td class="px-4 py-3">
+                                            <button onclick="reviewBACDocument('RFQ', 'RFQ-2025-023')" class="text-green-600 hover:text-green-800 mr-2" title="Review & Sign">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-sm font-semibold text-blue-600">RFQ-2025-024</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">PR-2025-090</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">Projector Lamp</td>
+                                        <td class="px-4 py-3 text-sm text-gray-600">2025-01-17</td>
+                                        <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium">Pending Signature</span></td>
+                                        <td class="px-4 py-3">
+                                            <button onclick="reviewBACDocument('RFQ', 'RFQ-2025-024')" class="text-green-600 hover:text-green-800 mr-2" title="Review & Sign">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Abstract of Quotation Signatures Table -->
+                    <div id="bac-abstract-table" class="bac-doc-table hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Abstract Number</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">RFQ Number</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Item Description</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Lowest Bid</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date Forwarded</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Status</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-sm font-semibold text-blue-600">ABS-2025-015</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">RFQ-2025-023</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">Whiteboard Markers</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">₱2,400.00</td>
+                                        <td class="px-4 py-3 text-sm text-gray-600">2025-01-18</td>
+                                        <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium">Pending Signature</span></td>
+                                        <td class="px-4 py-3">
+                                            <button onclick="reviewBACDocument('Abstract', 'ABS-2025-015')" class="text-green-600 hover:text-green-800 mr-2" title="Review & Sign">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- PO Signatures Table -->
+                    <div id="bac-po-table" class="bac-doc-table hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">PO Number</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">PR Number</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Supplier</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Amount</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date Forwarded</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Status</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-sm font-semibold text-blue-600">PO-2025-045</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">PR-2025-089</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">ABC Supplies Inc.</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">₱2,400.00</td>
+                                        <td class="px-4 py-3 text-sm text-gray-600">2025-01-19</td>
+                                        <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium">Pending Signature</span></td>
+                                        <td class="px-4 py-3">
+                                            <button onclick="reviewBACDocument('PO', 'PO-2025-045')" class="text-green-600 hover:text-green-800 mr-2" title="Review & Sign">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-sm font-semibold text-blue-600">PO-2025-046</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">PR-2025-090</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">XYZ Office Supplies</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">₱15,000.00</td>
+                                        <td class="px-4 py-3 text-sm text-gray-600">2025-01-20</td>
+                                        <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium">Pending Signature</span></td>
+                                        <td class="px-4 py-3">
+                                            <button onclick="reviewBACDocument('PO', 'PO-2025-046')" class="text-green-600 hover:text-green-800 mr-2" title="Review & Sign">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- IAC Signatures Section -->
+            <section id="iac-signatures-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">IAC Signatures</h3>
+                            <p class="text-gray-600">Review and sign Inspection and Acceptance Reports (IAR) forwarded for IAC Chairperson approval</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-filter mr-2"></i>Filter
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- IAR Signatures Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">IAR Number</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">PO Number</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Supplier</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Item Description</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Delivery Date</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date Forwarded</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Status</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">IAR-2025-012</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">PO-2025-045</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">ABC Supplies Inc.</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Whiteboard Markers</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-20</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-21</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium">Pending Signature</span></td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="reviewIAR('IAR-2025-012')" class="text-green-600 hover:text-green-800 mr-2" title="Review & Sign">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">IAR-2025-013</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">PO-2025-044</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">XYZ Office Supplies</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">A4 Bond Paper</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-18</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-19</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium">Pending Signature</span></td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="reviewIAR('IAR-2025-013')" class="text-green-600 hover:text-green-800 mr-2" title="Review & Sign">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">IAR-2025-014</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">PO-2025-043</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Office Depot</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Office Chairs</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-17</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-18</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium">Pending Signature</span></td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="reviewIAR('IAR-2025-014')" class="text-green-600 hover:text-green-800 mr-2" title="Review & Sign">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Inspection and Acceptance (IAR) Section -->
+            <section id="inspection-acceptance-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Inspection and Acceptance (IAR)</h3>
+                            <p class="text-gray-600">Inspection and Acceptance Committee (IAC) - Check quantity, quality, condition (STEP 10)</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-filter mr-2"></i>Filter
+                            </button>
+                            <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-download mr-2"></i>Export
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Pending Inspection Table -->
+                    <div class="mb-6">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4">Pending Inspection</h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">PO Number</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">PR Number</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Supplier</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Item Description</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Delivery Date</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Status</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-sm font-semibold text-blue-600">PO-2025-045</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">PR-2025-089</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">ABC Supplies Inc.</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">Office Furniture Set</td>
+                                        <td class="px-4 py-3 text-sm text-gray-600">2025-01-18</td>
+                                        <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium">Delivery Completed - Pending Inspection</span></td>
+                                        <td class="px-4 py-3">
+                                            <button onclick="createIAR('PO-2025-045')" class="text-green-600 hover:text-green-800 mr-2" title="Create IAR">
+                                                <i class="fas fa-clipboard-check"></i>
+                                            </button>
+                                            <button onclick="viewDeliveryDetails('PO-2025-045')" class="text-blue-600 hover:text-blue-800" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-sm font-semibold text-blue-600">PO-2025-044</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">PR-2025-088</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">XYZ Equipment Co.</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">Computer Units</td>
+                                        <td class="px-4 py-3 text-sm text-gray-600">2025-01-17</td>
+                                        <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium">Delivery Completed - Pending Inspection</span></td>
+                                        <td class="px-4 py-3">
+                                            <button onclick="createIAR('PO-2025-044')" class="text-green-600 hover:text-green-800 mr-2" title="Create IAR">
+                                                <i class="fas fa-clipboard-check"></i>
+                                            </button>
+                                            <button onclick="viewDeliveryDetails('PO-2025-044')" class="text-blue-600 hover:text-blue-800" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Completed IARs -->
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4">Completed IARs</h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">IAR Number</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">PO Number</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Item Description</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Quantity</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Inspection Date</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Inspection Result</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Status</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-sm font-semibold text-blue-600">IAR-2025-012</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">PO-2025-043</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">Projector Lamps</td>
+                                        <td class="px-4 py-3 text-sm text-gray-600">5 pieces</td>
+                                        <td class="px-4 py-3 text-sm text-gray-600">2025-01-15</td>
+                                        <td class="px-4 py-3"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Accepted</span></td>
+                                        <td class="px-4 py-3"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-medium">Items Accepted - IAR Prepared</span></td>
+                                        <td class="px-4 py-3">
+                                            <button onclick="viewIAR('IAR-2025-012')" class="text-blue-600 hover:text-blue-800 mr-2" title="View IAR">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button onclick="printIAR('IAR-2025-012')" class="text-gray-600 hover:text-gray-800" title="Print IAR">
+                                                <i class="fas fa-print"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-sm font-semibold text-blue-600">IAR-2025-011</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">PO-2025-042</td>
+                                        <td class="px-4 py-3 text-sm text-gray-900">Whiteboard Markers</td>
+                                        <td class="px-4 py-3 text-sm text-gray-600">20 boxes</td>
+                                        <td class="px-4 py-3 text-sm text-gray-600">2025-01-14</td>
+                                        <td class="px-4 py-3"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Accepted</span></td>
+                                        <td class="px-4 py-3"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-medium">Items Accepted - IAR Prepared</span></td>
+                                        <td class="px-4 py-3">
+                                            <button onclick="viewIAR('IAR-2025-011')" class="text-blue-600 hover:text-blue-800 mr-2" title="View IAR">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button onclick="printIAR('IAR-2025-011')" class="text-gray-600 hover:text-gray-800" title="Print IAR">
+                                                <i class="fas fa-print"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IAR Creation Modal -->
+                <div id="iarModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+                    <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-2xl font-bold text-gray-900">Inspection and Acceptance Report (IAR)</h3>
+                                <button onclick="closeIARModal()" class="text-gray-400 hover:text-gray-600">
+                                    <i class="fas fa-times text-xl"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <form id="iarForm">
+                                <div class="mb-6">
+                                    <h4 class="text-lg font-semibold text-gray-900 mb-4">Delivery Information</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <p class="text-sm text-gray-600">PO Number</p>
+                                            <p class="font-semibold text-gray-900" id="iarPONumber">PO-2025-045</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600">Supplier</p>
+                                            <p class="font-semibold text-gray-900" id="iarSupplier">ABC Supplies Inc.</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600">Delivery Date</p>
+                                            <p class="font-semibold text-gray-900" id="iarDeliveryDate">2025-01-18</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600">Expected Quantity</p>
+                                            <p class="font-semibold text-gray-900" id="iarExpectedQty">10 pieces</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-6">
+                                    <h4 class="text-lg font-semibold text-gray-900 mb-4">Inspection Details</h4>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Quantity Verified</label>
+                                            <input type="number" id="iarActualQty" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Quality Check</label>
+                                            <select id="iarQuality" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                                                <option value="">Select Quality Status...</option>
+                                                <option value="excellent">Excellent - As specified</option>
+                                                <option value="good">Good - Meets requirements</option>
+                                                <option value="acceptable">Acceptable - Minor defects</option>
+                                                <option value="poor">Poor - Does not meet requirements</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Condition Assessment</label>
+                                            <select id="iarCondition" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                                                <option value="">Select Condition...</option>
+                                                <option value="new">New - In perfect condition</option>
+                                                <option value="good">Good - Minor wear</option>
+                                                <option value="fair">Fair - Acceptable wear</option>
+                                                <option value="poor">Poor - Significant damage</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Compliance with Specifications</label>
+                                            <select id="iarCompliance" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                                                <option value="">Select Compliance...</option>
+                                                <option value="compliant">Compliant - Meets all specifications</option>
+                                                <option value="partial">Partially Compliant - Minor deviations</option>
+                                                <option value="non-compliant">Non-Compliant - Significant deviations</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Inspection Remarks</label>
+                                            <textarea id="iarRemarks" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Add inspection notes, observations, or issues found..."></textarea>
+                                        </div>
+                                        <div>
+                                            <label class="flex items-center">
+                                                <input type="radio" name="iarDecision" value="accepted" class="mr-2" checked>
+                                                <span class="text-sm text-gray-700">Items Accepted</span>
+                                            </label>
+                                            <label class="flex items-center mt-2">
+                                                <input type="radio" name="iarDecision" value="rejected" class="mr-2">
+                                                <span class="text-sm text-gray-700">Items Rejected</span>
+                                            </label>
+                                            <label class="flex items-center mt-2">
+                                                <input type="radio" name="iarDecision" value="partial" class="mr-2">
+                                                <span class="text-sm text-gray-700">Partial Acceptance</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-end space-x-4">
+                                    <button 
+                                        type="button"
+                                        onclick="closeIARModal()"
+                                        class="px-6 py-2 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button 
+                                        type="submit"
+                                        class="px-6 py-2 bg-[#103D1C] hover:bg-[#14532d] text-white rounded-lg transition-colors"
+                                    >
+                                        <i class="fas fa-check mr-2"></i>Complete IAR
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </section>

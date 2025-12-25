@@ -37,6 +37,13 @@
                         </a>
                     </li>
                     <li>
+                        <a href="#ppmp-review" data-section="ppmp-review" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-file-contract w-5"></i>
+                            <span>PPMP Review</span>
+                            <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full" id="ppmpReviewCount">7</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="#budget-verification" data-section="budget-verification" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
                             <i class="fas fa-check-circle w-5"></i>
                             <span>Budget Verification</span>
@@ -264,13 +271,217 @@
                 </div>
             </section>
 
+            <!-- PPMP Review Section -->
+            <section id="ppmp-review-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">PPMP Review</h3>
+                            <p class="text-gray-600">Review PPMP submissions and verify budget availability (STEP 4)</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-filter mr-2"></i>Filter
+                            </button>
+                            <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-download mr-2"></i>Export
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input 
+                            type="text" 
+                            placeholder="Search by PPMP number or unit..." 
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        >
+                        <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                            <option value="">All Status</option>
+                            <option value="pending">Pending Review</option>
+                            <option value="approved">Budget Available</option>
+                            <option value="pending-budget">Pending Budget</option>
+                            <option value="forwarded">Forwarded to BAC</option>
+                        </select>
+                        <input 
+                            type="date" 
+                            placeholder="From Date"
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        >
+                        <input 
+                            type="date" 
+                            placeholder="To Date"
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        >
+                    </div>
+
+                    <!-- PPMP Review Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">PPMP Number</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">End User/Unit</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Item Description</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Quantity</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Estimated Cost</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Target Month</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Status</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">PPMP-2025-001</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Science Department</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Laboratory Equipment Set</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">5 sets</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">₱125,000.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">March 2025</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium">Pending Review</span></td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="reviewPPMP('PPMP-2025-001')" class="text-green-600 hover:text-green-800 mr-2" title="Review PPMP">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">PPMP-2025-002</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">IT Department</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Computer Units</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">10 units</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">₱250,000.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">April 2025</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium">Pending Review</span></td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="reviewPPMP('PPMP-2025-002')" class="text-green-600 hover:text-green-800 mr-2" title="Review PPMP">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">PPMP-2025-003</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Administration</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Office Furniture</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">20 pieces</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">₱180,000.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">February 2025</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full font-medium">Pending Budget</span></td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="reviewPPMP('PPMP-2025-003')" class="text-green-600 hover:text-green-800 mr-2" title="Review PPMP">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- PPMP Review Modal -->
+                <div id="ppmpReviewModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+                    <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-2xl font-bold text-gray-900">PPMP Budget Review</h3>
+                                <button onclick="closePPMPReviewModal()" class="text-gray-400 hover:text-gray-600">
+                                    <i class="fas fa-times text-xl"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="mb-6">
+                                <h4 class="text-lg font-semibold text-gray-900 mb-4">PPMP Details</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <p class="text-sm text-gray-600">PPMP Number</p>
+                                        <p class="font-semibold text-gray-900" id="reviewPPMPNumber">PPMP-2025-001</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-600">End User/Unit</p>
+                                        <p class="font-semibold text-gray-900" id="reviewPPMPUnit">Science Department</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-600">Item Description</p>
+                                        <p class="font-semibold text-gray-900" id="reviewPPMPItem">Laboratory Equipment Set</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-600">Estimated Cost</p>
+                                        <p class="font-semibold text-gray-900" id="reviewPPMPCost">₱125,000.00</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <h4 class="text-lg font-semibold text-gray-900 mb-4">Budget Availability Check</h4>
+                                <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div>
+                                            <p class="text-sm text-gray-600">Available Budget</p>
+                                            <p class="text-2xl font-bold text-green-600">₱1,200,000.00</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600">Required Amount</p>
+                                            <p class="text-2xl font-bold text-gray-900">₱125,000.00</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600">Remaining After</p>
+                                            <p class="text-2xl font-bold text-blue-600">₱1,075,000.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Review Decision</label>
+                                <div class="space-y-2">
+                                    <label class="flex items-center">
+                                        <input type="radio" name="ppmpReviewDecision" value="approved" class="mr-2" checked>
+                                        <span class="text-sm text-gray-700">Budget Available - Forward to BAC Secretariat for APP Consolidation</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="ppmpReviewDecision" value="pending" class="mr-2">
+                                        <span class="text-sm text-gray-700">Pending Budget - Defer to next budget cycle</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Remarks</label>
+                                <textarea 
+                                    id="ppmpReviewRemarks" 
+                                    rows="4" 
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                                    placeholder="Add remarks or notes about the budget review..."
+                                ></textarea>
+                            </div>
+
+                            <div class="flex items-center justify-end space-x-4">
+                                <button 
+                                    onclick="closePPMPReviewModal()"
+                                    class="px-6 py-2 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    onclick="submitPPMPReview()"
+                                    class="px-6 py-2 bg-[#103D1C] hover:bg-[#14532d] text-white rounded-lg transition-colors"
+                                >
+                                    <i class="fas fa-check mr-2"></i>Submit Review
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Budget Verification Section -->
             <section id="budget-verification-section" class="content-section hidden">
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <div class="flex items-center justify-between mb-6">
                         <div>
                             <h3 class="text-2xl font-bold text-gray-900 mb-2">Budget Verification</h3>
-                            <p class="text-gray-600">Verify budget availability for PRs and RIS</p>
+                            <p class="text-gray-600">Verify budget availability for PRs (STEP 7 - Budget Officer review) and RIS</p>
                         </div>
                         <div class="flex space-x-2">
                             <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
@@ -517,7 +728,7 @@
                     <div class="flex items-center justify-between mb-6">
                         <div>
                             <h3 class="text-2xl font-bold text-gray-900 mb-2">ORS Management</h3>
-                            <p class="text-gray-600">Create and manage Obligation Request Status (ORS)</p>
+                            <p class="text-gray-600">Create and manage Obligation Request Status (ORS) - Created after Principal approves PR</p>
                         </div>
                         <button onclick="createNewORS()" class="bg-[#103D1C] hover:bg-[#14532d] text-white px-4 py-2 rounded-lg transition-colors">
                             <i class="fas fa-plus mr-2"></i>Create New ORS

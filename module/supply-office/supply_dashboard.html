@@ -56,12 +56,6 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#pr-creation" data-section="pr-creation" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
-                            <i class="fas fa-shopping-cart w-5"></i>
-                            <span>Create Purchase Request</span>
-                        </a>
-                    </li>
-                    <li>
                         <a href="#reports" data-section="reports" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
                             <i class="fas fa-chart-bar w-5"></i>
                             <span>Inventory Reports</span>
@@ -469,10 +463,14 @@
                                         <p class="font-semibold text-red-900">
                                             <i class="fas fa-times-circle mr-2"></i>Item is Not Available in Stock
                                         </p>
-                                        <p class="text-sm text-red-700 mt-1">You need to create a Purchase Request for procurement.</p>
+                                        <p class="text-sm text-red-700 mt-1">Forward to Procurement / BAC Secretariat. Proceed to create or update PPMP (STEP 2).</p>
+                                        <p class="text-xs text-red-600 mt-2">
+                                            <i class="fas fa-info-circle mr-1"></i>
+                                            <strong>Note:</strong> PR cannot be created until PPMP is created, submitted to Budget Office, consolidated into APP, and APP is approved (STEP 3-6).
+                                        </p>
                                     </div>
-                                    <button onclick="showPRForm()" class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors">
-                                        <i class="fas fa-shopping-cart mr-2"></i>Create Purchase Request (PR)
+                                    <button onclick="forwardToPPMP()" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+                                        <i class="fas fa-file-contract mr-2"></i>Forward to PPMP Management (STEP 3: Create/Update PPMP)
                                     </button>
                                 </div>
                             </div>
@@ -650,130 +648,22 @@
                 </div>
             </section>
 
-            <!-- PR Creation Section -->
-            <section id="pr-creation-section" class="content-section hidden">
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <div class="mb-6">
-                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Create Purchase Request</h3>
-                        <p class="text-gray-600">Create a Purchase Request for items not available in inventory</p>
-                    </div>
-
-                    <form id="prForm" class="space-y-6">
-                        <!-- Source Request Info -->
-                        <div class="bg-gray-50 p-4 rounded-lg mb-6">
-                            <h4 class="font-semibold text-gray-900 mb-3">Source Supply Request</h4>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Supply Request ID</label>
-                                    <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg" value="2025-SR-023" readonly>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Requester</label>
-                                    <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg" value="Jane Smith" readonly>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Item Details -->
-                        <div class="border-b border-gray-200 pb-6">
-                            <h4 class="text-lg font-semibold text-gray-900 mb-4">
-                                <i class="fas fa-box text-green-600 mr-2"></i>Item Details
-                            </h4>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="md:col-span-2">
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                        Item Description <span class="text-red-500">*</span>
-                                    </label>
-                                    <input 
-                                        type="text" 
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                                        value="Projector Lamp"
-                                        required
-                                    >
-                                </div>
-
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                        Quantity <span class="text-red-500">*</span>
-                                    </label>
-                                    <input 
-                                        type="number" 
-                                        min="1"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                                        value="1"
-                                        required
-                                    >
-                                </div>
-
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                        Unit of Measure <span class="text-red-500">*</span>
-                                    </label>
-                                    <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500" required>
-                                        <option value="piece" selected>Piece</option>
-                                        <option value="set">Set</option>
-                                        <option value="box">Box</option>
-                                        <option value="ream">Ream</option>
-                                    </select>
-                                </div>
-
-                                <div class="md:col-span-2">
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                        Specifications
-                                    </label>
-                                    <textarea 
-                                        rows="2"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                                        placeholder="Provide detailed specifications"
-                                    >High brightness, compatible with Epson projectors</textarea>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- PPMP Validation -->
-                        <div class="border-b border-gray-200 pb-6">
-                            <h4 class="text-lg font-semibold text-gray-900 mb-4">
-                                <i class="fas fa-check-circle text-blue-600 mr-2"></i>PPMP Validation
-                            </h4>
-                            <button type="button" onclick="checkPPMP()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
-                                <i class="fas fa-search mr-2"></i>Check PPMP Inclusion
-                            </button>
-                            <div id="ppmpResult" class="mt-4 hidden"></div>
-                        </div>
-
-                        <!-- Justification -->
-                        <div class="border-b border-gray-200 pb-6">
-                            <h4 class="text-lg font-semibold text-gray-900 mb-4">
-                                <i class="fas fa-info-circle text-purple-600 mr-2"></i>Justification
-                            </h4>
-                            <textarea 
-                                rows="4"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                                placeholder="Explain why this item is needed"
-                                required
-                            >Needed for classroom projector that is currently not functional. Required for teaching activities.</textarea>
-                        </div>
-
-                        <!-- Form Actions -->
-                        <div class="flex items-center justify-end space-x-4">
-                            <button 
-                                type="button" 
-                                onclick="resetPRForm()"
-                                class="px-6 py-2 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                            >
-                                Cancel
-                            </button>
-                            <button 
-                                type="submit" 
-                                class="px-6 py-2 bg-[#103D1C] hover:bg-[#14532d] text-white rounded-lg transition-colors"
-                            >
-                                <i class="fas fa-paper-plane mr-2"></i>Create Purchase Request
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </section>
+            <!-- Note: PR Creation Removed from Supply Office -->
+            <!-- 
+                IMPORTANT PROCESS NOTE:
+                Purchase Requests (PR) should NOT be created directly from Supply Office.
+                
+                Correct Process Flow (per documentation-2.md):
+                1. STEP 2: Item Not Available → Forward to Procurement/BAC Secretariat → Create/Update PPMP
+                2. STEP 3: Create or Update PPMP
+                3. STEP 4: Submit PPMP to Budget Office
+                4. STEP 5: BAC consolidates PPMP into APP → HoPE approves APP
+                5. STEP 6: Create PR referencing approved APP (in PR & PPMP Module)
+                
+                PR creation is handled by the Purchase Request & PPMP Module (STEP 6)
+                after PPMP is created, submitted to Budget Office, consolidated into APP,
+                and APP is approved by HoPE.
+            -->
 
             <!-- Reports Section -->
             <section id="reports-section" class="content-section hidden">

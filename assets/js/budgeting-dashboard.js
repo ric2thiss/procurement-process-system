@@ -78,6 +78,7 @@ function showSection(sectionId) {
 function updatePageTitle(sectionId) {
     const titles = {
         'dashboard': { title: 'Dashboard Overview', subtitle: 'Budget and accounting statistics' },
+        'ppmp-review': { title: 'PPMP Review', subtitle: 'Review PPMP submissions and verify budget availability (STEP 4)' },
         'budget-verification': { title: 'Budget Verification', subtitle: 'Verify budget availability for PRs and RIS' },
         'ors-management': { title: 'ORS Management', subtitle: 'Create and manage Obligation Request Status' },
         'ors-checklist': { title: 'ORS Checklist', subtitle: 'Complete ORS checklist items' },
@@ -611,5 +612,63 @@ function finalizeORS() {
         showSection('ors-management');
         updatePageTitle('ors-management');
     }
+}
+
+/**
+ * Review PPMP
+ */
+function reviewPPMP(ppmpNumber) {
+    // In a real application, fetch PPMP details from API
+    // For now, use sample data
+    document.getElementById('reviewPPMPNumber').textContent = ppmpNumber;
+    
+    // Show modal
+    document.getElementById('ppmpReviewModal').classList.remove('hidden');
+}
+
+/**
+ * Close PPMP Review Modal
+ */
+function closePPMPReviewModal() {
+    document.getElementById('ppmpReviewModal').classList.add('hidden');
+    document.getElementById('ppmpReviewRemarks').value = '';
+}
+
+/**
+ * Submit PPMP Review
+ */
+function submitPPMPReview() {
+    const decision = document.querySelector('input[name="ppmpReviewDecision"]:checked').value;
+    const remarks = document.getElementById('ppmpReviewRemarks').value.trim();
+    const ppmpNumber = document.getElementById('reviewPPMPNumber').textContent;
+
+    if (!confirm(`Submit review for ${ppmpNumber}?`)) {
+        return;
+    }
+
+    // Show loading state
+    const submitButton = event.target;
+    const originalText = submitButton.innerHTML;
+    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Submitting...';
+    submitButton.disabled = true;
+
+    // Simulate API call
+    setTimeout(() => {
+        if (decision === 'approved') {
+            showSuccessMessage(`${ppmpNumber} reviewed. Budget available. Forwarded to BAC Secretariat for APP consolidation.`);
+        } else {
+            showSuccessMessage(`${ppmpNumber} marked as Pending Budget. Will be deferred to next budget cycle.`);
+        }
+
+        closePPMPReviewModal();
+        submitButton.innerHTML = originalText;
+        submitButton.disabled = false;
+
+        // Refresh PPMP review list
+        setTimeout(() => {
+            showSection('ppmp-review');
+            updatePageTitle('ppmp-review');
+        }, 1500);
+    }, 1500);
 }
 
