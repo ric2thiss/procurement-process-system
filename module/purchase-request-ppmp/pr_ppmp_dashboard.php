@@ -1,3 +1,25 @@
+<?php
+/**
+ * Purchase Request & PPMP Dashboard
+ * Document Tracking System - Magallanes National High School
+ */
+
+require_once __DIR__ . '/../../includes/session.php';
+require_once __DIR__ . '/../../includes/auth.php';
+
+// Require login and check role
+requireLogin();
+
+// Check if user has PR_PPMP_MGR role
+if (getCurrentUserRole() !== 'PR_PPMP_MGR') {
+    header('Location: /dts/auth/login.php');
+    exit();
+}
+
+// Get user info from session
+$userName = $_SESSION['first_name'] . ' ' . $_SESSION['last_name'];
+$userRole = $_SESSION['role_name'] ?? 'Purchase Request & PPMP';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -78,13 +100,11 @@
                         <i class="fas fa-user text-white"></i>
                     </div>
                     <div class="flex-1">
-                        <p class="text-sm font-semibold">Procurement Officer</p>
-                        <p class="text-xs text-green-200">PR & PPMP Manager</p>
+                        <p class="text-sm font-semibold"><?php echo htmlspecialchars($userName); ?></p>
+                        <p class="text-xs text-green-200"><?php echo htmlspecialchars($userRole); ?></p>
                     </div>
                 </div>
-                <button class="w-full bg-green-700 hover:bg-green-600 px-4 py-2 rounded-lg text-sm transition-colors">
-                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                </button>
+                <a href="../../auth/logout.php" class="w-full bg-green-700 hover:bg-green-600 px-4 py-2 rounded-lg text-sm transition-colors block text-center"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a>
             </div>
         </div>
     </aside>

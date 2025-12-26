@@ -1,0 +1,211 @@
+<?php
+/**
+ * Login Page
+ * Document Tracking System - Magallanes National High School
+ */
+
+require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/session.php';
+
+// If already logged in, redirect to dashboard
+if (isLoggedIn()) {
+    $dashboardPath = getDashboardPath(getCurrentUserRole());
+    header('Location: ' . $dashboardPath);
+    exit();
+}
+
+// Process login if POST request
+$loginResult = null;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $loginResult = processLogin();
+    
+    // If login successful, redirect
+    if ($loginResult['success'] && $loginResult['redirect']) {
+        header('Location: ' . $loginResult['redirect']);
+        exit();
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Magallanes National High School Document Tracking System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="../assets/css/global/main.css">
+    <!-- Page Specific CSS -->
+    <link rel="stylesheet" href="../assets/css/pages/login.css">
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-md border-b border-gray-200">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-14 h-14 flex items-center justify-center">
+                        <img src="../assets/img/logo.png" alt="Magallanes National High School Logo" class="logo-img">
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-red-600">Magallanes National High School</h1>
+                        <p class="text-sm text-gray-700 font-medium">Document Tracking System</p>
+                    </div>
+                </div>
+                <a href="../index.html" class="bg-header-green bg-header-green-hover text-white px-6 py-2 rounded-md font-semibold transition-colors duration-200 shadow-sm">
+                    Home
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="min-h-screen flex">
+        <!-- Left Section - Branding -->
+        <div class="hidden lg:flex lg:w-1/2 bg-school-image relative">
+            <div class="absolute inset-0 overlay-gradient"></div>
+            <div class="relative z-10 flex flex-col items-center justify-center w-full px-12 text-white">
+                <div class="logo-container text-center w-full max-w-2xl">
+                    <div class="w-48 h-48 bg-white rounded-full flex items-center justify-center shadow-2xl mb-8 mx-auto p-4">
+                        <img src="../assets/img/logo.png" alt="Magallanes National High School Logo" class="logo-img">
+                    </div>
+                    <h2 class="text-4xl font-bold mb-3 text-red-500">Magallanes National High School</h2>
+                    <h3 class="text-2xl font-semibold mb-6 text-white">Document Tracking System</h3>
+                    <div class="w-24 h-1 bg-red-500 mx-auto rounded-full"></div>
+                    <p class="mt-8 text-lg opacity-90 mx-auto">
+                        Streamline your procurement process with our comprehensive document tracking system
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Section - Login Form -->
+        <div class="w-full lg:w-1/2 flex items-center justify-center bg-white px-8 py-12">
+            <div class="form-container w-full max-w-md">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Login</h2>
+                    <p class="text-gray-600">Access your procurement document tracking account</p>
+                </div>
+
+                <!-- Error Message -->
+                <?php if ($loginResult && !$loginResult['success']): ?>
+                <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-circle text-red-500 mr-3"></i>
+                        <p class="text-red-700 text-sm font-medium"><?php echo htmlspecialchars($loginResult['message']); ?></p>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <form class="space-y-6" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
+                    <!-- Email/Username Field -->
+                    <div>
+                        <label for="username" class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-user mr-2 text-green-700"></i>Email / Username
+                        </label>
+                        <div class="relative">
+                            <input 
+                                type="text" 
+                                id="username" 
+                                name="username" 
+                                class="w-full px-4 py-3 pl-12 border-2 border-gray-300 rounded-lg input-focus focus:border-green-700 focus:ring-2 focus:ring-green-100 transition-all duration-200 <?php echo ($loginResult && !$loginResult['success']) ? 'border-red-500' : ''; ?>" 
+                                placeholder="Enter your email or username"
+                                value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''; ?>"
+                                required
+                                autocomplete="username"
+                            >
+                            <i class="fas fa-envelope absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div>
+                        <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-lock mr-2 text-green-700"></i>Password
+                        </label>
+                        <div class="relative">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                class="w-full px-4 py-3 pl-12 pr-12 border-2 border-gray-300 rounded-lg input-focus focus:border-green-700 focus:ring-2 focus:ring-green-100 transition-all duration-200 <?php echo ($loginResult && !$loginResult['success']) ? 'border-red-500' : ''; ?>" 
+                                placeholder="Enter your password"
+                                required
+                                autocomplete="current-password"
+                            >
+                            <i class="fas fa-key absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <button 
+                                type="button" 
+                                class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                                onclick="togglePassword()"
+                                aria-label="Toggle password visibility"
+                            >
+                                <i class="fas fa-eye" id="passwordToggle"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Remember Me & Forgot Password -->
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center">
+                            <input 
+                                type="checkbox" 
+                                name="remember" 
+                                class="w-4 h-4 text-green-700 border-gray-300 rounded focus:ring-green-500"
+                                <?php echo (isset($_POST['remember'])) ? 'checked' : ''; ?>
+                            >
+                            <span class="ml-2 text-sm text-gray-600">Remember me</span>
+                        </label>
+                        <a href="#" class="text-sm text-green-700 hover:text-green-900 font-medium transition-colors">
+                            Forgot password?
+                        </a>
+                    </div>
+
+                    <!-- Login Button -->
+                    <button 
+                        type="submit" 
+                        class="w-full bg-header-green bg-header-green-hover text-white font-semibold py-3 px-6 rounded-lg btn-login shadow-md"
+                    >
+                        <i class="fas fa-sign-in-alt mr-2"></i>Login
+                    </button>
+
+                    <!-- Additional Info -->
+                    <div class="text-center pt-4 border-t border-gray-200">
+                        <p class="text-sm text-gray-600">
+                            Need help? 
+                            <a href="#" class="text-green-700 hover:text-green-900 font-medium">Contact Support</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 py-4">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-sm text-gray-600">Copyright &copy; 2025 by Magallanes National High School. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Password Toggle -->
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const passwordToggle = document.getElementById('passwordToggle');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordToggle.classList.remove('fa-eye');
+                passwordToggle.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                passwordToggle.classList.remove('fa-eye-slash');
+                passwordToggle.classList.add('fa-eye');
+            }
+        }
+    </script>
+</body>
+</html>
+

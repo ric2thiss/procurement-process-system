@@ -198,3 +198,42 @@ textarea {
     margin-bottom: 1rem;
 }
 
+/* Request Type Selection */
+.request-type-option {
+    transition: all 0.2s ease;
+}
+
+.request-type-option input[type="radio"]:checked + div {
+    color: #103D1C;
+}
+
+.request-type-option input[type="radio"]:checked ~ div {
+    color: #103D1C;
+}
+
+/* Selected state for request type option */
+.request-type-option input[type="radio"]:checked {
+    accent-color: #103D1C;
+}
+
+/* Use JavaScript to add class instead of :has() for better browser support */
+.request-type-option.selected {
+    border-color: #103D1C !important;
+    background-color: #f0fdf4;
+}
+
+/* Form Error States */
+input.form-error,
+textarea.form-error,
+select.form-error {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+input.form-error:focus,
+textarea.form-error:focus,
+select.form-error:focus {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+

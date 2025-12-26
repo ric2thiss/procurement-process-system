@@ -1,19 +1,45 @@
 /**
  * Purchase Request & PPMP Dashboard CSS
  * Styles specific to the PR & PPMP module
+ * 
+ * Architecture:
+ * - Base component styles
+ * - Component variants and states
+ * - Responsive breakpoints (mobile-first approach)
+ * - Utility classes
  */
 
-/* Navigation Active State */
-.nav-item.active {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-left: 3px solid #10b981;
+/* ========================================
+   CSS Custom Properties
+   ======================================== */
+:root {
+    --transition-base: 0.2s ease;
+    --transition-smooth: 0.3s ease-out;
+    --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --sidebar-width: 280px;
+    --z-sidebar: 50;
+    --z-overlay: 40;
+}
+
+/* ========================================
+   Navigation Components
+   ======================================== */
+.nav-item {
+    transition: background-color var(--transition-base);
 }
 
 .nav-item:hover {
     background-color: rgba(255, 255, 255, 0.05);
 }
 
-/* Content Sections */
+.nav-item.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left: 3px solid #10b981;
+}
+
+/* ========================================
+   Content Sections
+   ======================================== */
 .content-section {
     display: block;
 }
@@ -22,23 +48,27 @@
     display: none;
 }
 
-/* Stat Cards */
+/* ========================================
+   Card Components
+   ======================================== */
 .stat-card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
 }
 
 .stat-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-hover);
 }
 
-/* Form Styles */
+/* ========================================
+   Form Elements
+   ======================================== */
 input[type="text"],
 input[type="number"],
 input[type="date"],
 textarea,
 select {
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: border-color var(--transition-base), box-shadow var(--transition-base);
 }
 
 input[type="text"]:focus,
@@ -49,17 +79,39 @@ select:focus {
     outline: none;
 }
 
-/* Table Styles */
+.form-error {
+    border-color: #ef4444;
+}
+
+.error-message {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* ========================================
+   Table Components
+   ======================================== */
 table {
     border-collapse: separate;
     border-spacing: 0;
+    width: 100%;
+    table-layout: auto;
 }
 
 tbody tr {
-    transition: background-color 0.2s ease;
+    transition: background-color var(--transition-base);
 }
 
-/* Status Badges */
+table th,
+table td {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* ========================================
+   Status & Badge Components
+   ======================================== */
 .status-badge {
     display: inline-block;
     padding: 0.25rem 0.75rem;
@@ -68,242 +120,9 @@ tbody tr {
     font-weight: 500;
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-    .ml-64 {
-        margin-left: 0;
-    }
-
-    #sidebar {
-        transform: translateX(-100%);
-        width: 280px;
-        z-index: 50;
-    }
-
-    #sidebar.open {
-        transform: translateX(0);
-    }
-    
-    /* Sidebar overlay for mobile */
-    #sidebarOverlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 40;
-        display: none;
-    }
-    
-    #sidebarOverlay.active {
-        display: block;
-    }
-}
-
-/* Mobile-specific styles */
-@media (max-width: 768px) {
-    header {
-        padding: 0.75rem 1rem !important;
-    }
-    
-    #pageTitle {
-        font-size: 1.125rem !important;
-    }
-    
-    #pageSubtitle {
-        font-size: 0.75rem !important;
-    }
-    
-    main {
-        padding: 1rem !important;
-    }
-    
-    .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-4,
-    .grid.grid-cols-2.md\:grid-cols-3.lg\:grid-cols-4,
-    .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-3 {
-        grid-template-columns: 1fr !important;
-        gap: 0.75rem !important;
-    }
-    
-    .grid.grid-cols-1.lg\:grid-cols-2,
-    .grid.grid-cols-2.lg\:grid-cols-3 {
-        grid-template-columns: 1fr !important;
-        gap: 1rem !important;
-    }
-    
-    .overflow-x-auto {
-        -webkit-overflow-scrolling: touch;
-        overflow-x: auto;
-        -ms-overflow-style: -ms-autohiding-scrollbar;
-    }
-    
-    /* Table responsive adjustments */
-    table {
-        font-size: 0.75rem;
-        min-width: 600px;
-    }
-    
-    table th,
-    table td {
-        padding: 0.5rem 0.25rem !important;
-        white-space: nowrap;
-    }
-    
-    input, select, textarea {
-        width: 100% !important;
-        font-size: 16px !important; /* Prevents zoom on iOS */
-    }
-    
-    /* Form groups - stack on mobile */
-    .grid.grid-cols-1.md\:grid-cols-2 {
-        grid-template-columns: 1fr !important;
-        gap: 0.75rem !important;
-    }
-    
-    /* Buttons - full width on mobile */
-    button,
-    .btn {
-        width: 100% !important;
-        margin-bottom: 0.5rem;
-        padding: 0.75rem 1rem !important;
-    }
-    
-    /* Button groups - stack on mobile */
-    .flex.gap-2,
-    .flex.gap-4 {
-        flex-direction: column !important;
-    }
-    
-    .flex.gap-2 > *,
-    .flex.gap-4 > * {
-        width: 100% !important;
-        margin-bottom: 0.5rem;
-    }
-    
-    .modal-content {
-        margin: 1rem !important;
-        max-width: calc(100% - 2rem) !important;
-        max-height: calc(100vh - 2rem) !important;
-        overflow-y: auto;
-    }
-    
-    /* Cards - full width on mobile */
-    .card,
-    .stat-card {
-        width: 100% !important;
-        margin-bottom: 1rem;
-    }
-    
-    /* Sidebar adjustments */
-    #sidebar {
-        width: 100% !important;
-        max-width: 280px;
-    }
-    
-    /* Navigation adjustments */
-    .nav-item {
-        padding: 0.875rem 1rem !important;
-    }
-    
-    .nav-item span {
-        font-size: 0.875rem;
-    }
-    
-    /* Status badges */
-    .status-badge {
-        font-size: 0.625rem;
-        padding: 0.125rem 0.5rem;
-    }
-    
-    /* Chart container adjustments */
-    .chart-container {
-        height: 250px !important;
-    }
-    
-    /* Priority badges */
-    .priority-high,
-    .priority-medium,
-    .priority-low {
-        font-size: 0.625rem;
-        padding: 0.125rem 0.5rem;
-    }
-}
-
-/* Very small screens */
-@media (max-width: 480px) {
-    header {
-        padding: 0.5rem 0.75rem !important;
-    }
-    
-    #pageTitle {
-        font-size: 1rem !important;
-    }
-    
-    #pageSubtitle {
-        font-size: 0.7rem !important;
-    }
-    
-    main {
-        padding: 0.75rem !important;
-    }
-    
-    .nav-item span {
-        font-size: 0.8rem;
-    }
-    
-    table {
-        font-size: 0.7rem;
-    }
-    
-    .stat-card {
-        padding: 1rem !important;
-    }
-    
-    .modal-content {
-        margin: 0.5rem !important;
-        max-width: calc(100% - 1rem) !important;
-        padding: 1rem !important;
-    }
-    
-    .chart-container {
-        height: 200px !important;
-    }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-    .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-4 {
-        grid-template-columns: repeat(2, 1fr) !important;
-    }
-    
-    .grid.grid-cols-1.lg\:grid-cols-2 {
-        grid-template-columns: repeat(2, 1fr) !important;
-    }
-}
-
-/* Loading States */
-.loading {
-    opacity: 0.6;
-    pointer-events: none;
-}
-
-/* Animations */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.fade-in {
-    animation: fadeIn 0.3s ease-out;
-}
-
-/* Alert Styles */
+/* ========================================
+   Alert Components
+   ======================================== */
 .alert-success {
     background-color: #d1fae5;
     border-color: #10b981;
@@ -340,18 +159,6 @@ tbody tr {
     border-left: 4px solid #3b82f6;
 }
 
-/* Form Validation */
-.form-error {
-    border-color: #ef4444 !important;
-}
-
-.error-message {
-    color: #ef4444;
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
-}
-
-/* Success Message */
 .success-message {
     background-color: #d1fae5;
     border-color: #10b981;
@@ -361,23 +168,9 @@ tbody tr {
     margin-bottom: 1rem;
 }
 
-/* PPMP Validation Status */
-.ppmp-validated {
-    color: #10b981;
-    font-weight: 600;
-}
-
-.ppmp-pending {
-    color: #f59e0b;
-    font-weight: 600;
-}
-
-.ppmp-not-found {
-    color: #ef4444;
-    font-weight: 600;
-}
-
-/* Chart Container Styles */
+/* ========================================
+   Chart Components
+   ======================================== */
 .chart-container {
     position: relative;
     height: 300px;
@@ -385,11 +178,13 @@ tbody tr {
 }
 
 .chart-container canvas {
-    max-height: 100% !important;
-    max-width: 100% !important;
+    max-height: 100%;
+    max-width: 100%;
 }
 
-/* PR Status Indicators */
+/* ========================================
+   PR Status Indicators
+   ======================================== */
 .pr-status-validated {
     background-color: #d1fae5;
     color: #065f46;
@@ -405,7 +200,27 @@ tbody tr {
     color: #1e40af;
 }
 
-/* Priority Badges */
+/* ========================================
+   PPMP Validation Status
+   ======================================== */
+.ppmp-validated {
+    color: #10b981;
+    font-weight: 600;
+}
+
+.ppmp-pending {
+    color: #f59e0b;
+    font-weight: 600;
+}
+
+.ppmp-not-found {
+    color: #ef4444;
+    font-weight: 600;
+}
+
+/* ========================================
+   Priority Badges
+   ======================================== */
 .priority-high {
     background-color: #fee2e2;
     color: #991b1b;
@@ -421,3 +236,233 @@ tbody tr {
     color: #065f46;
 }
 
+/* ========================================
+   Utility Classes
+   ======================================== */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn var(--transition-smooth);
+}
+
+/* ========================================
+   Responsive Design - Mobile First
+   ======================================== */
+
+/* Mobile: 480px and below */
+@media (max-width: 480px) {
+    header > div {
+        padding: 0.625rem 0.75rem;
+    }
+
+    main {
+        padding: 0.75rem;
+    }
+
+    .nav-item {
+        padding: 0.875rem 1rem;
+    }
+
+    .nav-item span {
+        font-size: 0.8rem;
+    }
+
+    table {
+        font-size: 0.7rem;
+    }
+
+    .stat-card {
+        padding: 1rem;
+    }
+
+    .status-badge {
+        font-size: 0.625rem;
+        padding: 0.125rem 0.5rem;
+    }
+
+    .chart-container {
+        height: 200px;
+    }
+}
+
+/* Tablet: 481px to 768px */
+@media (min-width: 481px) and (max-width: 768px) {
+    header > div {
+        padding: 0.75rem 1rem;
+    }
+
+    main {
+        padding: 1rem;
+    }
+
+    table {
+        font-size: 0.75rem;
+        min-width: 600px;
+    }
+
+    table th,
+    table td {
+        padding: 0.5rem 0.25rem;
+        white-space: nowrap;
+    }
+
+    .chart-container {
+        height: 250px;
+    }
+}
+
+/* Mobile & Tablet Shared Styles: 768px and below */
+@media (max-width: 768px) {
+    /* Grid adjustments */
+    .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-4,
+    .grid.grid-cols-2.md\:grid-cols-3.lg\:grid-cols-4,
+    .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-3 {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .grid.grid-cols-1.lg\:grid-cols-2,
+    .grid.grid-cols-2.lg\:grid-cols-3 {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .grid.grid-cols-1.md\:grid-cols-2 {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    /* Form elements */
+    input,
+    select,
+    textarea {
+        width: 100%;
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+
+    /* Buttons */
+    button,
+    .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+        padding: 0.75rem 1rem;
+    }
+
+    /* Button groups */
+    .flex.gap-2,
+    .flex.gap-4 {
+        flex-direction: column;
+    }
+
+    .flex.gap-2 > *,
+    .flex.gap-4 > * {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Scrollable containers */
+    .overflow-x-auto {
+        -webkit-overflow-scrolling: touch;
+        overflow-x: auto;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+    }
+
+    /* Cards */
+    .card,
+    .stat-card {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+}
+
+/* Tablet Landscape: 769px to 1024px */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .grid.grid-cols-1.lg\:grid-cols-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Desktop & Tablet: 1024px and below */
+@media (max-width: 1024px) {
+    .ml-64 {
+        margin-left: 0;
+    }
+
+    #sidebar {
+        transform: translateX(-100%);
+        width: var(--sidebar-width);
+        z-index: var(--z-sidebar);
+    }
+
+    #sidebar.open {
+        transform: translateX(0);
+    }
+
+    #sidebarOverlay {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: var(--z-overlay);
+        transition: opacity var(--transition-base);
+    }
+
+    #sidebarOverlay.hidden {
+        display: none;
+    }
+}
+
+/* Desktop: 1024px and above */
+@media (min-width: 1024px) {
+    /* Table responsiveness - Tailwind handles column widths */
+    .overflow-x-auto.lg\:overflow-x-visible {
+        overflow-x: visible;
+    }
+
+    .overflow-x-auto > .inline-block.lg\:w-full {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Content constraints */
+    main,
+    .content-section,
+    .bg-white.rounded-lg.shadow-md {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+}
+
+/* ========================================
+   Header Title Visibility
+   ======================================== */
+header #pageTitle,
+header #pageSubtitle {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Ensure title container has proper width and spacing */
+header .flex-1.min-w-0 > div {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+}

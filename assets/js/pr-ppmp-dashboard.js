@@ -31,6 +31,8 @@ function initializeDashboard() {
  */
 function initializeNavigation() {
     const navItems = document.querySelectorAll('.nav-item');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
     
     navItems.forEach(item => {
         item.addEventListener('click', function(e) {
@@ -46,6 +48,16 @@ function initializeNavigation() {
             
             // Update page title
             updatePageTitle(section);
+            
+            // Close sidebar on mobile after navigation
+            if (window.innerWidth < 1024) {
+                if (sidebar) {
+                    sidebar.classList.remove('open');
+                }
+                if (sidebarOverlay) {
+                    sidebarOverlay.classList.add('hidden');
+                }
+            }
         });
     });
 }
@@ -203,21 +215,70 @@ function initializeMobileSidebar() {
     const sidebar = document.getElementById('sidebar');
     const sidebarOverlay = document.getElementById('sidebarOverlay');
     
-    if (sidebarToggle && sidebar) {
-        sidebarToggle.addEventListener('click', function() {
-            sidebar.classList.toggle('open');
-            if (sidebarOverlay) {
-                sidebarOverlay.classList.toggle('hidden');
+    // Toggle sidebar function
+    function toggleSidebar() {
+        if (sidebar) {
+            const isOpen = sidebar.classList.contains('open');
+            if (isOpen) {
+                closeSidebar();
+            } else {
+                openSidebar();
             }
+        }
+    }
+    
+    // Open sidebar function
+    function openSidebar() {
+        if (sidebar) {
+            sidebar.classList.add('open');
+        }
+        if (sidebarOverlay) {
+            sidebarOverlay.classList.remove('hidden');
+        }
+    }
+    
+    // Close sidebar function
+    function closeSidebar() {
+        if (sidebar) {
+            sidebar.classList.remove('open');
+        }
+        if (sidebarOverlay) {
+            sidebarOverlay.classList.add('hidden');
+        }
+    }
+    
+    // Make closeSidebar globally available for onclick handler
+    window.closeSidebar = closeSidebar;
+    
+    // Toggle button click handler
+    if (sidebarToggle && sidebar) {
+        sidebarToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleSidebar();
         });
     }
     
+    // Overlay click handler - close sidebar when clicking outside
     if (sidebarOverlay) {
-        sidebarOverlay.addEventListener('click', function() {
-            sidebar.classList.remove('open');
-            sidebarOverlay.classList.add('hidden');
+        sidebarOverlay.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeSidebar();
         });
     }
+    
+    // Prevent sidebar clicks from closing the sidebar
+    if (sidebar) {
+        sidebar.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    }
+    
+    // Close sidebar on window resize if it becomes desktop view
+    window.addEventListener('resize', function() {
+        if (window.innerWidth >= 1024) {
+            closeSidebar();
+        }
+    });
 }
 
 /**

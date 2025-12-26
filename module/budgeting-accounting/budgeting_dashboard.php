@@ -1,0 +1,1160 @@
+<?php
+/**
+ * Budgeting/Accounting Dashboard
+ * Document Tracking System - Magallanes National High School
+ */
+
+require_once __DIR__ . '/../../includes/session.php';
+require_once __DIR__ . '/../../includes/auth.php';
+
+// Require login and check role
+requireLogin();
+
+// Check if user has BUDGET role
+if (getCurrentUserRole() !== 'BUDGET') {
+    header('Location: /dts/auth/login.php');
+    exit();
+}
+
+// Get user info from session
+$userName = $_SESSION['first_name'] . ' ' . $_SESSION['last_name'];
+$userRole = $_SESSION['role_name'] ?? 'Budgeting/Accounting';
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budgeting / Accounting Dashboard - Document Tracking System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/global/main.css">
+    <link rel="stylesheet" href="../../assets/css/pages/budgeting-dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-[#103D1C] text-white transform transition-transform duration-300 z-50">
+        <div class="flex flex-col h-full">
+            <!-- Logo Section -->
+            <div class="p-6 border-b border-green-800">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 flex items-center justify-center bg-white rounded-lg">
+                        <img src="../../assets/img/logo.png" alt="Logo" class="logo-img">
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-white">DTS</h1>
+                        <p class="text-xs text-green-200">Budgeting / Accounting</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="flex-1 overflow-y-auto py-4">
+                <ul class="space-y-1 px-3">
+                    <li>
+                        <a href="#dashboard" data-section="dashboard" class="nav-item active flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-tachometer-alt w-5"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#ppmp-review" data-section="ppmp-review" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-file-contract w-5"></i>
+                            <span>PPMP Review</span>
+                            <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full" id="ppmpReviewCount">7</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#budget-verification" data-section="budget-verification" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-check-circle w-5"></i>
+                            <span>Budget Verification</span>
+                            <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full" id="pendingCount">12</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#ors-management" data-section="ors-management" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-file-alt w-5"></i>
+                            <span>ORS Management</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#budget-allocation" data-section="budget-allocation" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-dollar-sign w-5"></i>
+                            <span>Budget Allocation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#pending-budget" data-section="pending-budget" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-clock w-5"></i>
+                            <span>Pending Budget</span>
+                            <span class="ml-auto bg-yellow-500 text-white text-xs px-2 py-1 rounded-full" id="pendingBudgetCount">5</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#obligation-tracking" data-section="obligation-tracking" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-chart-line w-5"></i>
+                            <span>Obligation Tracking</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#reports" data-section="reports" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-chart-bar w-5"></i>
+                            <span>Budget Reports</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- User Profile Section -->
+            <div class="p-4 border-t border-green-800">
+                <div class="flex items-center space-x-3 mb-3">
+                    <div class="w-10 h-10 bg-green-700 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-semibold"><?php echo htmlspecialchars($userName); ?></p>
+                        <p class="text-xs text-green-200"><?php echo htmlspecialchars($userRole); ?></p>
+                    </div>
+                </div>
+                <a href="../../auth/logout.php" class="w-full bg-green-700 hover:bg-green-600 px-4 py-2 rounded-lg text-sm transition-colors block text-center"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="ml-64">
+        <!-- Top Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
+            <div class="flex items-center justify-between px-6 py-4">
+                <div class="flex items-center space-x-4">
+                    <button id="sidebarToggle" class="lg:hidden text-gray-600 hover:text-gray-900">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900" id="pageTitle">Dashboard Overview</h2>
+                        <p class="text-sm text-gray-600" id="pageSubtitle">Budget and accounting statistics</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <button class="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
+                            <i class="fas fa-bell text-lg"></i>
+                            <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                        </button>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-semibold text-gray-900" id="currentDate"></p>
+                        <p class="text-xs text-gray-600" id="currentTime"></p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="p-6">
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="content-section">
+                <!-- Statistics Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Total Budget</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2">₱2.5M</p>
+                                <p class="text-xs text-blue-600 mt-1">Annual allocation</p>
+                            </div>
+                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-dollar-sign text-blue-600 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Available Budget</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2">₱1.2M</p>
+                                <p class="text-xs text-green-600 mt-1">48% remaining</p>
+                            </div>
+                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-check-circle text-green-600 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Pending Verification</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2">12</p>
+                                <p class="text-xs text-yellow-600 mt-1"><i class="fas fa-exclamation-triangle mr-1"></i>Requires action</p>
+                            </div>
+                            <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-clipboard-check text-yellow-600 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">ORS Completed</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2">45</p>
+                                <p class="text-xs text-purple-600 mt-1">This month</p>
+                            </div>
+                            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-file-alt text-purple-600 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Budget Overview Charts -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <!-- Budget Utilization Chart -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Budget Utilization</h3>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="budgetUtilizationChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Monthly Budget Trend -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Monthly Budget Trend</h3>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="monthlyBudgetChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity and Budget Alerts -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Recent Activity -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Recent Activity</h3>
+                        <div class="space-y-4 max-h-96 overflow-y-auto">
+                            <div class="flex items-start space-x-3 pb-4 border-b border-gray-200">
+                                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-check text-green-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-semibold text-gray-900">Budget Verified</p>
+                                    <p class="text-xs text-gray-600">PR-2025-090 budget cleared</p>
+                                    <p class="text-xs text-gray-500 mt-1">2 minutes ago</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3 pb-4 border-b border-gray-200">
+                                <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-file-alt text-purple-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-semibold text-gray-900">ORS Created</p>
+                                    <p class="text-xs text-gray-600">ORS-2025-045 created for PR-2025-089</p>
+                                    <p class="text-xs text-gray-500 mt-1">15 minutes ago</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3 pb-4 border-b border-gray-200">
+                                <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-exclamation text-yellow-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-semibold text-gray-900">Budget Alert</p>
+                                    <p class="text-xs text-gray-600">PR-2025-088 tagged as pending budget</p>
+                                    <p class="text-xs text-gray-500 mt-1">1 hour ago</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Budget Alerts -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Budget Alerts</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-yellow-50 border-l-4 border-yellow-500 rounded">
+                                <div>
+                                    <p class="font-semibold text-gray-900">Low Budget Warning</p>
+                                    <p class="text-sm text-gray-600">Office Supplies category - 15% remaining</p>
+                                </div>
+                                <span class="text-yellow-600 font-bold">15%</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-red-50 border-l-4 border-red-500 rounded">
+                                <div>
+                                    <p class="font-semibold text-gray-900">Budget Exceeded</p>
+                                    <p class="text-sm text-gray-600">Equipment category - over budget</p>
+                                </div>
+                                <span class="text-red-600 font-bold"><i class="fas fa-exclamation-circle"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PPMP Review Section -->
+            <section id="ppmp-review-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">PPMP Review</h3>
+                            <p class="text-gray-600">Review PPMP submissions and verify budget availability (STEP 4)</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-filter mr-2"></i>Filter
+                            </button>
+                            <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-download mr-2"></i>Export
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input 
+                            type="text" 
+                            placeholder="Search by PPMP number or unit..." 
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        >
+                        <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                            <option value="">All Status</option>
+                            <option value="pending">Pending Review</option>
+                            <option value="approved">Budget Available</option>
+                            <option value="pending-budget">Pending Budget</option>
+                            <option value="forwarded">Forwarded to BAC</option>
+                        </select>
+                        <input 
+                            type="date" 
+                            placeholder="From Date"
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        >
+                        <input 
+                            type="date" 
+                            placeholder="To Date"
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        >
+                    </div>
+
+                    <!-- PPMP Review Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">PPMP Number</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">End User/Unit</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Item Description</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Quantity</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Estimated Cost</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Target Month</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Status</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">PPMP-2025-001</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Science Department</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Laboratory Equipment Set</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">5 sets</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">₱125,000.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">March 2025</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium">Pending Review</span></td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="reviewPPMP('PPMP-2025-001')" class="text-green-600 hover:text-green-800 mr-2" title="Review PPMP">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">PPMP-2025-002</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">IT Department</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Computer Units</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">10 units</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">₱250,000.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">April 2025</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium">Pending Review</span></td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="reviewPPMP('PPMP-2025-002')" class="text-green-600 hover:text-green-800 mr-2" title="Review PPMP">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">PPMP-2025-003</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Administration</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Office Furniture</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">20 pieces</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">₱180,000.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">February 2025</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full font-medium">Pending Budget</span></td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="reviewPPMP('PPMP-2025-003')" class="text-green-600 hover:text-green-800 mr-2" title="Review PPMP">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- PPMP Review Modal -->
+                <div id="ppmpReviewModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+                    <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-2xl font-bold text-gray-900">PPMP Budget Review</h3>
+                                <button onclick="closePPMPReviewModal()" class="text-gray-400 hover:text-gray-600">
+                                    <i class="fas fa-times text-xl"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="mb-6">
+                                <h4 class="text-lg font-semibold text-gray-900 mb-4">PPMP Details</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <p class="text-sm text-gray-600">PPMP Number</p>
+                                        <p class="font-semibold text-gray-900" id="reviewPPMPNumber">PPMP-2025-001</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-600">End User/Unit</p>
+                                        <p class="font-semibold text-gray-900" id="reviewPPMPUnit">Science Department</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-600">Item Description</p>
+                                        <p class="font-semibold text-gray-900" id="reviewPPMPItem">Laboratory Equipment Set</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-600">Estimated Cost</p>
+                                        <p class="font-semibold text-gray-900" id="reviewPPMPCost">₱125,000.00</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <h4 class="text-lg font-semibold text-gray-900 mb-4">Budget Availability Check</h4>
+                                <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div>
+                                            <p class="text-sm text-gray-600">Available Budget</p>
+                                            <p class="text-2xl font-bold text-green-600">₱1,200,000.00</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600">Required Amount</p>
+                                            <p class="text-2xl font-bold text-gray-900">₱125,000.00</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600">Remaining After</p>
+                                            <p class="text-2xl font-bold text-blue-600">₱1,075,000.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Review Decision</label>
+                                <div class="space-y-2">
+                                    <label class="flex items-center">
+                                        <input type="radio" name="ppmpReviewDecision" value="approved" class="mr-2" checked>
+                                        <span class="text-sm text-gray-700">Budget Available - Forward to BAC Secretariat for APP Consolidation</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="ppmpReviewDecision" value="pending" class="mr-2">
+                                        <span class="text-sm text-gray-700">Pending Budget - Defer to next budget cycle</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Remarks</label>
+                                <textarea 
+                                    id="ppmpReviewRemarks" 
+                                    rows="4" 
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                                    placeholder="Add remarks or notes about the budget review..."
+                                ></textarea>
+                            </div>
+
+                            <div class="flex items-center justify-end space-x-4">
+                                <button 
+                                    onclick="closePPMPReviewModal()"
+                                    class="px-6 py-2 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    onclick="submitPPMPReview()"
+                                    class="px-6 py-2 bg-[#103D1C] hover:bg-[#14532d] text-white rounded-lg transition-colors"
+                                >
+                                    <i class="fas fa-check mr-2"></i>Submit Review
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Budget Verification Section -->
+            <section id="budget-verification-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Budget Verification</h3>
+                            <p class="text-gray-600">Verify budget availability for PRs (STEP 7 - Budget Officer review) and RIS</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-filter mr-2"></i>Filter
+                            </button>
+                            <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-download mr-2"></i>Export
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input 
+                            type="text" 
+                            placeholder="Search by PR/RIS number..." 
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                            id="searchDocument"
+                        >
+                        <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500" id="filterDocType">
+                            <option value="">All Document Types</option>
+                            <option value="pr">Purchase Request (PR)</option>
+                            <option value="ris">Requisition Issue Slip (RIS)</option>
+                        </select>
+                        <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500" id="filterStatus">
+                            <option value="">All Status</option>
+                            <option value="pending">Pending Verification</option>
+                            <option value="verified">Budget Verified</option>
+                            <option value="pending-budget">Pending Budget</option>
+                        </select>
+                        <input 
+                            type="date" 
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                            id="filterDate"
+                        >
+                    </div>
+
+                    <!-- Documents Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Document Number</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Type</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Requester</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Item Description</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Amount</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">PPMP Reference</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date Received</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200" id="verificationTable">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">PR-2025-090</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">PR</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Jane Smith</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Projector Lamp</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">₱15,000.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">PPMP-2025-045</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-15</td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="verifyBudget('PR-2025-090', 'pr')" class="text-green-600 hover:text-green-800 mr-2" title="Verify Budget">
+                                            <i class="fas fa-check-circle"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">RIS-2025-042</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">RIS</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">John Doe</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">A4 Bond Paper</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">₱3,500.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">-</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-14</td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="verifyBudget('RIS-2025-042', 'ris')" class="text-green-600 hover:text-green-800 mr-2" title="Verify Budget">
+                                            <i class="fas fa-check-circle"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">PR-2025-088</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">PR</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Robert Johnson</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Laboratory Equipment</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">₱45,000.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">PPMP-2025-038</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-13</td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="verifyBudget('PR-2025-088', 'pr')" class="text-green-600 hover:text-green-800 mr-2" title="Verify Budget">
+                                            <i class="fas fa-check-circle"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="mt-6 flex items-center justify-between">
+                        <p class="text-sm text-gray-600">Showing 1-3 of 12 documents</p>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Previous</button>
+                            <button class="px-3 py-2 bg-[#103D1C] text-white rounded-lg">1</button>
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">2</button>
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Budget Verification Modal -->
+            <div id="budgetVerificationModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
+                <div class="bg-white rounded-lg shadow-xl max-w-5xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                    <div class="p-6 border-b border-gray-200 sticky top-0 bg-white z-10">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-bold text-gray-900">Budget Verification</h3>
+                            <button onclick="closeBudgetVerificationModal()" class="text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <!-- Document Info -->
+                        <div class="mb-6 bg-gray-50 p-4 rounded-lg">
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div>
+                                    <p class="text-sm text-gray-600">Document Number</p>
+                                    <p class="font-semibold text-gray-900" id="modalDocNumber">PR-2025-090</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">Document Type</p>
+                                    <p class="font-semibold text-gray-900" id="modalDocType">Purchase Request</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">Requester</p>
+                                    <p class="text-sm font-semibold"><?php echo htmlspecialchars($userName); ?></p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">Amount</p>
+                                    <p class="font-semibold text-gray-900" id="modalAmount">₱15,000.00</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Budget Information -->
+                        <div class="mb-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-3">
+                                <i class="fas fa-dollar-sign text-green-600 mr-2"></i>Budget Information
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
+                                    <p class="text-sm text-gray-600">Total Budget</p>
+                                    <p class="text-2xl font-bold text-gray-900" id="modalTotalBudget">₱2,500,000.00</p>
+                                </div>
+                                <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg">
+                                    <p class="text-sm text-gray-600">Available Budget</p>
+                                    <p class="text-2xl font-bold text-gray-900" id="modalAvailableBudget">₱1,200,000.00</p>
+                                </div>
+                                <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-lg">
+                                    <p class="text-sm text-gray-600">Requested Amount</p>
+                                    <p class="text-2xl font-bold text-gray-900" id="modalRequestedAmount">₱15,000.00</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PPMP Information (for PRs) -->
+                        <div id="ppmpInfoSection" class="mb-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-3">
+                                <i class="fas fa-file-contract text-blue-600 mr-2"></i>PPMP Information
+                            </h4>
+                            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <p class="text-sm text-gray-600">PPMP Reference</p>
+                                        <p class="font-semibold text-gray-900" id="modalPPMPRef">PPMP-2025-045</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-600">PPMP Budget Allocated</p>
+                                        <p class="font-semibold text-gray-900" id="modalPPMPBudget">₱50,000.00</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Budget Check Result -->
+                        <div id="budgetCheckResult" class="mb-6 hidden">
+                            <div id="budgetAvailableSection" class="hidden">
+                                <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg mb-4">
+                                    <p class="font-semibold text-green-900">
+                                        <i class="fas fa-check-circle mr-2"></i>Budget is Available
+                                    </p>
+                                    <p class="text-sm text-green-700 mt-1">The requested amount can be reserved from the available budget.</p>
+                                </div>
+                            </div>
+                            <div id="budgetNotAvailableSection" class="hidden">
+                                <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg mb-4">
+                                    <p class="font-semibold text-red-900">
+                                        <i class="fas fa-times-circle mr-2"></i>Budget Not Available
+                                    </p>
+                                    <p class="text-sm text-red-700 mt-1" id="budgetShortfallMessage">Insufficient budget for this request.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="border-t border-gray-200 pt-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <button 
+                                    onclick="checkBudgetAvailability()"
+                                    class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                                >
+                                    <i class="fas fa-search mr-2"></i>Check Budget Availability
+                                </button>
+                            </div>
+
+                            <div id="actionButtons" class="hidden">
+                                <div class="flex items-center justify-end space-x-4">
+                                    <button 
+                                        onclick="tagAsPendingBudget()"
+                                        id="tagPendingBtn"
+                                        class="px-6 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors hidden"
+                                    >
+                                        <i class="fas fa-clock mr-2"></i>Tag as Pending Budget
+                                    </button>
+                                    <button 
+                                        onclick="reserveBudget()"
+                                        id="reserveBudgetBtn"
+                                        class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors hidden"
+                                    >
+                                        <i class="fas fa-check mr-2"></i>Reserve Budget & Continue
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ORS Management Section -->
+            <section id="ors-management-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">ORS Management</h3>
+                            <p class="text-gray-600">Create and manage Obligation Request Status (ORS) - Created after Principal approves PR</p>
+                        </div>
+                        <button onclick="createNewORS()" class="bg-[#103D1C] hover:bg-[#14532d] text-white px-4 py-2 rounded-lg transition-colors">
+                            <i class="fas fa-plus mr-2"></i>Create New ORS
+                        </button>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input 
+                            type="text" 
+                            placeholder="Search by ORS number..." 
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        >
+                        <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                            <option value="">All Status</option>
+                            <option value="draft">Draft</option>
+                            <option value="completed">Completed</option>
+                            <option value="forwarded">Forwarded to Procurement</option>
+                        </select>
+                        <input 
+                            type="date" 
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        >
+                        <input 
+                            type="date" 
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        >
+                    </div>
+
+                    <!-- ORS Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">ORS Number</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">PR Number</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Item Description</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Amount</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Fund Source</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date Created</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Status</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">ORS-2025-045</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">PR-2025-089</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Whiteboard Markers</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">₱2,500.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">MOOE</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-14</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-medium">Completed</span></td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="viewORS('ORS-2025-045')" class="text-blue-600 hover:text-blue-800 mr-2" title="View ORS">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button onclick="editORS('ORS-2025-045')" class="text-green-600 hover:text-green-800 mr-2" title="Edit ORS">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button onclick="completeORSChecklist('ORS-2025-045')" class="text-purple-600 hover:text-purple-800" title="Complete Checklist">
+                                            <i class="fas fa-check-square"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ORS Checklist Section -->
+            <section id="ors-checklist-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">ORS Checklist Completion</h3>
+                            <p class="text-gray-600">Complete ORS checklist items for verification</p>
+                        </div>
+                    </div>
+
+                    <!-- ORS Checklist Form -->
+                    <div class="max-w-4xl">
+                        <div class="mb-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">ORS Information</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <p class="text-sm text-gray-600">ORS Number</p>
+                                    <p class="font-semibold text-gray-900" id="checklistORSNumber">ORS-2025-045</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">PR Number</p>
+                                    <p class="font-semibold text-gray-900" id="checklistPRNumber">PR-2025-089</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">Required Documents Checklist</h4>
+                            <div class="space-y-3">
+                                <label class="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-green-500 cursor-pointer">
+                                    <input type="checkbox" class="w-5 h-5 text-green-600 rounded focus:ring-green-500" checked>
+                                    <div class="ml-3 flex-1">
+                                        <p class="font-semibold text-gray-900">Approved PR</p>
+                                        <p class="text-sm text-gray-600">Purchase Request approved by Principal</p>
+                                    </div>
+                                    <i class="fas fa-check-circle text-green-600"></i>
+                                </label>
+                                <label class="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-green-500 cursor-pointer">
+                                    <input type="checkbox" class="w-5 h-5 text-green-600 rounded focus:ring-green-500" checked>
+                                    <div class="ml-3 flex-1">
+                                        <p class="font-semibold text-gray-900">PPMP Reference</p>
+                                        <p class="text-sm text-gray-600">PPMP reference number and allocation</p>
+                                    </div>
+                                    <i class="fas fa-check-circle text-green-600"></i>
+                                </label>
+                                <label class="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-green-500 cursor-pointer">
+                                    <input type="checkbox" class="w-5 h-5 text-green-600 rounded focus:ring-green-500">
+                                    <div class="ml-3 flex-1">
+                                        <p class="font-semibold text-gray-900">Budget Allocation Confirmation</p>
+                                        <p class="text-sm text-gray-600">Budget allocation and reservation confirmation</p>
+                                    </div>
+                                </label>
+                                <label class="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-green-500 cursor-pointer">
+                                    <input type="checkbox" class="w-5 h-5 text-green-600 rounded focus:ring-green-500">
+                                    <div class="ml-3 flex-1">
+                                        <p class="font-semibold text-gray-900">Other Required Attachments</p>
+                                        <p class="text-sm text-gray-600">Additional supporting documents</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-end space-x-4">
+                            <button onclick="saveORSChecklist()" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
+                                <i class="fas fa-save mr-2"></i>Save Checklist
+                            </button>
+                            <button onclick="finalizeORS()" class="px-6 py-2 bg-[#103D1C] hover:bg-[#14532d] text-white rounded-lg transition-colors">
+                                <i class="fas fa-check-double mr-2"></i>Finalize ORS
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Obligation & Commitment Tracking Section -->
+            <section id="obligation-tracking-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Obligation & Commitment Tracking</h3>
+                            <p class="text-gray-600">Track obligations and commitments by category and fund source</p>
+                        </div>
+                    </div>
+
+                    <!-- Summary Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-2">Total Obligations</p>
+                            <p class="text-3xl font-bold text-gray-900">₱2,450,000.00</p>
+                            <p class="text-xs text-gray-600 mt-2">This fiscal year</p>
+                        </div>
+                        <div class="bg-green-50 border-l-4 border-green-500 p-6 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-2">Total Commitments</p>
+                            <p class="text-3xl font-bold text-gray-900">₱1,200,000.00</p>
+                            <p class="text-xs text-gray-600 mt-2">Pending obligations</p>
+                        </div>
+                        <div class="bg-purple-50 border-l-4 border-purple-500 p-6 rounded-lg">
+                            <p class="text-sm text-gray-600 mb-2">Available Budget</p>
+                            <p class="text-3xl font-bold text-gray-900">₱1,250,000.00</p>
+                            <p class="text-xs text-gray-600 mt-2">After obligations</p>
+                        </div>
+                    </div>
+
+                    <!-- Obligation Tracking Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">ORS Number</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">PR Number</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Category</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Obligated Amount</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Fund Source</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">ORS-2025-045</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">PR-2025-089</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Office Supplies</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">₱2,500.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">MOOE</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-14</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Obligated</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Budget Allocation Section -->
+            <section id="budget-allocation-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Budget Allocation Management</h3>
+                            <p class="text-gray-600">Manage budget allocations by category and fund source</p>
+                        </div>
+                        <button onclick="addBudgetAllocation()" class="bg-[#103D1C] hover:bg-[#14532d] text-white px-4 py-2 rounded-lg transition-colors">
+                            <i class="fas fa-plus mr-2"></i>Add Allocation
+                        </button>
+                    </div>
+
+                    <!-- Budget Summary Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
+                            <p class="text-sm text-gray-600">Office Supplies</p>
+                            <p class="text-xl font-bold text-gray-900">₱500,000</p>
+                            <p class="text-xs text-gray-600">15% remaining</p>
+                        </div>
+                        <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg">
+                            <p class="text-sm text-gray-600">Equipment</p>
+                            <p class="text-xl font-bold text-gray-900">₱1,000,000</p>
+                            <p class="text-xs text-gray-600">60% remaining</p>
+                        </div>
+                        <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-lg">
+                            <p class="text-sm text-gray-600">Teaching Materials</p>
+                            <p class="text-xl font-bold text-gray-900">₱800,000</p>
+                            <p class="text-xs text-gray-600">45% remaining</p>
+                        </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-lg">
+                            <p class="text-sm text-gray-600">Maintenance</p>
+                            <p class="text-xl font-bold text-gray-900">₱200,000</p>
+                            <p class="text-xs text-gray-600">80% remaining</p>
+                        </div>
+                    </div>
+
+                    <!-- Budget Allocation Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Category</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Fund Source</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Total Allocated</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Obligated</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Available</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Utilization</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm text-gray-900">Office Supplies</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">MOOE</td>
+                                    <td class="px-4 py-3 text-sm font-semibold text-gray-900">₱500,000.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">₱425,000.00</td>
+                                    <td class="px-4 py-3 text-sm text-green-600 font-semibold">₱75,000.00</td>
+                                    <td class="px-4 py-3">
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-red-600 h-2 rounded-full" style="width: 85%"></div>
+                                        </div>
+                                        <p class="text-xs text-gray-600 mt-1">85%</p>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="editAllocation('office-supplies')" class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm text-gray-900">Equipment</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">MOOE</td>
+                                    <td class="px-4 py-3 text-sm font-semibold text-gray-900">₱1,000,000.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">₱400,000.00</td>
+                                    <td class="px-4 py-3 text-sm text-green-600 font-semibold">₱600,000.00</td>
+                                    <td class="px-4 py-3">
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-green-600 h-2 rounded-full" style="width: 40%"></div>
+                                        </div>
+                                        <p class="text-xs text-gray-600 mt-1">40%</p>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="editAllocation('equipment')" class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pending Budget Section -->
+            <section id="pending-budget-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Pending Budget Requests</h3>
+                            <p class="text-gray-600">Requests waiting for budget allocation</p>
+                        </div>
+                    </div>
+
+                    <!-- Pending Budget Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Document Number</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Requester</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Item Description</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Requested Amount</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Shortfall</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date Tagged</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Priority</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">PR-2025-088</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Robert Johnson</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Laboratory Equipment</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">₱45,000.00</td>
+                                    <td class="px-4 py-3 text-sm text-red-600 font-semibold">₱10,000.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-13</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full font-medium">Urgent</span></td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="reviewPendingBudget('PR-2025-088')" class="text-blue-600 hover:text-blue-800 mr-2" title="Review">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reports Section -->
+            <section id="reports-section" class="content-section hidden">
+                <div class="space-y-6">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-6">Budget Reports</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-green-600 transition-colors cursor-pointer">
+                                <div class="flex items-center space-x-4 mb-4">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-dollar-sign text-blue-600 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900">Budget Utilization</h4>
+                                        <p class="text-xs text-gray-600">Budget usage report</p>
+                                    </div>
+                                </div>
+                                <button class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                                    Generate Report
+                                </button>
+                            </div>
+
+                            <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-green-600 transition-colors cursor-pointer">
+                                <div class="flex items-center space-x-4 mb-4">
+                                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-file-alt text-green-600 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900">ORS Report</h4>
+                                        <p class="text-xs text-gray-600">ORS completion report</p>
+                                    </div>
+                                </div>
+                                <button class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                                    Generate Report
+                                </button>
+                            </div>
+
+                            <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-green-600 transition-colors cursor-pointer">
+                                <div class="flex items-center space-x-4 mb-4">
+                                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-chart-line text-purple-600 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900">Obligation Report</h4>
+                                        <p class="text-xs text-gray-600">Obligation tracking</p>
+                                    </div>
+                                </div>
+                                <button class="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                                    Generate Report
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
+
+    <script src="../../assets/js/budgeting-dashboard.js"></script>
+</body>
+</html>
+

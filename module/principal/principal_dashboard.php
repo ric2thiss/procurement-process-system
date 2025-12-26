@@ -1,0 +1,972 @@
+<?php
+/**
+ * Principal Dashboard
+ * Document Tracking System - Magallanes National High School
+ */
+
+require_once __DIR__ . '/../../includes/session.php';
+require_once __DIR__ . '/../../includes/auth.php';
+
+// Require login and check role
+requireLogin();
+
+// Check if user has PRINCIPAL role
+if (getCurrentUserRole() !== 'PRINCIPAL') {
+    header('Location: /dts/auth/login.php');
+    exit();
+}
+
+// Get user info from session
+$userName = $_SESSION['first_name'] . ' ' . $_SESSION['last_name'];
+$userRole = $_SESSION['role_name'] ?? 'Principal';
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Principal / School Head Dashboard - Document Tracking System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/global/main.css">
+    <link rel="stylesheet" href="../../assets/css/pages/principal-dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-[#103D1C] text-white transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-50">
+        <div class="flex flex-col h-full">
+            <!-- Logo Section -->
+            <div class="p-4 lg:p-6 border-b border-green-800">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center bg-white rounded-lg">
+                        <img src="../../assets/img/logo.png" alt="Logo" class="logo-img">
+                    </div>
+                    <div>
+                        <h1 class="text-base lg:text-lg font-bold text-white">DTS</h1>
+                        <p class="text-xs text-green-200">Principal / School Head</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="flex-1 overflow-y-auto py-4">
+                <ul class="space-y-1 px-3">
+                    <li>
+                        <a href="#dashboard" data-section="dashboard" class="nav-item active flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-tachometer-alt w-5"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#pending-approvals" data-section="pending-approvals" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-clipboard-check w-5"></i>
+                            <span>Pending Approvals</span>
+                            <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full" id="pendingCount">8</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#pr-history" data-section="pr-history" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-history w-5"></i>
+                            <span>PR History</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#ppmp-signatures" data-section="ppmp-signatures" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-file-contract w-5"></i>
+                            <span>PPMP Signatures</span>
+                            <span class="ml-auto bg-blue-500 text-white text-xs px-2 py-1 rounded-full" id="ppmpSignatureCount">2</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#ris-signatures" data-section="ris-signatures" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-file-invoice w-5"></i>
+                            <span>RIS Signatures</span>
+                            <span class="ml-auto bg-purple-500 text-white text-xs px-2 py-1 rounded-full" id="risSignatureCount">1</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#dv-signing" data-section="dv-signing" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-file-signature w-5"></i>
+                            <span>DV Signing</span>
+                            <span class="ml-auto bg-yellow-500 text-white text-xs px-2 py-1 rounded-full" id="dvCount">3</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#approval-delegation" data-section="approval-delegation" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-user-shield w-5"></i>
+                            <span>Approval Delegation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#approval-history" data-section="approval-history" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-history w-5"></i>
+                            <span>Approval History</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#reports" data-section="reports" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-chart-bar w-5"></i>
+                            <span>Approval Reports</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- User Profile Section -->
+            <div class="p-4 border-t border-green-800">
+                <div class="flex items-center space-x-3 mb-3">
+                    <div class="w-10 h-10 bg-green-700 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user-tie text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-semibold"><?php echo htmlspecialchars($userName); ?></p>
+                        <p class="text-xs text-green-200"><?php echo htmlspecialchars($userRole); ?></p>
+                    </div>
+                </div>
+                <a href="../../auth/logout.php" class="w-full bg-green-700 hover:bg-green-600 px-4 py-2 rounded-lg text-sm transition-colors block text-center"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="lg:ml-64">
+        <!-- Top Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
+            <div class="flex items-center justify-between px-4 py-3 lg:px-6 lg:py-4">
+                <div class="flex items-center space-x-2 lg:space-x-4 flex-1 min-w-0">
+                    <button id="sidebarToggle" class="lg:hidden text-gray-600 hover:text-gray-900 p-2">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <div class="flex-1 min-w-0">
+                        <h2 class="text-lg lg:text-xl font-bold text-gray-900 truncate" id="pageTitle">Dashboard Overview</h2>
+                        <p class="text-xs lg:text-sm text-gray-600 truncate" id="pageSubtitle">Principal approval statistics and monitoring</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2 lg:space-x-4 flex-shrink-0">
+                    <div class="relative">
+                        <button class="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
+                            <i class="fas fa-bell text-base lg:text-lg"></i>
+                            <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                        </button>
+                    </div>
+                    <div class="text-right hidden sm:block">
+                        <p class="text-xs lg:text-sm font-semibold text-gray-900" id="currentDate"></p>
+                        <p class="text-xs text-gray-600" id="currentTime"></p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="p-6">
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="content-section">
+                <!-- Statistics Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Pending PR Approvals</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2">8</p>
+                                <p class="text-xs text-yellow-600 mt-1"><i class="fas fa-exclamation-triangle mr-1"></i>Requires attention</p>
+                            </div>
+                            <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-clipboard-check text-yellow-600 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Approved This Month</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2">42</p>
+                                <p class="text-xs text-green-600 mt-1"><i class="fas fa-arrow-up mr-1"></i>15% from last month</p>
+                            </div>
+                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-check-circle text-green-600 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-red-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Rejected This Month</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2">5</p>
+                                <p class="text-xs text-red-600 mt-1">Requires review</p>
+                            </div>
+                            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-times-circle text-red-600 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Pending DV Signatures</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2">3</p>
+                                <p class="text-xs text-blue-600 mt-1">Awaiting signature</p>
+                            </div>
+                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-file-signature text-blue-600 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <!-- Approval Status Chart -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Approval Status Distribution</h3>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="approvalStatusChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Monthly Approval Trend -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Monthly Approval Trend</h3>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="monthlyTrendChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity and Pending Approvals -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Recent Activity -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Recent Activity</h3>
+                        <div class="space-y-4 max-h-96 overflow-y-auto">
+                            <div class="flex items-start space-x-3 pb-4 border-b border-gray-200">
+                                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-check text-green-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-semibold text-gray-900">PR Approved</p>
+                                    <p class="text-xs text-gray-600">PR-2025-089 approved</p>
+                                    <p class="text-xs text-gray-500 mt-1">2 minutes ago</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3 pb-4 border-b border-gray-200">
+                                <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-clock text-yellow-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-semibold text-gray-900">New PR Received</p>
+                                    <p class="text-xs text-gray-600">PR-2025-090 requires approval</p>
+                                    <p class="text-xs text-gray-500 mt-1">15 minutes ago</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3 pb-4 border-b border-gray-200">
+                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-file-signature text-blue-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-semibold text-gray-900">DV Signed</p>
+                                    <p class="text-xs text-gray-600">DV-2025-045 signed</p>
+                                    <p class="text-xs text-gray-500 mt-1">1 hour ago</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Urgent Pending Approvals -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">Urgent Pending Approvals</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-yellow-50 border-l-4 border-yellow-500 rounded cursor-pointer hover:bg-yellow-100 transition-colors" onclick="viewPRDetails('PR-2025-090')">
+                                <div>
+                                    <p class="font-semibold text-gray-900">PR-2025-090</p>
+                                    <p class="text-sm text-gray-600">Projector Equipment</p>
+                                    <p class="text-xs text-gray-500">Pending for 2 days</p>
+                                </div>
+                                <span class="text-yellow-600 font-bold"><i class="fas fa-exclamation-circle"></i></span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-yellow-50 border-l-4 border-yellow-500 rounded cursor-pointer hover:bg-yellow-100 transition-colors" onclick="viewPRDetails('PR-2025-088')">
+                                <div>
+                                    <p class="font-semibold text-gray-900">PR-2025-088</p>
+                                    <p class="text-sm text-gray-600">Laboratory Supplies</p>
+                                    <p class="text-xs text-gray-500">Pending for 1 day</p>
+                                </div>
+                                <span class="text-yellow-600 font-bold"><i class="fas fa-exclamation-circle"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pending Approvals Section -->
+            <section id="pending-approvals-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Pending Purchase Request Approvals</h3>
+                            <p class="text-gray-600">Review and approve or reject purchase requests</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-filter mr-2"></i>Filter
+                            </button>
+                            <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-download mr-2"></i>Export
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input 
+                            type="text" 
+                            placeholder="Search by PR number or requester..." 
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                            id="searchPR"
+                        >
+                        <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500" id="filterStatus">
+                            <option value="">All Status</option>
+                            <option value="pending">Pending Approval</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                        <input 
+                            type="date" 
+                            placeholder="From Date"
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                            id="filterFromDate"
+                        >
+                        <input 
+                            type="date" 
+                            placeholder="To Date"
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                            id="filterToDate"
+                        >
+                    </div>
+
+                    <!-- Pending PRs Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">PR Number</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Requester</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Item Description</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Amount</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">PPMP Reference</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date Received</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Deadline</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Priority</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200" id="pendingPRsTable">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">PR-2025-090</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Jane Smith</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Projector Lamp</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">₱15,000.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">PPMP-2025-045</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-15</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">
+                                        <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full font-medium">2025-01-17</span>
+                                        <span class="text-red-600 text-xs ml-2"><i class="fas fa-exclamation-triangle"></i> 2 days left</span>
+                                    </td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full font-medium">Urgent</span></td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="reviewPR('PR-2025-090')" class="text-green-600 hover:text-green-800 mr-2" title="Review & Approve">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">PR-2025-089</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">John Doe</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Whiteboard Markers (Set of 10)</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">₱2,500.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">PPMP-2025-042</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-14</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-medium">2025-01-20</span>
+                                        <span class="text-green-600 text-xs ml-2">5 days left</span>
+                                    </td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium">Normal</span></td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="reviewPR('PR-2025-089')" class="text-green-600 hover:text-green-800 mr-2" title="Review & Approve">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">PR-2025-088</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Robert Johnson</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Laboratory Equipment</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">₱45,000.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">PPMP-2025-038</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-13</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full font-medium">Urgent</span></td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="reviewPR('PR-2025-088')" class="text-green-600 hover:text-green-800 mr-2" title="Review & Approve">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="mt-6 flex items-center justify-between">
+                        <p class="text-sm text-gray-600">Showing 1-3 of 8 pending approvals</p>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Previous</button>
+                            <button class="px-3 py-2 bg-[#103D1C] text-white rounded-lg">1</button>
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">2</button>
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PR Review Modal -->
+            <div id="prReviewModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
+                <div class="bg-white rounded-lg shadow-xl max-w-5xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                    <div class="p-6 border-b border-gray-200 sticky top-0 bg-white z-10">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-bold text-gray-900">Review Purchase Request</h3>
+                            <button onclick="closePRReviewModal()" class="text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <!-- PR Header Info -->
+                        <div class="mb-6 bg-gray-50 p-4 rounded-lg">
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div>
+                                    <p class="text-sm text-gray-600">PR Number</p>
+                                    <p class="font-semibold text-gray-900" id="modalPRNumber">PR-2025-090</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">Date Received</p>
+                                    <p class="font-semibold text-gray-900" id="modalDateReceived">2025-01-15</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">Requester</p>
+                                    <p class="text-sm font-semibold"><?php echo htmlspecialchars($userName); ?></p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">Priority</p>
+                                    <p class="font-semibold text-gray-900" id="modalPriority">Urgent</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item Details -->
+                        <div class="mb-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-3">
+                                <i class="fas fa-box text-green-600 mr-2"></i>Item Details
+                            </h4>
+                            <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <p class="text-sm text-gray-600">Item Description</p>
+                                        <p class="font-semibold text-gray-900" id="modalItemDescription">Projector Lamp</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-600">Quantity</p>
+                                        <p class="font-semibold text-gray-900" id="modalQuantity">1 piece</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-600">Unit Price</p>
+                                        <p class="font-semibold text-gray-900" id="modalUnitPrice">₱15,000.00</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-600">Total Amount</p>
+                                        <p class="font-semibold text-gray-900 text-lg" id="modalTotalAmount">₱15,000.00</p>
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <p class="text-sm text-gray-600">Specifications</p>
+                                        <p class="text-gray-900" id="modalSpecifications">High brightness, compatible with Epson projectors</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PPMP Information -->
+                        <div class="mb-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-3">
+                                <i class="fas fa-file-contract text-blue-600 mr-2"></i>PPMP Information
+                            </h4>
+                            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <p class="text-sm text-gray-600">PPMP Reference</p>
+                                        <p class="font-semibold text-gray-900" id="modalPPMPRef">PPMP-2025-045</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-600">PPMP Status</p>
+                                        <p class="font-semibold text-green-900" id="modalPPMPStatus">✓ Included in PPMP</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Justification -->
+                        <div class="mb-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-3">
+                                <i class="fas fa-info-circle text-purple-600 mr-2"></i>Justification
+                            </h4>
+                            <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                <p class="text-gray-900" id="modalJustification">Needed for classroom projector that is currently not functional. Required for teaching activities.</p>
+                            </div>
+                        </div>
+
+                        <!-- Budget Information -->
+                        <div class="mb-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-3">
+                                <i class="fas fa-dollar-sign text-green-600 mr-2"></i>Budget Information
+                            </h4>
+                            <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <p class="text-sm text-gray-600">Budget Allocated</p>
+                                        <p class="font-semibold text-gray-900" id="modalBudgetAllocated">₱50,000.00</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-600">Budget Status</p>
+                                        <p class="font-semibold text-green-900" id="modalBudgetStatus">✓ Budget Available</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Review Status (STEP 7) -->
+                        <div class="border-t border-gray-200 pt-6 mb-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">Review Status (STEP 7)</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-sm font-semibold text-gray-700">Budget Officer</span>
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-medium" id="budgetStatus">
+                                            <i class="fas fa-check-circle mr-1"></i>Funds Verified
+                                        </span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">Fund verification completed</p>
+                                </div>
+                                <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-lg">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-sm font-semibold text-gray-700">Accounting Office</span>
+                                        <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full font-medium" id="accountingStatus">
+                                            <i class="fas fa-check-circle mr-1"></i>Reviewed
+                                        </span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">Review completed (if required)</p>
+                                </div>
+                                <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-sm font-semibold text-gray-700">Unit/School Head</span>
+                                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium" id="principalStatus">
+                                            <i class="fas fa-clock mr-1"></i>Pending Your Approval
+                                        </span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">Final approval decision</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Approval Actions -->
+                        <div class="border-t border-gray-200 pt-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">Approval Decision (Final Decision - STEP 7)</h4>
+                            
+                            <div class="mb-4">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Remarks / Comments <span class="text-red-500" id="remarksRequired">*</span>
+                                </label>
+                                <textarea 
+                                    id="approvalRemarks"
+                                    rows="4"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                                    placeholder="Add your remarks or comments regarding this purchase request..."
+                                ></textarea>
+                                <p class="text-xs text-gray-500 mt-1" id="remarksNote">Remarks are required when rejecting a request.</p>
+                            </div>
+
+                            <div class="flex items-center justify-end space-x-4">
+                                <button 
+                                    onclick="rejectPR()"
+                                    class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                                >
+                                    <i class="fas fa-times mr-2"></i>Reject Request
+                                </button>
+                                <button 
+                                    onclick="approvePR()"
+                                    class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+                                >
+                                    <i class="fas fa-check mr-2"></i>Approve Request
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PR History Section -->
+            <section id="pr-history-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Purchase Request History</h3>
+                            <p class="text-gray-600">View all approved and rejected purchase requests</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-filter mr-2"></i>Filter
+                            </button>
+                            <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-download mr-2"></i>Export
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input 
+                            type="text" 
+                            placeholder="Search by PR number..." 
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        >
+                        <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                            <option value="">All Status</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                        <input 
+                            type="date" 
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        >
+                        <input 
+                            type="date" 
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        >
+                    </div>
+
+                    <!-- PR History Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">PR Number</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Requester</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Item Description</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Amount</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Status</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date Approved/Rejected</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">PR-2025-087</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">John Doe</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">A4 Bond Paper</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">₱3,500.00</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-medium">Approved</span></td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-12 14:30</td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="viewPRHistory('PR-2025-087')" class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">PR-2025-086</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Jane Smith</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Office Chairs</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">₱25,000.00</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full font-medium">Rejected</span></td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-11 10:15</td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="viewPRHistory('PR-2025-086')" class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DV Signing Section -->
+            <section id="dv-signing-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Disbursement Vouchers for Signature</h3>
+                            <p class="text-gray-600">Review and sign disbursement vouchers</p>
+                        </div>
+                    </div>
+
+                    <!-- Pending DVs Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">DV Number</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">PR Number</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Payee</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Amount</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date Prepared</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">DV-2025-045</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">PR-2025-085</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">ABC Supplies Inc.</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">₱45,000.00</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-14</td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="signDV('DV-2025-045')" class="text-green-600 hover:text-green-800 mr-2" title="Sign DV">
+                                            <i class="fas fa-file-signature"></i>
+                                        </button>
+                                        <button onclick="viewDV('DV-2025-045')" class="text-blue-600 hover:text-blue-800" title="View Details">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Approval Delegation Section -->
+            <section id="approval-delegation-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Approval Delegation</h3>
+                            <p class="text-gray-600">Delegate approval authority temporarily to another user</p>
+                        </div>
+                        <button onclick="openDelegationModal()" class="bg-[#103D1C] hover:bg-[#14532d] text-white px-4 py-2 rounded-lg transition-colors">
+                            <i class="fas fa-plus mr-2"></i>Create Delegation
+                        </button>
+                    </div>
+
+                    <!-- Active Delegations -->
+                    <div class="mb-6">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4">Active Delegations</h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Delegate To</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Start Date</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">End Date</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Status</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-sm text-gray-900">Vice Principal</td>
+                                        <td class="px-4 py-3 text-sm text-gray-600">2025-01-10</td>
+                                        <td class="px-4 py-3 text-sm text-gray-600">2025-01-20</td>
+                                        <td class="px-4 py-3"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Active</span></td>
+                                        <td class="px-4 py-3">
+                                            <button onclick="revokeDelegation(1)" class="text-red-600 hover:text-red-800" title="Revoke">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Delegation History -->
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4">Delegation History</h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Delegate To</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Period</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Approvals Made</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-sm text-gray-900">Assistant Principal</td>
+                                        <td class="px-4 py-3 text-sm text-gray-600">2025-01-01 to 2025-01-05</td>
+                                        <td class="px-4 py-3 text-sm text-gray-600">5</td>
+                                        <td class="px-4 py-3"><span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">Completed</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Approval History Section -->
+            <section id="approval-history-section" class="content-section hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Approval History</h3>
+                            <p class="text-gray-600">Complete history of all approval decisions and actions</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-filter mr-2"></i>Filter
+                            </button>
+                            <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-download mr-2"></i>Export
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input 
+                            type="text" 
+                            placeholder="Search by PR number..." 
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        >
+                        <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                            <option value="">All Decisions</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                        <input 
+                            type="date" 
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        >
+                        <input 
+                            type="date" 
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        >
+                    </div>
+
+                    <!-- Approval History Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">PR Number</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Requester</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Item</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Decision</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Decision Date</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Processing Time</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Remarks</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">PR-2025-089</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">John Doe</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Whiteboard Markers</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Approved</span></td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-14 14:30</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2 days</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">Approved for procurement</td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="viewApprovalDetails('PR-2025-089')" class="text-blue-600 hover:text-blue-800" title="View Details">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-semibold text-blue-600">PR-2025-086</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Jane Smith</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Office Chairs</td>
+                                    <td class="px-4 py-3"><span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">Rejected</span></td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">2025-01-11 10:15</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">1 day</td>
+                                    <td class="px-4 py-3 text-sm text-gray-600">Budget constraints</td>
+                                    <td class="px-4 py-3">
+                                        <button onclick="viewApprovalDetails('PR-2025-086')" class="text-blue-600 hover:text-blue-800" title="View Details">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reports Section -->
+            <section id="reports-section" class="content-section hidden">
+                <div class="space-y-6">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-6">Approval Reports</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-green-600 transition-colors cursor-pointer">
+                                <div class="flex items-center space-x-4 mb-4">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-check-circle text-blue-600 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900">Approval Summary</h4>
+                                        <p class="text-xs text-gray-600">Approval statistics report</p>
+                                    </div>
+                                </div>
+                                <button class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                                    Generate Report
+                                </button>
+                            </div>
+
+                            <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-green-600 transition-colors cursor-pointer">
+                                <div class="flex items-center space-x-4 mb-4">
+                                    <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-times-circle text-red-600 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900">Rejection Report</h4>
+                                        <p class="text-xs text-gray-600">Rejection reasons and trends</p>
+                                    </div>
+                                </div>
+                                <button class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                                    Generate Report
+                                </button>
+                            </div>
+
+                            <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-green-600 transition-colors cursor-pointer">
+                                <div class="flex items-center space-x-4 mb-4">
+                                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-clock text-green-600 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900">Processing Time</h4>
+                                        <p class="text-xs text-gray-600">Average approval times</p>
+                                    </div>
+                                </div>
+                                <button class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                                    Generate Report
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
+
+    <script src="../../assets/js/principal-dashboard.js"></script>
+</body>
+</html>
+

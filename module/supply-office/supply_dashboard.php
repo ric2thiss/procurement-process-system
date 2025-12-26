@@ -1,3 +1,25 @@
+<?php
+/**
+ * Supply Office Dashboard
+ * Document Tracking System - Magallanes National High School
+ */
+
+require_once __DIR__ . '/../../includes/session.php';
+require_once __DIR__ . '/../../includes/auth.php';
+
+// Require login and check role
+requireLogin();
+
+// Check if user has SUPPLY role
+if (getCurrentUserRole() !== 'SUPPLY') {
+    header('Location: /dts/auth/login.php');
+    exit();
+}
+
+// Get user info from session
+$userName = $_SESSION['first_name'] . ' ' . $_SESSION['last_name'];
+$userRole = $_SESSION['role_name'] ?? 'Supply Officer';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +31,12 @@
     <link rel="stylesheet" href="../../assets/css/global/main.css">
     <link rel="stylesheet" href="../../assets/css/pages/supply-dashboard.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        /* Sidebar open state for mobile */
+        #sidebar.open {
+            transform: translateX(0) !important;
+        }
+    </style>
 </head>
 <body class="bg-gray-50">
     <!-- Sidebar -->
@@ -71,13 +99,13 @@
                         <i class="fas fa-user text-white"></i>
                     </div>
                     <div class="flex-1">
-                        <p class="text-sm font-semibold">Jane Smith</p>
-                        <p class="text-xs text-green-200">Supply Officer</p>
+                        <p class="text-sm font-semibold"><?php echo htmlspecialchars($userName); ?></p>
+                        <p class="text-xs text-green-200"><?php echo htmlspecialchars($userRole); ?></p>
                     </div>
                 </div>
-                <button class="w-full bg-green-700 hover:bg-green-600 px-4 py-2 rounded-lg text-sm transition-colors">
+                <a href="../../auth/logout.php" class="w-full bg-green-700 hover:bg-green-600 px-4 py-2 rounded-lg text-sm transition-colors block text-center">
                     <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                </button>
+                </a>
             </div>
         </div>
     </aside>
@@ -254,7 +282,6 @@
                     </div>
                 </div>
             </section>
-
             <!-- Supply Requests Section -->
             <section id="supply-requests-section" class="content-section hidden">
                 <div class="bg-white rounded-lg shadow-md p-4 lg:p-6">

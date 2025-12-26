@@ -1,0 +1,27 @@
+# Document Tracking System - Security Configuration
+
+# Protect sensitive files
+<FilesMatch "^(database\.php|config\.php)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Protect includes directory (optional - uncomment if needed)
+# <Directory "includes">
+#     Order allow,deny
+#     Deny from all
+# </Directory>
+
+# Protect config directory (optional - uncomment if needed)
+# <Directory "config">
+#     Order allow,deny
+#     Deny from all
+# </Directory>
+
+# Prevent directory listing
+Options -Indexes
+
+# Enable error pages (optional)
+# ErrorDocument 404 /404.html
+# ErrorDocument 500 /500.html
+
