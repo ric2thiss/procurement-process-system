@@ -97,6 +97,12 @@ $portalTitle = ucfirst(strtolower($userRoleCode)) . ' Portal';
                             <span>Request History</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="#profile" data-section="profile" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-green-800 transition-colors">
+                            <i class="fas fa-user-cog w-5"></i>
+                            <span>Profile & Settings</span>
+                        </a>
+                    </li>
                 </ul>
             </nav>
 
@@ -1063,10 +1069,10 @@ $portalTitle = ucfirst(strtolower($userRoleCode)) . ' Portal';
     <div id="requestDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4" onclick="if(event.target === this) closeRequestDetailsModal()">
         <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
             <!-- Modal Header -->
-            <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-                <h3 class="text-xl font-bold text-gray-900">Request Details</h3>
-                <button onclick="closeRequestDetailsModal()" class="text-gray-400 hover:text-gray-600 p-1">
-                    <i class="fas fa-times text-xl"></i>
+            <div class="sticky top-0 bg-white border-b border-gray-200 px-4 py-3 lg:px-6 lg:py-4 flex items-center justify-between">
+                <h3 class="text-lg lg:text-xl font-bold text-gray-900">Request Details</h3>
+                <button onclick="closeRequestDetailsModal()" class="text-gray-400 hover:text-gray-600 p-1 w-fit lg:w-auto" style="width: fit-content;">
+                    <i class="fas fa-times text-lg lg:text-xl"></i>
                 </button>
             </div>
             

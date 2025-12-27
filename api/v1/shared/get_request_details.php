@@ -4,6 +4,8 @@
  * Document Tracking System - Magallanes National High School
  * 
  * Fetches detailed information for a specific supply request
+ * 
+ * Updated: 2025-01-XX - Added SUPPLY role support
  */
 
 // Suppress error display to prevent HTML in JSON response
@@ -18,22 +20,46 @@ require_once $rootDir . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR .
 require_once $rootDir . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'auth.php';
 require_once $rootDir . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'database.php';
 
-// Require login
-requireLogin();
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// Check if user has TEACHER role
-if (getCurrentUserRole() !== 'TEACHER') {
+// Check if user is logged in - don't use requireLogin() as it might redirect
+if (empty($_SESSION['user_id'])) {
     http_response_code(403);
     echo json_encode([
         'success' => false,
-        'message' => 'Access denied. Only teachers can view request details.'
+        'message' => 'Authentication required. Please log in.'
     ]);
     exit();
 }
 
+// Get user role - allow multiple roles to view request details
+$userRole = getCurrentUserRole();
+$userId = getCurrentUserId();
+
+// If role is null, check session directly
+if (empty($userRole) && isset($_SESSION['role_code'])) {
+    $userRole = $_SESSION['role_code'];
+}
+
+// This is a shared API - allow any authenticated user
+// Data access is restricted based on role (TEACHER can only see own requests)
+
 try {
     $pdo = getDBConnection();
-    $userId = getCurrentUserId();
+    
+    // Ensure we have userId and userRole
+    if (empty($userId)) {
+        $userId = getCurrentUserId();
+    }
+    if (empty($userRole)) {
+        $userRole = getCurrentUserRole();
+        if (empty($userRole) && isset($_SESSION['role_code'])) {
+            $userRole = $_SESSION['role_code'];
+        }
+    }
     
     // Get tracking ID
     $trackingId = isset($_GET['tracking_id']) ? trim($_GET['tracking_id']) : '';
@@ -48,6 +74,7 @@ try {
     }
     
     // Get supply request details
+    // Teachers can only see their own requests, other roles (SUPPLY, ADMIN, etc.) can see all requests
     $sql = "SELECT 
                 sr.supply_request_id,
                 sr.tracking_id,
@@ -63,15 +90,24 @@ try {
                 u.email
             FROM supply_requests sr
             LEFT JOIN users u ON sr.requester_id = u.user_id
-            WHERE sr.tracking_id = :tracking_id
-            AND sr.requester_id = :user_id
-            LIMIT 1";
+            WHERE sr.tracking_id = :tracking_id";
+    
+    // Add requester restriction only for TEACHER role
+    if ($userRole === 'TEACHER' && !empty($userId)) {
+        $sql .= " AND sr.requester_id = :user_id";
+    }
+    
+    $sql .= " LIMIT 1";
     
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([
-        'tracking_id' => $trackingId,
-        'user_id' => $userId
-    ]);
+    $params = ['tracking_id' => $trackingId];
+    
+    // Only add user_id parameter for TEACHER role
+    if ($userRole === 'TEACHER' && !empty($userId)) {
+        $params['user_id'] = $userId;
+    }
+    
+    $stmt->execute($params);
     
     $request = $stmt->fetch();
     
@@ -96,6 +132,9 @@ try {
     $itemsStmt = $pdo->prepare($itemsSql);
     $itemsStmt->execute(['supply_request_id' => $request['supply_request_id']]);
     $items = $itemsStmt->fetchAll();
+    
+    // Get the first item for backward compatibility (most requests have single item)
+    $firstItem = !empty($items) ? $items[0] : null;
     
     // Get tracking history count
     $historySql = "SELECT COUNT(*) as count
@@ -122,7 +161,11 @@ try {
             'requester_name' => ($request['first_name'] && $request['last_name']) 
                 ? $request['first_name'] . ' ' . $request['last_name'] 
                 : 'N/A',
-            'requester_email' => $request['email'] ?? 'N/A'
+            'requester_email' => $request['email'] ?? 'N/A',
+            // Include first item details for backward compatibility
+            'item_description' => $firstItem['item_description'] ?? null,
+            'quantity' => $firstItem['quantity'] ?? null,
+            'unit_of_measure' => $firstItem['unit_of_measure'] ?? null
         ],
         'items' => $items,
         'history_count' => (int)$historyCount
